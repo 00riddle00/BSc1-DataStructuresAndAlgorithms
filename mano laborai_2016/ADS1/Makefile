@@ -1,0 +1,3 @@
+CC = gcc
+CFLAGS=-Wall -xc -g -lm -std=gnu99
+
