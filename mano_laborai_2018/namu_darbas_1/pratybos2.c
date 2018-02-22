@@ -40,6 +40,9 @@
 #include "lib_riddle.h"
 
 typedef struct {
+    char *number;
+    char char_whole_part[500];
+    char char_decimal_part[500];
     int whole_part[500];
     int decimal_part[500];
     int digits_whole;
@@ -47,22 +50,13 @@ typedef struct {
     int negative;
 } Number;
 
-typedef struct {
-    char *number;
-    char whole_part[500];
-    char decimal_part[500];
-    int digits_whole;
-    int digits_decimal;
-    int negative;
-} NumberInChar;
-
 
 int main(int argc, char* argv[]) {
 
-    NumberInChar* numberInChar = (NumberInChar*) malloc(sizeof(NumberInChar));
-    numberInChar->number = malloc(sizeof(char) * 1000); 
+    Number* number = (Number*) malloc(sizeof(Number));
+    number->number = malloc(sizeof(char) * 1000); 
 
-    numberInChar->number = get_word("Enter a number (separate whole and decimal parts using \".\" symbol)\n > ", numberInChar->number);
+    number->number = get_word("Enter a number (separate whole and decimal parts using \".\" symbol)\n > ", number->number);
 
     int count = 0;
     int error = 0;
@@ -71,10 +65,10 @@ int main(int argc, char* argv[]) {
     int start = 0;
     int is_decimal_part = 0;
 
-    numberInChar->negative = 0;
+    number->negative = 0;
 
-    if (numberInChar->number[0] == '-') {
-        numberInChar->negative = 1;
+    if (number->number[0] == '-') {
+        number->negative = 1;
         start++;
         debug("Start %d", start);
     } 
@@ -82,23 +76,23 @@ int main(int argc, char* argv[]) {
     // TODO move to separate function
     for (int i = start; i < 1000; i++) {
 
-        if(!isdigit(numberInChar->number[i])) {
-            if (numberInChar->number[i] == '.') {
-                strncpy(numberInChar->whole_part, numberInChar->number+numberInChar->negative, count);
-                numberInChar->digits_whole = count;
+        if(!isdigit(number->number[i])) {
+            if (number->number[i] == '.') {
+                strncpy(number->char_whole_part, number->number+number->negative, count);
+                number->digits_whole = count;
                 decimal_pos = count;
                 count = 0;
                 is_decimal_part = 1;
-            } else if (numberInChar->number[i] == 0) {
+            } else if (number->number[i] == 0) {
                 if (is_decimal_part) {
-                    strncpy(numberInChar->decimal_part, numberInChar->number+decimal_pos+numberInChar->negative+1, count);
-                    numberInChar->digits_decimal = count;
+                    strncpy(number->char_decimal_part, number->number+decimal_pos+number->negative+1, count);
+                    number->digits_decimal = count;
                     break;
                 } else {
-                    strncpy(numberInChar->whole_part, numberInChar->number+numberInChar->negative, count);
-                    numberInChar->digits_whole = count;
+                    strncpy(number->char_whole_part, number->number+number->negative, count);
+                    number->digits_whole = count;
                     decimal_pos = count;
-                    numberInChar->digits_decimal = 0;
+                    number->digits_decimal = 0;
                 }
 
             } else {
@@ -114,35 +108,22 @@ int main(int argc, char* argv[]) {
         printf("Invalid number\n");
     }
 
-/*    debug("%s", numberInChar->whole_part);*/
-    /*debug("%d", numberInChar->digits_whole);*/
-    /*debug("%s", numberInChar->decimal_part);*/
-    /*debug("%d", numberInChar->digits_decimal);*/
-    /*debug("%d", numberInChar->negative);*/
-    /*debug("-------------------------------");*/
-
-    Number* number = (Number*) malloc(sizeof(Number));
-
-    number->digits_whole = numberInChar->digits_whole;
-    number->digits_decimal = numberInChar->digits_decimal;
-    number->negative = numberInChar->negative;
-
-    for (int i = 0; i < numberInChar->digits_whole; i++) {
-        number->whole_part[i] = (int)numberInChar->whole_part[i] - '0';
+    for (int i = 0; i < number->digits_whole; i++) {
+        number->whole_part[i] = (int)number->char_whole_part[i] - '0';
     }
 
-    for (int i = 0; i < numberInChar->digits_decimal; i++) {
-        number->decimal_part[i] = numberInChar->decimal_part[i] - '0';
+    for (int i = 0; i < number->digits_decimal; i++) {
+        number->decimal_part[i] = number->char_decimal_part[i] - '0';
     }
 
     printf("Whole part is: \n");
-    for (int i = 0; i < numberInChar->digits_whole; i++) {
+    for (int i = 0; i < number->digits_whole; i++) {
         printf("%d", number->whole_part[i]);
     }
     printf("\n");
 
     printf("Decimal part is: \n");
-    for (int i = 0; i < numberInChar->digits_decimal; i++) {
+    for (int i = 0; i < number->digits_decimal; i++) {
         printf("%d", number->decimal_part[i]);
     }
     printf("\n");
