@@ -180,10 +180,10 @@ void printTable() {
 
 
 int compare(int arg1, int arg2) {
-    /*[return types]     [comparison]*/
-    /*1          greater than (>)*/
-    /*2          less than (<)*/
-    /*3          equal to (==)*/
+    /*[return values]       [meaning]      */
+    /*       1            greater than (>) */
+    /*       2            less than (<)    */
+    /*       3            equal to (==)    */
 
     Number* num1 = table->numbers[arg1];
     Number* num2 = table->numbers[arg2];
@@ -192,8 +192,9 @@ int compare(int arg1, int arg2) {
         return 1;
     } else if (num1->digits_whole < num2->digits_whole) {
         return 2;
-    // equal digits
+    // case for equal number of digits
     } else {
+        // compare whole parts
         for (int i = num1->digits_whole-1; i >= 0; i++) {
             if (num1->whole_part[i] > num2->whole_part[i]) {
                 return 1;
@@ -202,6 +203,7 @@ int compare(int arg1, int arg2) {
             }
         }
 
+        // compare decimal parts
         for (int i = 0; i < 500; i++) {
             if (num1->decimal_part[i] > num2->decimal_part[i]) {
                 return 1;
@@ -219,6 +221,7 @@ Number* subtract(int arg1, int arg2) {
     
 
     int negative;
+    // compare the two numbers
     int rs = compare(arg1, arg2);
 
     Number* first;
@@ -226,6 +229,7 @@ Number* subtract(int arg1, int arg2) {
 
     Number* res = (Number*) malloc(sizeof(Number));
 
+    // if first is greater or equal, 
     // subtract second number from the first
     if (rs == 1) {
         negative = 0;
@@ -233,6 +237,7 @@ Number* subtract(int arg1, int arg2) {
         first = table->numbers[arg1];
         second = table->numbers[arg2];
 
+    // if first is less then second, 
     // subtract first number from the second
     } else if (rs == 2) {
         negative = 1;
@@ -240,6 +245,8 @@ Number* subtract(int arg1, int arg2) {
         first = table->numbers[arg2];
         second = table->numbers[arg1];
 
+    // else if numbers are equal, return zero 
+    // (zeroth Number struct)
     } else if (rs == 3) {
         res->negative = 0;
         res->digits_whole = 1;
@@ -249,38 +256,50 @@ Number* subtract(int arg1, int arg2) {
         return res;
     }
 
+    // set decimal digits of the result to that of number having
+    // more decimal digits
     res->digits_decimal = (first->digits_decimal >= second->digits_decimal) ? first->digits_decimal : second->digits_decimal;
 
+    // copy decimal digits to the result
     for (int i = 0; i < res->digits_decimal; i++) {
         res->decimal_part[i] = first->decimal_part[i];
     }
-    res->digits_whole = first->digits_whole;
 
+    // set whole digits of the result to that the bigger number's 
+    res->digits_whole = first->digits_whole;
     for (int i = 0; i < res->digits_whole; i++) {
         res->whole_part[i] = first->whole_part[i];
     }
 
+    // set the sign of the result
     res->negative = negative;
 
     
-    // actual subraction
-    int part;
-    int whole_minus;
-
+    /* actual subraction starts   */
+    
+    // subtract decimal digits
     for (int i = res->digits_decimal - 1; i >= 0; i--) {
         int result = res->decimal_part[i] - second->decimal_part[i];
         if (result < 0) {
 
             if (i == 0) {
+                // borrow the ten (10) from the whole part
+                // in case the whole part's number becomes -1,
+                // this is then handled when substracting whole digits
                 res->decimal_part[i] = result + 10;
                 res->whole_part[0]--;
                 break;
             }
 
+            // go through the remaining numbers to borrow the needed 
+            // ten exponent (10) for subtraction
             for (int j = i-1; j >= 0; j--) {
                 res->decimal_part[j] = (res->decimal_part[j] == 0) ? 9 : res->decimal_part[j] - 1; 
                 if (res->decimal_part[j] == 9) {
                     if (j == 0) {
+                        // borrow the ten (10) from the whole part
+                        // in case the whole part's number becomes -1,
+                        // this is then handled when substracting whole digits
                         res->whole_part[0]--;
                     }
                     continue;
@@ -294,6 +313,7 @@ Number* subtract(int arg1, int arg2) {
         }
     }
 
+    // subtract whole digits
     for (int i = 0; i < second->digits_whole; i++) {
         int result = res->whole_part[i] - second->whole_part[i];
 
@@ -313,6 +333,7 @@ Number* subtract(int arg1, int arg2) {
         }
     }
 
+    // remove zeroes in front of the actual resulting number (if there are any)
     for (int i = res->digits_whole - 1, zeros = 0; i >= 0; i--) {
         if (res->whole_part[i] == 0) {
             zeros++;
@@ -327,10 +348,8 @@ Number* subtract(int arg1, int arg2) {
 
 
 
-
-
-// TODO siaip jau geriau kad argumentai butu patys pointeriai strukturos (oop)
-Number* sum(int arg1, int arg2, int negative) {
+// TODO make arguments to be ponters to a Number struct
+Number* add(int arg1, int arg2, int negative) {
     Number* bigger = table->numbers[arg1];
     Number* smaller = table->numbers[arg2];
 
@@ -340,14 +359,19 @@ Number* sum(int arg1, int arg2, int negative) {
         smaller = table->numbers[arg1];
     }
 
+    // create result Number and populate it with decimal digits 
+    // of the bigger number
     Number* res = (Number*) malloc(sizeof(Number));
     for (int i = 0; i < bigger->digits_decimal; i++) {
         res->decimal_part[i] = bigger->decimal_part[i];
     }
-
     res->digits_decimal = bigger->digits_decimal;
 
+    // part - the part to be transfered to the next sum. 
+    //  Ex. 9+5 = 14, 1 then becomes the "part" to be transfered next.
     int part;
+
+    // add decimal parts
     for (int i = smaller->digits_decimal - 1; i > 0; i--) {
         int result = res->decimal_part[i] + smaller->decimal_part[i];
         part = 0;
@@ -365,19 +389,20 @@ Number* sum(int arg1, int arg2, int negative) {
 
     part = 0;
 
-    if (res->decimal_part[0] > 10) {
+    // part then moves on to be added to the whole part of the number
+    if (res->decimal_part[0] >= 10) {
         part = 1;
         res->decimal_part[0] %= 10;
-    } else if (res->decimal_part[0] == 10) {
-        part = 1;
-        res->decimal_part[0] = 0;
-    }
+    } 
 
+    // select number with bigger amount of whole part digits
     if (bigger->digits_whole < smaller->digits_whole) {
         Number* temp = bigger;
         *bigger = *smaller;
         *smaller = *temp;
     }
+
+    // copy whole_part to the result struct
     res->digits_whole = bigger->digits_whole;
 
     for (int i = 0; i < bigger->digits_whole; i++) {
@@ -385,6 +410,7 @@ Number* sum(int arg1, int arg2, int negative) {
     }
 
 
+    // add whole parts
     for (int i = 0; i < smaller->digits_whole; i++) {
         int result = res->whole_part[i] + smaller->whole_part[i];
         if (i == 0) {
@@ -399,11 +425,10 @@ Number* sum(int arg1, int arg2, int negative) {
         res->whole_part[i+1] += part;
     }
  
+    // set sign
     res->negative = negative;
 
     return res;
-
-    printf("Sum is performed\n");
 }
 
 void performAction() {
@@ -435,10 +460,10 @@ void performAction() {
     if (action == 1) {
         // both numbers positive
         if (!x && !y) {
-            res = sum(arg1, arg2, 0);
+            res = add(arg1, arg2, 0);
         // both numbers negative
         } else if (x && y) {
-            res = sum(arg1, arg2, 1);
+            res = add(arg1, arg2, 1);
         // first number is positive, second - negative
         } else if (x && !y) {
             res = subtract(arg1, arg2);
@@ -457,13 +482,14 @@ void performAction() {
             res = subtract(arg2, arg1);
         // first number is positive, second - negative
         } else if (x && !y) {
-            res = sum(arg1, arg2, 0);
+            res = add(arg1, arg2, 0);
         // first number is negative, second - positive
         } else if (!x && y) {
-            res = sum(arg1, arg2, 1);
+            res = add(arg1, arg2, 1);
         }
     }
 
+    // case compare
     if (action == 5) {
         int rs = compare(arg1, arg2);
         if (rs == 1) {
@@ -475,7 +501,6 @@ void performAction() {
         }
         return;
     }
-
  
     printf("The result is:\n");
     printEntry(res);
@@ -489,16 +514,19 @@ void performAction() {
 
 int main(int argc, char* argv[]) {
 
+    // initialize table structure holding numbers
     initTable();
 
     char choice;
     printf("Description\n");
 
+    // ask for user input and process it
     while(1) {
         printf("Enter action > ");
         scanf(" %c", &choice);
 
         switch (choice) {
+            // new number
             case 'n':
             case 'N':;
                 Number* number = (Number*) malloc(sizeof(Number));
@@ -507,10 +535,12 @@ int main(int argc, char* argv[]) {
 
                 saveNumber(number);
                 break;
+            // print existing table
             case 'p':
             case 'P':
                 printTable();
                 break;
+            // perform action
             case 'a':
             case 'A':
                 performAction();
@@ -519,6 +549,6 @@ int main(int argc, char* argv[]) {
                 break;
         }
     }
-
+    return 0;
 }
 
