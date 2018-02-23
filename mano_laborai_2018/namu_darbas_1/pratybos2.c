@@ -179,6 +179,11 @@ void printTable() {
 }
 
 
+
+
+
+
+
 int compare(int arg1, int arg2) {
     /*[return values]       [meaning]      */
     /*       1            greater than (>) */
@@ -431,14 +436,106 @@ Number* add(int arg1, int arg2, int negative) {
     return res;
 }
 
-void performAction() {
+void compareNumbers() {
+    int action, arg1, arg2;
+    printf("Which comparison would you like to perform?\n");
+    printf("[1] Equal to (==)\n");
+    printf("[2] Not equal to (==)\n");
+    printf("[3] Greater than (>)\n");
+    printf("[4] Less than (<)\n");
+    printf("[5] Greater than or equal to (>=)\n");
+    printf("[6] Less than or equal to (<=)\n");
+
+    // TODO move to sum argparse function
+    action = get_num_interval("(Enter a number) > ", "Such option does not exist", 1, 6);
+
+    printTable();
+
+    printf("Select first argument (ID from the table (zero indexed))\n");
+    arg1 = get_num_interval("(Enter a number) > ", "Such ID does not exist", 0, table->size - 1);
+
+    printf("Select second argument (ID from the table (zero indexed))\n");
+    arg2 = get_num_interval("(Enter a number) > ", "Such ID does not exist", 0, table->size - 1);
+
+    int x = table->numbers[arg1]->negative;
+    int y = table->numbers[arg2]->negative;
+    int cmp;
+
+    // both numbers positive
+    if (!x && !y) {
+        cmp = compare(arg1, arg2);
+    // both numbers negative
+    } else if (x && y) {
+        cmp = compare(arg2, arg1);
+    // first number is positive, second - negative
+    } else if (x && !y) {
+        // greater than
+        cmp = 1;
+    // first number is negative, second - positive
+    } else if (!x && y) {
+        // less than
+        cmp = 2;
+    }
+
+    switch (action) {
+        case 1:
+            if (cmp == 3) {
+                printf("True");
+            } else {
+                printf("False");
+            }
+            break;
+        case 2:
+            if (cmp == 3) {
+                printf("False");
+            } else {
+                printf("True");
+            }
+            break;
+        case 3:
+            if (cmp == 1) {
+                printf("True");
+            } else {
+                printf("False");
+            }
+            break;
+        case 4:
+            if (cmp == 2) {
+                printf("True");
+            } else {
+                printf("False");
+            }
+            break;
+        case 5:
+            if (cmp == 2) {
+                printf("False");
+            } else {
+                printf("True");
+            }
+            break;
+        case 6:
+            if (cmp == 1) {
+                printf("False");
+            } else {
+                printf("True");
+            }
+            break;
+        default:
+            printf("Wrong action\n");
+            break;
+    }
+    printf("\n");
+ 
+}
+
+void performMath() {
     int action, arg1, arg2;
     printf("Which action would you like to perform?\n");
     printf("[1] Sum\n");
     printf("[2] Subtraction\n");
     printf("[3] Multiplication\n");
     printf("[4] Division\n");
-    printf("[5] Compare\n");
+    printf("[5] Modulo\n");
 
     // TODO move to sum argparse function
     action = get_num_interval("(Enter a number) > ", "Such option does not exist", 1, 5);
@@ -456,7 +553,7 @@ void performAction() {
     // result
     Number* res;
 
-    // case sum
+    // case addition
     if (action == 1) {
         // both numbers positive
         if (!x && !y) {
@@ -472,7 +569,7 @@ void performAction() {
             res = subtract(arg2, arg1);
         }
     }
-    // case subtract
+    // case subtraction
     if (action == 2) {
         // both numbers positive
         if (!x && !y) {
@@ -489,19 +586,7 @@ void performAction() {
         }
     }
 
-    // case compare
-    if (action == 5) {
-        int rs = compare(arg1, arg2);
-        if (rs == 1) {
-            printf("Greater than\n");
-        } else if (rs == 2) {
-            printf("Less than\n");
-        } else if (rs == 3) {
-            printf("Equal to\n");
-        }
-        return;
-    }
- 
+
     printf("The result is:\n");
     printEntry(res);
     
@@ -522,7 +607,7 @@ int main(int argc, char* argv[]) {
 
     // ask for user input and process it
     while(1) {
-        printf("Enter action > ");
+        printf("Enter action> ");
         scanf(" %c", &choice);
 
         switch (choice) {
@@ -541,9 +626,12 @@ int main(int argc, char* argv[]) {
                 printTable();
                 break;
             // perform action
-            case 'a':
-            case 'A':
-                performAction();
+            case 'm':
+            case 'M':
+                performMath();
+            case 'c':
+            case 'C':
+                compareNumbers();
             default:
                 printf("wrong action\n");
                 break;
