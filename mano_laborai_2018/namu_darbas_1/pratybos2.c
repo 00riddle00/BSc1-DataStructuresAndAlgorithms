@@ -272,15 +272,17 @@ Number* subtract(int arg1, int arg2) {
         if (result < 0) {
 
             if (i == 0) {
-                debug("here2");
                 res->decimal_part[i] = result + 10;
-                res->whole_part[res->digits_whole-1]--;
+                res->whole_part[0]--;
                 break;
             }
 
             for (int j = i-1; j >= 0; j--) {
                 res->decimal_part[j] = (res->decimal_part[j] == 0) ? 9 : res->decimal_part[j] - 1; 
                 if (res->decimal_part[j] == 9) {
+                    if (j == 0) {
+                        res->whole_part[0]--;
+                    }
                     continue;
                 } else {
                     break;
@@ -292,37 +294,12 @@ Number* subtract(int arg1, int arg2) {
         }
     }
 
-    int diff = res->digits_whole - second->digits_whole;
+    for (int i = 0; i < second->digits_whole; i++) {
+        int result = res->whole_part[i] - second->whole_part[i];
 
-
-    for (int i = second->digits_whole - 1; i >= 0; i--) {
-        debug("print");
-        printEntry(res);
-        int result = res->whole_part[i+diff] - second->whole_part[i];
         if (result < 0) {
 
-            for (int j = i+diff-1; j >= 0; j--) {
-
-                if (j == 0) {
-
-                    res->whole_part[j] = (res->whole_part[j] == 0) ? 0 : res->whole_part[j] - 1;
-                    res->whole_part[j+1] = result + 10;
-
-                    if (res->whole_part[j] == 0) {
-                        // rebalance
-                        res->digits_whole--;
-                        debug("0: %d", res->whole_part[0]);
-                        debug("1: %d", res->whole_part[1]);
-                        for (int i = 0; i < res->digits_whole; i++) {
-                            debug("how many");
-                            res->whole_part[i] = res->whole_part[i+1];
-                            debug("d whole %d", res->digits_whole);
-                            debug("pirmas %d", res->whole_part[i]);
-                        }
-                    }
-                    break;
-                }
-
+            for (int j = i+1; j < res->digits_whole; j++) {
                 res->whole_part[j] = (res->whole_part[j] == 0) ? 9 : res->whole_part[j] - 1;
                 if (res->whole_part[j] == 9) {
                     continue;
@@ -330,12 +307,20 @@ Number* subtract(int arg1, int arg2) {
                     break;
                 }
             }
-            res->whole_part[i+diff] = (result + 10) % 10;
+            res->whole_part[i] = (result + 10) % 10;
         } else {
-            res->whole_part[i+diff] = result;
+            res->whole_part[i] = result;
         }
     }
 
+    for (int i = res->digits_whole - 1, zeros = 0; i >= 0; i--) {
+        if (res->whole_part[i] == 0) {
+            zeros++;
+        } else {
+            res->digits_whole -= zeros;
+            break;
+        }
+    }
     return res;
 }
 
