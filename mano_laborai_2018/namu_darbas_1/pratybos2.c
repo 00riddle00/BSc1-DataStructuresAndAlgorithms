@@ -117,8 +117,8 @@ void getNumber(Number* number) {
         printf("Invalid number\n");
     }
 
-    for (int i = 0; i < number->digits_whole; i++) {
-        number->whole_part[i] = (int)number->char_whole_part[i] - '0';
+    for (int i = number->digits_whole - 1; i >= 0; i--) {
+        number->whole_part[i] = (int)number->char_whole_part[number->digits_whole-1-i] - '0';
     }
 
     for (int i = 0; i < number->digits_decimal; i++) {
@@ -160,13 +160,13 @@ void printEntry(Number* number) {
             printf("-");
         }
 
-        for (int j = 0; j < number->digits_whole; j++) {
-            printf("%d", number->whole_part[j]);
+        for (int i = number->digits_whole - 1; i >= 0; i--) {
+            printf("%d", number->whole_part[i]);
         }
         printf(".");
 
-        for (int j = 0; j < number->digits_decimal; j++) {
-            printf("%d", number->decimal_part[j]);
+        for (int i = 0; i < number->digits_decimal; i++) {
+            printf("%d", number->decimal_part[i]);
         }
         printf("\n");
 }
@@ -194,7 +194,7 @@ int compare(int arg1, int arg2) {
         return 2;
     // equal digits
     } else {
-        for (int i = 0; i < num1->digits_whole; i++) {
+        for (int i = num1->digits_whole-1; i >= 0; i++) {
             if (num1->whole_part[i] > num2->whole_part[i]) {
                 return 1;
             } else if (num1->whole_part[i] < num2->whole_part[i]) {
@@ -422,7 +422,6 @@ Number* sum(int arg1, int arg2, int negative) {
     res->negative = negative;
 
     return res;
- 
 
     printf("Sum is performed\n");
 }
