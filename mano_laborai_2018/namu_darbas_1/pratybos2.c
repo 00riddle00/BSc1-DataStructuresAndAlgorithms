@@ -44,6 +44,7 @@
 
 typedef struct {
     char *number;
+    // TODO define this 500
     char char_whole_part[500];
     char char_decimal_part[500];
     int whole_part[500];
@@ -150,31 +151,192 @@ void saveNumber(Number* number) {
     table->size++;
 }
 
-void printTable() {
 
-    for (int i = 0; i < table->size; i++) {
-        printf("[%d] ", i);
-        if (table->numbers[i]->negative) {
+
+
+void printEntry(Number* number) {
+
+        if (number->negative) {
             printf("-");
         }
 
-        for (int j = 0; j < table->numbers[i]->digits_whole; j++) {
-            printf("%d", table->numbers[i]->whole_part[j]);
+        for (int j = 0; j < number->digits_whole; j++) {
+            printf("%d", number->whole_part[j]);
         }
         printf(".");
 
-        for (int j = 0; j < table->numbers[i]->digits_decimal; j++) {
-            printf("%d", table->numbers[i]->decimal_part[j]);
+        for (int j = 0; j < number->digits_decimal; j++) {
+            printf("%d", number->decimal_part[j]);
         }
         printf("\n");
+}
 
+void printTable() {
+    for (int i = 0; i < table->size; i++) {
+        printf("[%d] ", i);
+        printEntry(table->numbers[i]);
     }
 }
 
 
+int compare(int arg1, int arg2) {
+    /*[return types]     [comparison]*/
+    /*1          greater than (>)*/
+    /*2          less than (<)*/
+    /*3          equal to (==)*/
 
-void subtract(int arg1, int arg2) {
-    printf("Subtraction is performed\n");
+    Number* num1 = table->numbers[arg1];
+    Number* num2 = table->numbers[arg2];
+
+    if (num1->digits_whole > num2->digits_whole) {
+        return 1;
+    } else if (num1->digits_whole < num2->digits_whole) {
+        return 2;
+    // equal digits
+    } else {
+        for (int i = 0; i < num1->digits_whole; i++) {
+            if (num1->whole_part[i] > num2->whole_part[i]) {
+                return 1;
+            } else if (num1->whole_part[i] < num2->whole_part[i]) {
+                return 2;
+            }
+        }
+
+        for (int i = 0; i < 500; i++) {
+            if (num1->decimal_part[i] > num2->decimal_part[i]) {
+                return 1;
+            } else if (num1->decimal_part[i] < num2->decimal_part[i]) {
+                return 2;
+            }
+        }
+
+        return 3; // the numbers are equal
+    }
+}
+
+
+Number* subtract(int arg1, int arg2) {
+    
+
+    int negative;
+    int rs = compare(arg1, arg2);
+
+    Number* first;
+    Number* second;
+
+    Number* res = (Number*) malloc(sizeof(Number));
+
+    // subtract second number from the first
+    if (rs == 1) {
+        negative = 0;
+
+        first = table->numbers[arg1];
+        second = table->numbers[arg2];
+
+    // subtract first number from the second
+    } else if (rs == 2) {
+        negative = 1;
+
+        first = table->numbers[arg2];
+        second = table->numbers[arg1];
+
+    } else if (rs == 3) {
+        res->negative = 0;
+        res->digits_whole = 1;
+        res->digits_decimal = 1;
+        res->whole_part[0] = 0;
+        res->decimal_part[0] = 0;
+        return res;
+    }
+
+    res->digits_decimal = (first->digits_decimal >= second->digits_decimal) ? first->digits_decimal : second->digits_decimal;
+
+    for (int i = 0; i < res->digits_decimal; i++) {
+        res->decimal_part[i] = first->decimal_part[i];
+    }
+    res->digits_whole = first->digits_whole;
+
+    for (int i = 0; i < res->digits_whole; i++) {
+        res->whole_part[i] = first->whole_part[i];
+    }
+
+    res->negative = negative;
+
+    
+    // actual subraction
+    int part;
+    int whole_minus;
+
+    for (int i = res->digits_decimal - 1; i >= 0; i--) {
+        int result = res->decimal_part[i] - second->decimal_part[i];
+        if (result < 0) {
+
+            if (i == 0) {
+                debug("here2");
+                res->decimal_part[i] = result + 10;
+                res->whole_part[res->digits_whole-1]--;
+                break;
+            }
+
+            for (int j = i-1; j >= 0; j--) {
+                res->decimal_part[j] = (res->decimal_part[j] == 0) ? 9 : res->decimal_part[j] - 1; 
+                if (res->decimal_part[j] == 9) {
+                    continue;
+                } else {
+                    break;
+                }
+            }
+            res->decimal_part[i] = result + 10;
+        } else {
+            res->decimal_part[i] = result;
+        }
+    }
+
+    int diff = res->digits_whole - second->digits_whole;
+
+
+    for (int i = second->digits_whole - 1; i >= 0; i--) {
+        debug("print");
+        printEntry(res);
+        int result = res->whole_part[i+diff] - second->whole_part[i];
+        if (result < 0) {
+
+            for (int j = i+diff-1; j >= 0; j--) {
+
+                if (j == 0) {
+
+                    res->whole_part[j] = (res->whole_part[j] == 0) ? 0 : res->whole_part[j] - 1;
+                    res->whole_part[j+1] = result + 10;
+
+                    if (res->whole_part[j] == 0) {
+                        // rebalance
+                        res->digits_whole--;
+                        debug("0: %d", res->whole_part[0]);
+                        debug("1: %d", res->whole_part[1]);
+                        for (int i = 0; i < res->digits_whole; i++) {
+                            debug("how many");
+                            res->whole_part[i] = res->whole_part[i+1];
+                            debug("d whole %d", res->digits_whole);
+                            debug("pirmas %d", res->whole_part[i]);
+                        }
+                    }
+                    break;
+                }
+
+                res->whole_part[j] = (res->whole_part[j] == 0) ? 9 : res->whole_part[j] - 1;
+                if (res->whole_part[j] == 9) {
+                    continue;
+                } else {
+                    break;
+                }
+            }
+            res->whole_part[i+diff] = (result + 10) % 10;
+        } else {
+            res->whole_part[i+diff] = result;
+        }
+    }
+
+    return res;
 }
 
 
@@ -183,14 +345,14 @@ void subtract(int arg1, int arg2) {
 
 
 // TODO siaip jau geriau kad argumentai butu patys pointeriai strukturos (oop)
-void sum(int arg1, int arg2) {
+Number* sum(int arg1, int arg2, int negative) {
     Number* bigger = table->numbers[arg1];
     Number* smaller = table->numbers[arg2];
 
+    // TODO change to swap 
     if (bigger->digits_decimal < smaller->digits_decimal) {
-        Number* temp = bigger;
-        *bigger = *smaller;
-        *smaller = *temp;
+        bigger = table->numbers[arg2];
+        smaller = table->numbers[arg1];
     }
 
     Number* res = (Number*) malloc(sizeof(Number));
@@ -240,8 +402,11 @@ void sum(int arg1, int arg2) {
     for (int i = smaller->digits_whole - 1, j = 0; i >= 0; i--, j++) {
         debug("Here");
         int result = res->whole_part[res->digits_whole-1-j] + smaller->whole_part[i];
+        debug("res = %d", result);
+        debug("part = %d", part);
         if (j == 0) {
-            res->whole_part[res->digits_whole-1] += part;
+            debug("Yes, ");
+            result += part;
         }
         part = 0;
         if (result > 10) {
@@ -254,8 +419,10 @@ void sum(int arg1, int arg2) {
         res->whole_part[res->digits_whole-1-j] = result;
         res->whole_part[res->digits_whole-1-j-1] += part;
     }
+    res->negative = negative;
+
+    return res;
  
-    saveNumber(res);
 
     printf("Sum is performed\n");
 }
@@ -264,8 +431,13 @@ void performAction() {
     int action, arg1, arg2;
     printf("Which action would you like to perform?\n");
     printf("[1] Sum\n");
+    printf("[2] Subtraction\n");
+    printf("[3] Multiplication\n");
+    printf("[4] Division\n");
+    printf("[5] Compare\n");
 
-    action = get_num_interval("(Enter a number) > ", "Such option does not exist", 1, 1);
+    // TODO move to sum argparse function
+    action = get_num_interval("(Enter a number) > ", "Such option does not exist", 1, 5);
 
     printTable();
 
@@ -275,7 +447,63 @@ void performAction() {
     printf("Select second argument (ID from the table (zero indexed))\n");
     arg2 = get_num_interval("(Enter a number) > ", "Such ID does not exist", 0, table->size - 1);
 
-    sum(arg1, arg2);
+    int x = table->numbers[arg1]->negative;
+    int y = table->numbers[arg2]->negative;
+    // result
+    Number* res;
+
+    // case sum
+    if (action == 1) {
+        // both numbers positive
+        if (!x && !y) {
+            res = sum(arg1, arg2, 0);
+        // both numbers negative
+        } else if (x && y) {
+            res = sum(arg1, arg2, 1);
+        // first number is positive, second - negative
+        } else if (x && !y) {
+            res = subtract(arg1, arg2);
+        // first number is negative, second - positive
+        } else if (!x && y) {
+            res = subtract(arg2, arg1);
+        }
+    }
+    // case subtract
+    if (action == 2) {
+        // both numbers positive
+        if (!x && !y) {
+            res = subtract(arg1, arg2);
+        // both numbers negative
+        } else if (x && y) {
+            res = subtract(arg2, arg1);
+        // first number is positive, second - negative
+        } else if (x && !y) {
+            res = sum(arg1, arg2, 0);
+        // first number is negative, second - positive
+        } else if (!x && y) {
+            res = sum(arg1, arg2, 1);
+        }
+    }
+
+    if (action == 5) {
+        int rs = compare(arg1, arg2);
+        if (rs == 1) {
+            printf("Greater than\n");
+        } else if (rs == 2) {
+            printf("Less than\n");
+        } else if (rs == 3) {
+            printf("Equal to\n");
+        }
+        return;
+    }
+
+ 
+    printf("The result is:\n");
+    printEntry(res);
+    
+    if (choice("Would you like to save it?")) {
+        saveNumber(res);
+    }
 }
 
 
@@ -305,6 +533,7 @@ int main(int argc, char* argv[]) {
                 printTable();
                 break;
             case 'a':
+            case 'A':
                 performAction();
             default:
                 printf("wrong action\n");
