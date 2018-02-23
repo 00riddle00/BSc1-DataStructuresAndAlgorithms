@@ -35,6 +35,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 
 #include "dbg.h"
@@ -436,6 +437,67 @@ Number* add(int arg1, int arg2, int negative) {
     return res;
 }
 
+
+void multiply(int arg1, int arg2) {
+    printf("Multiplication is conducted\n");
+    Number* num1 = table->numbers[arg1];
+    Number* num2 = table->numbers[arg2];
+
+    Number* res = (Number*) malloc(sizeof(Number));
+    res->digits_whole = num1->digits_whole + num2->digits_whole;
+
+    int a[num2->digits_whole][res->digits_whole];
+    memset(a, 0, sizeof a);
+
+    int part;
+    int rc;
+
+
+    // first num
+    part = 0;
+    rc = num2->whole_part[0] * num1->whole_part[0];
+    a[0][0] = rc % 10 + part;
+    part = rc / 10;
+    // iki num1->whole_part[MAX]
+    rc = num2->whole_part[0] * num1->whole_part[1];
+    a[0][1] = rc % 10 + part;
+    part = rc / 10;
+
+    a[0][2] = part;
+
+
+    // second num
+    a[0][0] = 0;
+
+    part = 0;
+    rc = num2->whole_part[1] * num1->whole_part[0];
+    a[1][1] = rc % 10 + part;
+    part = rc / 10;
+
+    rc = num2->whole_part[1] * num1->whole_part[1];
+    a[1][2] = rc % 10 + part;
+    part = rc / 10;
+
+    a[1][3] = part;
+
+    debug("here--");
+
+    for (int i = 0; i < 3; i++) {
+        printf("%d", a[0][i]);
+    }
+    printf("\n");
+
+    for (int i = 0; i < 4; i++) {
+        printf("%d", a[1][i]);
+    }
+    printf("\n");
+
+
+}
+
+
+
+
 void compareNumbers() {
     int action, arg1, arg2;
     printf("Which comparison would you like to perform?\n");
@@ -531,7 +593,7 @@ void compareNumbers() {
 void performMath() {
     int action, arg1, arg2;
     printf("Which action would you like to perform?\n");
-    printf("[1] Sum\n");
+    printf("[1] Addition\n");
     printf("[2] Subtraction\n");
     printf("[3] Multiplication\n");
     printf("[4] Division\n");
@@ -586,6 +648,21 @@ void performMath() {
         }
     }
 
+    if (action == 3) {
+        multiply(arg1, arg2);
+        return;
+
+        // both numbers positive
+        if (!x && !y) {
+            res->negative = 0;
+        // both numbers negative
+        } else if (x && y) {
+            res->negative = 0;
+        // one number is positive, another - negative
+        } else {
+            res->negative = 1;
+        }
+    }
 
     printf("The result is:\n");
     printEntry(res);
@@ -629,9 +706,11 @@ int main(int argc, char* argv[]) {
             case 'm':
             case 'M':
                 performMath();
+                break;
             case 'c':
             case 'C':
                 compareNumbers();
+                break;
             default:
                 printf("wrong action\n");
                 break;
