@@ -398,27 +398,22 @@ Number* sum(int arg1, int arg2, int negative) {
     for (int i = 0; i < bigger->digits_whole; i++) {
         res->whole_part[i] = bigger->whole_part[i];
     }
-    
-    for (int i = smaller->digits_whole - 1, j = 0; i >= 0; i--, j++) {
-        debug("Here");
-        int result = res->whole_part[res->digits_whole-1-j] + smaller->whole_part[i];
-        debug("res = %d", result);
-        debug("part = %d", part);
-        if (j == 0) {
-            debug("Yes, ");
+
+
+    for (int i = 0; i < smaller->digits_whole; i++) {
+        int result = res->whole_part[i] + smaller->whole_part[i];
+        if (i == 0) {
             result += part;
         }
         part = 0;
-        if (result > 10) {
+        if (result >= 10) {
             part = 1;
             result %= 10;
-        } else if (result == 10) {
-            result = 0;
-            part = 1;
         }
-        res->whole_part[res->digits_whole-1-j] = result;
-        res->whole_part[res->digits_whole-1-j-1] += part;
+        res->whole_part[i] = result;
+        res->whole_part[i+1] += part;
     }
+ 
     res->negative = negative;
 
     return res;
