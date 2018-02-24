@@ -798,7 +798,11 @@ Number* divide(Number* num1, Number* num2) {
                 one = multiply(one, zero_one);
                 continue;
             }
-            if (res->digits_decimal > 30) {
+            if (res->digits_decimal > 40) {
+                debug("here");
+                printEntry(remainder);
+                printEntry(tmp);
+                printEntry(one);
                 return res;
             }
             remainder = subtract(remainder, multiplyByInt(num2, counter));
