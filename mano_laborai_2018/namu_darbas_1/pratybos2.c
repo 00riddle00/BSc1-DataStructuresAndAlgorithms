@@ -41,6 +41,7 @@
 #include "dbg.h"
 #include "lib_riddle.h"
 
+// TODO increase chunk size
 #define CHUNK_SIZE 2
 
 typedef struct {
@@ -744,7 +745,7 @@ Number* divide(Number* num1, Number* num2) {
         } else if (isZero(tmp)) {
             debug("IS ZERO!");
             res = add(res, one, 0);
-            break;
+            return res;
         } else {
             break;
         }
@@ -886,12 +887,29 @@ SET:
 
 
     } else {
+        debug("COUNTER %d", counter);
         debug("VICTORY!");
         debug("Counter %d", counter);
 
-        res->digits_decimal = tmp2->digits_whole;
+        debug("TMP2 is");
+        printEntry(tmp2);
+
+        // init to zero
+        Number* zero_one = (Number*) malloc(sizeof(Number));
+        zero_one->digits_whole = 1;
+        zero_one->digits_decimal = 1;
+        zero_one->whole_part[0] = 0;
+        zero_one->decimal_part[0] = 1;
+
+
         for (int i = 0; i < counter; i++) {
-            res->decimal_part[i] = tmp2->whole_part[tmp2->digits_whole-1-i];
+            debug("MULTIPLY");
+            tmp2 = multiply(tmp2, zero_one);
+        }
+
+        res->digits_decimal = tmp2->digits_decimal;
+        for (int i = 0; i < tmp2->digits_decimal; i++) {
+            res->decimal_part[i] = tmp2->decimal_part[i];
         }
     }
 
