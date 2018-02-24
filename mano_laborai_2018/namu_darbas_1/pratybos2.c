@@ -180,7 +180,13 @@ void printTable() {
 }
 
 int isZero(Number* num) {
-    return num->digits_whole == 1 && num->digits_decimal == 1 && num->whole_part[0] == 0 && num->decimal_part[0] == 0;
+    if (num->digits_whole == 1 && num->digits_decimal == 1 && num->whole_part[0] == 0 && num->decimal_part[0] == 0) {
+        return 1;
+    } else if (num->digits_whole == 0 && num->digits_decimal == 2 && num->decimal_part[0] == 0 && num->decimal_part[1] == 0) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 
@@ -226,7 +232,6 @@ Number* subtract(Number* num1, Number* num2) {
     int negative;
     // compare the two numbers
     int rs = compare(num1, num2);
-    debug("rs = %d", rs);
 
     Number* first;
     Number* second;
@@ -341,12 +346,9 @@ Number* subtract(Number* num1, Number* num2) {
     // TODO add this refactored piece of code to every place it is used
     // remove zeroes in front of the actual resulting number (if there are any)
     for (int i = res->digits_whole - 1; i >= 0; i--) {
-        debug("HHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
         if (res->whole_part[i] == 0) {
             zeros++;
-            debug("zeros++");
         } else {
-            res->digits_whole -= zeros;
             break;
         }
     }
@@ -362,8 +364,6 @@ Number* subtract(Number* num1, Number* num2) {
 
 
 
-    debug("ENTRY ENTRY");
-    printEntry(res);
     return res;
 }
 
@@ -381,7 +381,6 @@ Number* add(Number* num1, Number* num2, int negative) {
         *bigger = *smaller;
         *smaller = temp;
     }
-    printEntry(smaller);
 
     // create result Number and populate it with decimal digits 
     // of the bigger number
@@ -395,8 +394,6 @@ Number* add(Number* num1, Number* num2, int negative) {
     //  Ex. 9+5 = 14, 1 then becomes the "part" to be transfered next.
     int part;
 
-    debug("111");
-    printEntry(res);
 
     // add decimal parts
     for (int i = smaller->digits_decimal - 1; i > 0; i--) {
@@ -423,14 +420,6 @@ Number* add(Number* num1, Number* num2, int negative) {
     } 
 
 
-    debug("222");
-    printEntry(res);
-
-
-    debug("I dont need ");
-    printEntry(bigger);
-    printEntry(smaller);
-
     // select number with bigger amount of whole part digits
     if (bigger->digits_whole < smaller->digits_whole) {
         Number temp = *bigger;
@@ -438,21 +427,12 @@ Number* add(Number* num1, Number* num2, int negative) {
         *smaller = temp;
     }
 
-    debug("I dont need ");
-    printEntry(bigger);
-    printEntry(smaller);
-
     // copy whole_part to the result struct
     res->digits_whole = bigger->digits_whole + 1;
 
     for (int i = 0; i < bigger->digits_whole; i++) {
         res->whole_part[i] = bigger->whole_part[i];
     }
-
-    debug("wish you were here");
-    printEntry(res);
-    printEntry(smaller);
-
 
     // add whole parts
     for (int i = 0; i < smaller->digits_whole; i++) {
@@ -486,7 +466,6 @@ Number* add(Number* num1, Number* num2, int negative) {
 
 
 Number* multiply(Number* num1, Number* num2) {
-    printf("Multiplication is conducted\n");
 
     Number* res = (Number*) malloc(sizeof(Number));
     res->digits_whole = num1->digits_whole + num1->digits_decimal + num2->digits_whole + num2->digits_decimal;
@@ -495,7 +474,6 @@ Number* multiply(Number* num1, Number* num2) {
     /*memset(a, 0, sizeof a);*/
     memset(a, 0, sizeof(a[0][0]) * (num2->digits_whole+num2->digits_decimal) * res->digits_whole);
 
-    debug("here--");
 
 
     /*for (int i = 0; i < 4; i++) {*/
@@ -523,8 +501,6 @@ Number* multiply(Number* num1, Number* num2) {
         n1->digits_whole++;
     }
 
-    debug("print");
-    printEntry(n1);
 
     // TODO if no decimal part, do not copy
     // TODO define clear constraints, ex. max 250 digits or so
@@ -543,8 +519,6 @@ Number* multiply(Number* num1, Number* num2) {
         n2->digits_whole++;
     }
 
-    debug("print");
-    printEntry(n2);
 
     int decimal_numbers = num1->digits_decimal + num2->digits_decimal;
 
@@ -564,31 +538,31 @@ Number* multiply(Number* num1, Number* num2) {
         part = 0;
     }
 
-    for (int i = 0; i < 10; i++) {
-        /*printf("i = %d\n", a[0][i]);*/
-        printf("%d", a[0][i]);
-    }
-    printf("\n");
+/*    for (int i = 0; i < 10; i++) {*/
+        /*[>printf("i = %d\n", a[0][i]);<]*/
+        /*printf("%d", a[0][i]);*/
+    /*}*/
+    /*printf("\n");*/
 
-    for (int i = 0; i < 10; i++) {
-        printf("%d", a[1][i]);
-    }
-    printf("\n");
+    /*for (int i = 0; i < 10; i++) {*/
+        /*printf("%d", a[1][i]);*/
+    /*}*/
+    /*printf("\n");*/
 
-    for (int i = 0; i < 10; i++) {
-        printf("%d", a[2][i]);
-    }
-    printf("\n");
+    /*for (int i = 0; i < 10; i++) {*/
+        /*printf("%d", a[2][i]);*/
+    /*}*/
+    /*printf("\n");*/
 
-    for (int i = 0; i < 10; i++) {
-        printf("%d", a[3][i]);
-    }
-    printf("\n");
+    /*for (int i = 0; i < 10; i++) {*/
+        /*printf("%d", a[3][i]);*/
+    /*}*/
+    /*printf("\n");*/
 
-    for (int i = 0; i < 10; i++) {
-        printf("%d", a[4][i]);
-    }
-    printf("\n");
+    /*for (int i = 0; i < 10; i++) {*/
+        /*printf("%d", a[4][i]);*/
+    /*}*/
+    /*printf("\n");*/
 
     int result = 0;
     part = 0;
@@ -598,8 +572,6 @@ Number* multiply(Number* num1, Number* num2) {
         for (int i = 0; i < n2->digits_whole; i++) {
             result += a[i][j];
         }
-        debug("Part is %d", part);
-        debug("Result is %d", result);
 
         result += part;
         part = result / 10;
@@ -607,9 +579,7 @@ Number* multiply(Number* num1, Number* num2) {
         result = 0;
     }
 
-    printEntry(res);
 
-    debug("here--");
     
     // remove zeroes in the front of the resulting number
     for (int i = res->digits_whole-1; i >= 0; i--) {
@@ -649,8 +619,6 @@ Number* multiply(Number* num1, Number* num2) {
         res->decimal_part[i] = res->whole_part[decimal_numbers-1-i];
     }
 
-    debug("hre");
-    printEntry(res);
 
     for (int i = 0; i < res->digits_whole; i++) {
         res->whole_part[i] = res->whole_part[decimal_numbers+i];
@@ -658,12 +626,11 @@ Number* multiply(Number* num1, Number* num2) {
     res->digits_whole -= decimal_numbers;
 
 
-    debug("hre2");
-    printEntry(res);
 
     for (int i = 0; i < res->digits_whole; i++) {
         printf("%d  ", res->whole_part[i]);
     }
+
 
     return res;
 
@@ -716,6 +683,8 @@ Number* divide(Number* num1, Number* num2) {
 
     tmp = num1;
 
+    // FIXME case quotient == 1 !!!
+
     while (quotient == 1) {
         tmp = subtract(tmp, num2);
         debug("tmp is:");
@@ -732,14 +701,100 @@ Number* divide(Number* num1, Number* num2) {
         }
     }
 
+    Number* remainder;
 
+    remainder = multiply(res, num2);
 
+    num1->digits_decimal = 1;
+    num1->decimal_part[0] = 0;
 
+    remainder = subtract(num1, remainder);
+    // remainder == 5
+    // remainder / num2 kol gausim kazka
+    //
+    // init to zero
+    Number* ten = (Number*) malloc(sizeof(Number));
+    ten->digits_whole = 2;
+    ten->digits_decimal = 1;
+    ten->whole_part[0] = 0;
+    ten->whole_part[1] = 1;
+    ten->decimal_part[0] = 0;
 
+    debug("two entries");
+    printEntry(remainder);
+    printEntry(tmp);
 
+    // init to zero
+    Number* tmp2 = (Number*) malloc(sizeof(Number));
+    tmp2->digits_whole = 1;
+    tmp2->digits_decimal = 1;
+    tmp2->whole_part[0] = 0;
+    tmp2->decimal_part[0] = 0;
 
-    debug("hello from the other side");
+    counter = 0;
+
+SET:
+    debug("SET");
+
+    // TODO wrap in it assignment function
+    tmp->digits_whole = remainder->digits_whole;
+    tmp->digits_decimal = remainder->digits_decimal;
+    tmp->negative = remainder->negative;
+
+    for (int i = 0; i < remainder->digits_decimal; i++) {
+        tmp->decimal_part[i] = remainder->decimal_part[i];
+    }
+    for (int i = 0; i < remainder->digits_whole; i++) {
+        tmp->whole_part[i] = remainder->whole_part[i];
+    }
+
+    while (1) {
+        tmp = subtract(tmp, num2);
+        debug("tmp is:");
+        printEntry(tmp);
+        /*debug("digits whole: %d", tmp->digits_whole);*/
+        if ((tmp->digits_whole > 1 || tmp->whole_part[0] != 0) && !tmp->negative) {
+            tmp2 = add(tmp2, one, 0);
+        } else if (isZero(tmp)) {
+            debug("IS ZERO!");
+            tmp2 = add(tmp2, one, 0);
+            break;
+        } else {
+            break;
+        }
+    }
+    debug("tmp2");
+    printEntry(tmp2);
+
+    // it means that the number was not divided into equal parts
+    if (tmp2->whole_part[0] == 0 || tmp2->digits_decimal > 1 || tmp2->decimal_part[0] != 0) {
+        remainder = multiply(remainder, ten);
+        debug("REMINDER");
+        printEntry(remainder);
+
+        tmp2->digits_whole = 1;
+        tmp2->digits_decimal = 1;
+        tmp2->whole_part[0] = 0;
+        tmp2->decimal_part[0] = 0;
+
+        counter++;
+        goto SET;
+    } else {
+        debug("VICTORY!");
+        debug("Counter %d", counter);
+
+        res->digits_decimal = tmp2->digits_whole;
+        for (int i = 0; i < counter; i++) {
+            res->decimal_part[i] = tmp2->whole_part[tmp2->digits_whole-1-i];
+        }
+    }
+
+    debug("RES is");
     printEntry(res);
+
+
+
+    
 
     return res;
 }
@@ -873,8 +928,6 @@ void performMath() {
     int x = num1->negative;
     int y = num2->negative;
 
-    debug("%d", x);
-    debug("%d", y);
     // result
     Number* res;
 
