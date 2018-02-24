@@ -179,6 +179,10 @@ void printTable() {
     }
 }
 
+int isZero(Number* num) {
+    return num->digits_whole == 1 && num->digits_decimal == 1 && num->whole_part[0] == 0 && num->decimal_part[0] == 0;
+}
+
 
 // this comparison function ignores the sign of the numbers,
 // thus it compares the absolute values of the two numbers.
@@ -333,15 +337,33 @@ Number* subtract(Number* num1, Number* num2) {
         }
     }
 
+    int zeros = 0;
+    // TODO add this refactored piece of code to every place it is used
     // remove zeroes in front of the actual resulting number (if there are any)
-    for (int i = res->digits_whole - 1, zeros = 0; i >= 0; i--) {
+    for (int i = res->digits_whole - 1; i >= 0; i--) {
+        debug("HHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
         if (res->whole_part[i] == 0) {
             zeros++;
+            debug("zeros++");
         } else {
             res->digits_whole -= zeros;
             break;
         }
     }
+    res->digits_whole -= zeros;
+
+    // TODO add this nullifier everywhere
+    if (res->digits_whole == 0 && res->digits_decimal == 0) {
+        res->digits_whole = 1;
+        res->digits_decimal = 1;
+        res->whole_part[0] = 0;
+        res->decimal_part[0] = 0;
+    }
+
+
+
+    debug("ENTRY ENTRY");
+    printEntry(res);
     return res;
 }
 
@@ -359,7 +381,6 @@ Number* add(Number* num1, Number* num2, int negative) {
         *bigger = *smaller;
         *smaller = temp;
     }
-    debug("how come");
     printEntry(smaller);
 
     // create result Number and populate it with decimal digits 
@@ -659,6 +680,7 @@ Number* divide(Number* num1, Number* num2) {
     // if first is greater or equal, the quotient will 
     // be greater than 1
     if (rs == 1) {
+        debug("quotient one");
         quotient = 1;
     // if first is less than second, 
     // the quotient will be less than 1
@@ -667,6 +689,7 @@ Number* divide(Number* num1, Number* num2) {
     // else if numbers are equal, return one 
     // (Number struct with the value of one)
     } else if (rs == 3) {
+        debug("what??");
         res->negative = 0;
         res->digits_whole = 1;
         res->digits_decimal = 1;
@@ -693,18 +716,30 @@ Number* divide(Number* num1, Number* num2) {
 
     tmp = num1;
 
-    /*while (quotient == 1) {*/
-        /*tmp = subtract(tmp, arg2);*/
-        /*if (tmp->digits_whole > 1 || tmp->digits_whole[0] != 0) {*/
-            /*res = add(res, one);*/
-        /*} else {*/
-            /*break;*/
-        /*}*/
-    /*}*/
+    while (quotient == 1) {
+        tmp = subtract(tmp, num2);
+        debug("tmp is:");
+        printEntry(tmp);
+        debug("digits whole: %d", tmp->digits_whole);
+        if ((tmp->digits_whole > 1 || tmp->whole_part[0] != 0) && !tmp->negative) {
+            res = add(res, one, 0);
+        } else if (isZero(tmp)) {
+            debug("IS ZERO!");
+            res = add(res, one, 0);
+            break;
+        } else {
+            break;
+        }
+    }
 
 
 
 
+
+
+
+    debug("hello from the other side");
+    printEntry(res);
 
     return res;
 }
@@ -893,7 +928,7 @@ void performMath() {
     }
 
 
-    if (action == 3) {
+    if (action == 4) {
         res = divide(num1, num2);
 
         // both numbers positive
