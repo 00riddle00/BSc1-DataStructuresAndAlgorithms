@@ -357,14 +357,15 @@ Number* subtract(int arg1, int arg2) {
 
 
 // TODO make arguments to be ponters to a Number struct
-Number* add(int arg1, int arg2, int negative) {
-    Number* bigger = table->numbers[arg1];
-    Number* smaller = table->numbers[arg2];
+Number* add(Number* num1, Number* num2, int negative) {
+    Number* bigger = num1;
+    Number* smaller = num2;
 
     // TODO change to swap 
     if (bigger->digits_decimal < smaller->digits_decimal) {
-        bigger = table->numbers[arg2];
-        smaller = table->numbers[arg1];
+        Number temp = *bigger;
+        *bigger = *smaller;
+        *smaller = temp;
     }
     debug("how come");
     printEntry(smaller);
@@ -839,8 +840,11 @@ void performMath() {
     printf("Select second argument (ID from the table (zero indexed))\n");
     arg2 = get_num_interval("(Enter a number) > ", "Such ID does not exist", 0, table->size - 1);
 
-    int x = table->numbers[arg1]->negative;
-    int y = table->numbers[arg2]->negative;
+    Number* num1 = table->numbers[arg1];
+    Number* num2 = table->numbers[arg2];
+
+    int x = num1->negative;
+    int y = num2->negative;
 
     debug("%d", x);
     debug("%d", y);
@@ -852,10 +856,10 @@ void performMath() {
     if (action == 1) {
         // both numbers positive
         if (!x && !y) {
-            res = add(arg1, arg2, 0);
+            res = add(num1, num2, 0);
         // both numbers negative
         } else if (x && y) {
-            res = add(arg1, arg2, 1);
+            res = add(num1, num2, 1);
         // first number is positive, second - negative
         } else if (!x && y) {
             res = subtract(arg1, arg2);
@@ -874,10 +878,10 @@ void performMath() {
             res = subtract(arg2, arg1);
         // first number is positive, second - negative
         } else if (!x && y) {
-            res = add(arg1, arg2, 0);
+            res = add(num1, num2, 0);
         // first number is negative, second - positive
         } else if (x && !y) {
-            res = add(arg1, arg2, 1);
+            res = add(num1, num2, 1);
         }
     }
 
