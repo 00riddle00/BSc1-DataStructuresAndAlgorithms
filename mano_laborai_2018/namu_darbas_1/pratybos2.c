@@ -1,12 +1,12 @@
 /*=============================================================================
  |
- |  Assignment:   Exercise 2
+ |  Assignment:   Homework 1
  |
  |       Author:  Tomas Giedraitis
  |  Study group:  VU MIF INFO, 1st group
  |     Contacts:  tomasgiedraitis@gmail.com
  |        Class:  Algorithms and Data Structures
- |         Date:  December 13th, 2017
+ |         Date:  February 23rd, 2018
  |
  |     Language:  GNU C (using gcc on Lenovo Y50-70, OS: Arch Linux x86_64)
  |     Version:   0.0
@@ -438,7 +438,7 @@ Number* add(int arg1, int arg2, int negative) {
 }
 
 
-void multiply(int arg1, int arg2) {
+Number* multiply(int arg1, int arg2) {
     printf("Multiplication is conducted\n");
     Number* num1 = table->numbers[arg1];
     Number* num2 = table->numbers[arg2];
@@ -446,43 +446,22 @@ void multiply(int arg1, int arg2) {
     Number* res = (Number*) malloc(sizeof(Number));
     res->digits_whole = num1->digits_whole + num2->digits_whole;
 
+    Number* res2 = (Number*) malloc(sizeof(Number));
+    res2->digits_whole = num1->digits_whole + num2->digits_whole;
+
     int a[num2->digits_whole][res->digits_whole];
-    memset(a, 0, sizeof a);
-
-    int part;
-    int rc;
-
-
-    // first num
-    part = 0;
-    rc = num2->whole_part[0] * num1->whole_part[0];
-    a[0][0] = rc % 10 + part;
-    part = rc / 10;
-    // iki num1->whole_part[MAX]
-    rc = num2->whole_part[0] * num1->whole_part[1];
-    a[0][1] = rc % 10 + part;
-    part = rc / 10;
-
-    a[0][2] = part;
-
-
-    // second num
-    a[0][0] = 0;
-
-    part = 0;
-    rc = num2->whole_part[1] * num1->whole_part[0];
-    a[1][1] = rc % 10 + part;
-    part = rc / 10;
-
-    rc = num2->whole_part[1] * num1->whole_part[1];
-    a[1][2] = rc % 10 + part;
-    part = rc / 10;
-
-    a[1][3] = part;
+    /*memset(a, 0, sizeof a);*/
+    memset(a, 0, sizeof(a[0][0]) * num2->digits_whole * res->digits_whole);
 
     debug("here--");
 
-    for (int i = 0; i < 3; i++) {
+    /*for (int i = 0; i < num2->digits_whole; i++) {*/
+        /*for (int j = 0; j < res->digits_whole; j++) {*/
+            /*a[i][j] = 0;*/
+        /*}*/
+    /*}*/
+
+    for (int i = 0; i < 4; i++) {
         printf("%d", a[0][i]);
     }
     printf("\n");
@@ -492,6 +471,56 @@ void multiply(int arg1, int arg2) {
     }
     printf("\n");
 
+    int part = 0;
+    int rc;
+    int pos = 0;
+
+    for (int i = 0; i < num2->digits_whole; i++) {
+        pos = i;
+        for (int j = 0; j < num1->digits_whole; j++) {
+            rc = num2->whole_part[i] * num1->whole_part[j];
+            a[i][j+pos] = rc % 10 + part;
+            /*debug("i = %d, j = %d, a[i][j] = %d", i, j, a[i][j]);*/
+            part = rc / 10;
+        }
+        // FIXME if part == 0 error
+        a[i][num1->digits_whole+pos] = part;
+        part = 0;
+    }
+
+    int result = 0;
+    part = 0;
+    int initial_result = 0;
+
+    for (int j = 0; j < res->digits_whole; j++) {
+        for (int i = 0; i < num2->digits_whole; i++) {
+            result += a[i][j];
+        }
+        debug("Result is %d", result);
+
+        initial_result = result;
+        result %= 10;
+        debug("Result2 is %d", result);
+        res->whole_part[j] = result + part;
+        part = initial_result / 10;
+        result = 0;
+    }
+
+    printEntry(res);
+
+    debug("here--");
+
+    for (int i = 0; i < 4; i++) {
+        printf("%d", a[0][i]);
+    }
+    printf("\n");
+
+    for (int i = 0; i < 4; i++) {
+        printf("%d", a[1][i]);
+    }
+    printf("\n");
+
+    return res;
 
 }
 
@@ -649,8 +678,7 @@ void performMath() {
     }
 
     if (action == 3) {
-        multiply(arg1, arg2);
-        return;
+        res = multiply(arg1, arg2);
 
         // both numbers positive
         if (!x && !y) {
