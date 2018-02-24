@@ -514,6 +514,8 @@ Number* multiply(int arg1, int arg2) {
     debug("print");
     printEntry(n1);
 
+    // TODO if no decimal part, do not copy
+    // TODO define clear constraints, ex. max 250 digits or so
     // populate second factor with both decimal and whole parts of the second
     // number (convert decimal part to whole part) - ie move decimal dot(.) to 
     // the end of the number, or multiply it by 10^n, where n is the number of 
@@ -542,13 +544,46 @@ Number* multiply(int arg1, int arg2) {
         pos = i;
         for (int j = 0; j < n1->digits_whole; j++) {
             rc = n2->whole_part[i] * n1->whole_part[j];
-            a[i][j+pos] = rc % 10 + part;
-            part = rc / 10;
+            a[i][j+pos] = (rc + part) % 10; 
+            part = (rc+part) / 10;
         }
         // FIXME if part == 0 error
         a[i][n1->digits_whole+pos] = part;
         part = 0;
     }
+
+    for (int i = 0; i < 10; i++) {
+        /*printf("i = %d\n", a[0][i]);*/
+        printf("%d", a[0][i]);
+    }
+    printf("\n");
+
+    for (int i = 0; i < 10; i++) {
+        printf("%d", a[1][i]);
+    }
+    printf("\n");
+
+    for (int i = 0; i < 10; i++) {
+        printf("%d", a[2][i]);
+    }
+    printf("\n");
+
+    for (int i = 0; i < 10; i++) {
+        printf("%d", a[3][i]);
+    }
+    printf("\n");
+
+    for (int i = 0; i < 10; i++) {
+        printf("%d", a[4][i]);
+    }
+    printf("\n");
+
+
+
+
+
+
+
 
     int result = 0;
     part = 0;
@@ -558,13 +593,12 @@ Number* multiply(int arg1, int arg2) {
         for (int i = 0; i < n2->digits_whole; i++) {
             result += a[i][j];
         }
+        debug("Part is %d", part);
         debug("Result is %d", result);
 
-        initial_result = result;
-        result %= 10;
-        debug("Result2 is %d", result);
-        res->whole_part[j] = result + part;
-        part = initial_result / 10;
+        result += part;
+        part = result / 10;
+        res->whole_part[j] = result % 10;
         result = 0;
     }
 
@@ -621,6 +655,10 @@ Number* multiply(int arg1, int arg2) {
 
     debug("hre2");
     printEntry(res);
+
+    for (int i = 0; i < res->digits_whole; i++) {
+        printf("%d  ", res->whole_part[i]);
+    }
 
     return res;
 
