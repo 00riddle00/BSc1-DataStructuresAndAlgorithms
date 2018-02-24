@@ -245,7 +245,7 @@ Number* subtract(int arg1, int arg2) {
         first = table->numbers[arg1];
         second = table->numbers[arg2];
 
-    // if first is less then second, 
+    // if first is less than second, 
     // subtract first number from the second
     } else if (rs == 2) {
         negative = 1;
@@ -578,13 +578,6 @@ Number* multiply(int arg1, int arg2) {
     }
     printf("\n");
 
-
-
-
-
-
-
-
     int result = 0;
     part = 0;
     int initial_result = 0;
@@ -663,6 +656,73 @@ Number* multiply(int arg1, int arg2) {
     return res;
 
 }
+
+
+Number* divide(int arg1, int arg2) {
+    printf("Division is conducted\n");
+    Number* num1 = table->numbers[arg1];
+    Number* num2 = table->numbers[arg2];
+
+    Number* res = (Number*) malloc(sizeof(Number));
+    int rs = compare(arg1, arg2);
+    int quotient;
+
+    // if first is greater or equal, the quotient will 
+    // be greater than 1
+    if (rs == 1) {
+        quotient = 1;
+    // if first is less than second, 
+    // the quotient will be less than 1
+    } else if (rs == 2) {
+        quotient = 0;
+    // else if numbers are equal, return one 
+    // (Number struct with the value of one)
+    } else if (rs == 3) {
+        res->negative = 0;
+        res->digits_whole = 1;
+        res->digits_decimal = 1;
+        res->whole_part[0] = 1;
+        res->decimal_part[0] = 0;
+        return res;
+    }
+
+    res->digits_whole = 1;
+    res->digits_decimal = 1;
+    res->whole_part[0] = 0;
+    res->decimal_part[0] = 0;
+
+    Number* one = (Number*) malloc(sizeof(Number));
+    one->digits_whole = 1;
+    one->digits_decimal = 1;
+    one->whole_part[0] = 1;
+    one->decimal_part[0] = 0;
+
+
+    Number* tmp;
+
+    int counter = 0;
+
+    tmp = num1;
+
+    /*while (quotient == 1) {*/
+        /*tmp = subtract(tmp, arg2);*/
+        /*if (tmp->digits_whole > 1 || tmp->digits_whole[0] != 0) {*/
+            /*res = add(res, one);*/
+        /*} else {*/
+            /*break;*/
+        /*}*/
+    /*}*/
+
+
+
+
+
+    return res;
+}
+
+
+
+
 
 
 
@@ -787,6 +847,7 @@ void performMath() {
     // result
     Number* res;
 
+    // TODO use switch statement instead
     // case addition
     if (action == 1) {
         // both numbers positive
@@ -797,38 +858,47 @@ void performMath() {
             res = add(arg1, arg2, 1);
         // first number is positive, second - negative
         } else if (!x && y) {
-            debug("here");
             res = subtract(arg1, arg2);
         // first number is negative, second - positive
         } else if (x && !y) {
-            debug("here2");
             res = subtract(arg2, arg1);
         }
     }
     // case subtraction
     if (action == 2) {
-        debug("action2");
         // both numbers positive
         if (!x && !y) {
-            debug("here11");
             res = subtract(arg1, arg2);
         // both numbers negative
         } else if (x && y) {
-            debug("here22");
             res = subtract(arg2, arg1);
         // first number is positive, second - negative
         } else if (!x && y) {
-            debug("here33");
             res = add(arg1, arg2, 0);
         // first number is negative, second - positive
         } else if (x && !y) {
-            debug("here44");
             res = add(arg1, arg2, 1);
         }
     }
 
     if (action == 3) {
         res = multiply(arg1, arg2);
+
+        // both numbers positive
+        if (!x && !y) {
+            res->negative = 0;
+        // both numbers negative
+        } else if (x && y) {
+            res->negative = 0;
+        // one number is positive, another - negative
+        } else {
+            res->negative = 1;
+        }
+    }
+
+
+    if (action == 3) {
+        res = divide(arg1, arg2);
 
         // both numbers positive
         if (!x && !y) {
