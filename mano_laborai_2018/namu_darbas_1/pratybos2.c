@@ -184,6 +184,8 @@ int isZero(Number* num) {
         return 1;
     } else if (num->digits_whole == 0 && num->digits_decimal == 2 && num->decimal_part[0] == 0 && num->decimal_part[1] == 0) {
         return 1;
+    } else if (num->digits_whole == 0 && num->digits_decimal == 3 && num->decimal_part[0] == 0 && num->decimal_part[1] == 0 && num->decimal_part[2] == 0) {
+        return 1;
     } else {
         return 0;
     }
@@ -700,13 +702,18 @@ Number* divide(Number* num1, Number* num2) {
             break;
         }
     }
+    debug("RES");
+    printEntry(res);
 
     Number* remainder;
 
     remainder = multiply(res, num2);
+    debug("REMINDER");
+    printEntry(remainder);
 
-    num1->digits_decimal = 1;
-    num1->decimal_part[0] = 0;
+    // FIXME why is this here?
+    /*num1->digits_decimal = 1;*/
+    /*num1->decimal_part[0] = 0;*/
 
     remainder = subtract(num1, remainder);
     // remainder == 5
@@ -732,6 +739,7 @@ Number* divide(Number* num1, Number* num2) {
     tmp2->decimal_part[0] = 0;
 
     counter = 0;
+    int game_over = 0;
 
 SET:
     debug("SET");
@@ -747,8 +755,13 @@ SET:
     for (int i = 0; i < remainder->digits_whole; i++) {
         tmp->whole_part[i] = remainder->whole_part[i];
     }
+    debug("TMP now is remainder:");
+    printEntry(tmp);
 
     while (1) {
+        if (res->digits_whole == 500) {
+            game_over = 1;
+        }
         tmp = subtract(tmp, num2);
         debug("tmp is:");
         printEntry(tmp);
@@ -767,7 +780,7 @@ SET:
     printEntry(tmp2);
 
     // it means that the number was not divided into equal parts
-    if (tmp2->whole_part[0] == 0 || tmp2->digits_decimal > 1 || tmp2->decimal_part[0] != 0) {
+    if (!game_over && (tmp2->whole_part[0] == 0 || tmp2->digits_decimal > 1 || tmp2->decimal_part[0] != 0)) {
         remainder = multiply(remainder, ten);
         debug("REMINDER");
         printEntry(remainder);
@@ -779,6 +792,21 @@ SET:
 
         counter++;
         goto SET;
+    } else if (!isZero(tmp)) {
+        remainder = multiply(remainder, ten);
+        debug("REMINDER");
+        printEntry(remainder);
+
+        tmp2->digits_whole = 1;
+        tmp2->digits_decimal = 1;
+        tmp2->whole_part[0] = 0;
+        tmp2->decimal_part[0] = 0;
+
+        counter++;
+        goto SET;
+ 
+
+
     } else {
         debug("VICTORY!");
         debug("Counter %d", counter);
