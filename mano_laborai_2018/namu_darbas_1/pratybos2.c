@@ -63,6 +63,43 @@ typedef struct {
 
 static Table* table;
 
+void fixNumber(Number* num) {
+    if (num->digits_whole == 0) {
+        num->digits_whole = 1;
+        num->whole_part[0] = 0;
+    }
+    if (num->digits_decimal == 0) {
+        num->digits_decimal = 1;
+        num->decimal_part[0] = 0;
+    }
+
+    int zeros = 0;
+    // FIXME slidi vieta, nes gali paskutini nuli panaikinti!!!!!!
+    // TODO add this refactored piece of code to every place it is used
+    // remove zeroes in front of the actual resulting number (if there are any)
+    for (int i = num->digits_whole - 1; i > 0; i--) {
+        if (num->whole_part[i] == 0) {
+            zeros++;
+        } else {
+            break;
+        }
+    }
+    num->digits_whole -= zeros;
+
+    zeros = 0;
+    // FIXME slidi vieta, nes gali paskutini nuli panaikinti!!!!!!
+    // TODO add this refactored piece of code to every place it is used
+    // remove zeroes in front of the actual resulting number (if there are any)
+    for (int i = num->digits_decimal - 1; i > 0; i--) {
+        if (num->decimal_part[i] == 0) {
+            zeros++;
+        } else {
+            break;
+        }
+    }
+    num->digits_decimal -= zeros;
+}
+
 // TODO min length = 3
 // TODO use strlen and strstr
 void getNumber(Number* number) {
@@ -206,11 +243,15 @@ int compare(Number* num1, Number* num2) {
         return 2;
     // case for equal number of digits
     } else {
+        debug("ELSE GOES HERE");
         // compare whole parts
-        for (int i = num1->digits_whole-1; i >= 0; i++) {
+        for (int i = num1->digits_whole-1; i >= 0; i--) {
+            debug("FOR RUNS");
             if (num1->whole_part[i] > num2->whole_part[i]) {
+                debug("H1");
                 return 1;
             } else if (num1->whole_part[i] < num2->whole_part[i]) {
+                debug("H2");
                 return 2;
             }
         }
@@ -230,6 +271,10 @@ int compare(Number* num1, Number* num2) {
 
 
 Number* subtract(Number* num1, Number* num2) {
+
+    debug("SUBTRACT");
+    printEntry(num1);
+    printEntry(num2);
 
     int negative;
     // compare the two numbers
@@ -266,6 +311,8 @@ Number* subtract(Number* num1, Number* num2) {
         res->decimal_part[0] = 0;
         return res;
     }
+
+    debug("rs = %d", rs);
 
     // set decimal digits of the result to that of number having
     // more decimal digits
@@ -715,7 +762,33 @@ Number* divide(Number* num1, Number* num2) {
     /*num1->digits_decimal = 1;*/
     /*num1->decimal_part[0] = 0;*/
 
+    debug("TWO ENTRIES");
+    printEntry(num1);
+    printEntry(remainder);
+
+    fixNumber(num1);
+    fixNumber(remainder);
+
+    debug("TWO ENTRIES2");
+    printEntry(num1);
+    printEntry(remainder);
+
+    rs = compare(num1, remainder);
+    debug("rs = %d", rs);
+    /*exit(1);*/
+    debug("SUBTRACT----------------------------------------------------------------");
     remainder = subtract(num1, remainder);
+    debug("REMINDER TRUE NOW IS");
+    printEntry(remainder);
+
+    // fix for one case
+/*    remainder->digits_whole = 1;*/
+    /*remainder->whole_part[0] = 5;*/
+    /*remainder->negative = 0;*/
+
+
+    debug("REMINDER TRUE NOW IS");
+    printEntry(remainder);
     // remainder == 5
     // remainder / num2 kol gausim kazka
     //
@@ -778,6 +851,11 @@ SET:
     }
     debug("tmp2");
     printEntry(tmp2);
+
+    debug("tmp");
+    fixNumber(tmp);
+    printEntry(tmp);
+
 
     // it means that the number was not divided into equal parts
     if (!game_over && (tmp2->whole_part[0] == 0 || tmp2->digits_decimal > 1 || tmp2->decimal_part[0] != 0)) {
