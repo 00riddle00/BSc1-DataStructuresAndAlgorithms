@@ -180,21 +180,13 @@ void printTable() {
 }
 
 
-
-
-
-
-
 // this comparison function ignores the sign of the numbers,
 // thus it compares the absolute values of the two numbers.
-int compare(int arg1, int arg2) {
+int compare(Number* num1, Number* num2) {
     /*[return values]       [meaning]      */
     /*       1            greater than (>) */
     /*       2            less than (<)    */
     /*       3            equal to (==)    */
-
-    Number* num1 = table->numbers[arg1];
-    Number* num2 = table->numbers[arg2];
 
     if (num1->digits_whole > num2->digits_whole) {
         return 1;
@@ -225,11 +217,11 @@ int compare(int arg1, int arg2) {
 }
 
 
-Number* subtract(int arg1, int arg2) {
+Number* subtract(Number* num1, Number* num2) {
 
     int negative;
     // compare the two numbers
-    int rs = compare(arg1, arg2);
+    int rs = compare(num1, num2);
     debug("rs = %d", rs);
 
     Number* first;
@@ -242,16 +234,16 @@ Number* subtract(int arg1, int arg2) {
     if (rs == 1) {
         negative = 0;
 
-        first = table->numbers[arg1];
-        second = table->numbers[arg2];
+        first = num1;
+        second = num2;
 
     // if first is less than second, 
     // subtract first number from the second
     } else if (rs == 2) {
         negative = 1;
 
-        first = table->numbers[arg2];
-        second = table->numbers[arg1];
+        first = num2;
+        second = num1;
 
     // else if numbers are equal, return zero 
     // (zeroth Number struct)
@@ -472,10 +464,8 @@ Number* add(Number* num1, Number* num2, int negative) {
 }
 
 
-Number* multiply(int arg1, int arg2) {
+Number* multiply(Number* num1, Number* num2) {
     printf("Multiplication is conducted\n");
-    Number* num1 = table->numbers[arg1];
-    Number* num2 = table->numbers[arg2];
 
     Number* res = (Number*) malloc(sizeof(Number));
     res->digits_whole = num1->digits_whole + num1->digits_decimal + num2->digits_whole + num2->digits_decimal;
@@ -659,13 +649,11 @@ Number* multiply(int arg1, int arg2) {
 }
 
 
-Number* divide(int arg1, int arg2) {
+Number* divide(Number* num1, Number* num2) {
     printf("Division is conducted\n");
-    Number* num1 = table->numbers[arg1];
-    Number* num2 = table->numbers[arg2];
 
     Number* res = (Number*) malloc(sizeof(Number));
-    int rs = compare(arg1, arg2);
+    int rs = compare(num1, num2);
     int quotient;
 
     // if first is greater or equal, the quotient will 
@@ -749,16 +737,20 @@ void compareNumbers() {
     printf("Select second argument (ID from the table (zero indexed))\n");
     arg2 = get_num_interval("(Enter a number) > ", "Such ID does not exist", 0, table->size - 1);
 
-    int x = table->numbers[arg1]->negative;
-    int y = table->numbers[arg2]->negative;
+    Number* num1 = table->numbers[arg1];
+    Number* num2 = table->numbers[arg2];
+
+    int x = num1->negative;
+    int y = num2->negative;
+
     int cmp;
 
     // both numbers positive
     if (!x && !y) {
-        cmp = compare(arg1, arg2);
+        cmp = compare(num1, num2);
     // both numbers negative
     } else if (x && y) {
-        cmp = compare(arg2, arg1);
+        cmp = compare(num2, num1);
     // first number is positive, second - negative
     } else if (x && !y) {
         // greater than
@@ -862,20 +854,20 @@ void performMath() {
             res = add(num1, num2, 1);
         // first number is positive, second - negative
         } else if (!x && y) {
-            res = subtract(arg1, arg2);
+            res = subtract(num1, num2);
         // first number is negative, second - positive
         } else if (x && !y) {
-            res = subtract(arg2, arg1);
+            res = subtract(num1, num2);
         }
     }
     // case subtraction
     if (action == 2) {
         // both numbers positive
         if (!x && !y) {
-            res = subtract(arg1, arg2);
+            res = subtract(num1, num2);
         // both numbers negative
         } else if (x && y) {
-            res = subtract(arg2, arg1);
+            res = subtract(num1, num2);
         // first number is positive, second - negative
         } else if (!x && y) {
             res = add(num1, num2, 0);
@@ -886,7 +878,7 @@ void performMath() {
     }
 
     if (action == 3) {
-        res = multiply(arg1, arg2);
+        res = multiply(num1, num2);
 
         // both numbers positive
         if (!x && !y) {
@@ -902,7 +894,7 @@ void performMath() {
 
 
     if (action == 3) {
-        res = divide(arg1, arg2);
+        res = divide(num1, num2);
 
         // both numbers positive
         if (!x && !y) {
