@@ -75,6 +75,24 @@ typedef struct {
 static Table* table;
 
 
+void getWord(char* message, char* output)
+{
+
+    while (1) {
+        printf("%s", message);
+        if (scanf("%s", output) == 1 && getchar() == '\n') {
+            break;
+        } else {
+            while (getchar() != '\n')
+                ;
+            printf("Error: not a string, or too many arguments\n");
+        }
+    }
+}
+
+
+
+
 void fixNumber(Number* num) {
     if (num->digits_whole == 0) {
         num->digits_whole = 1;
@@ -119,9 +137,9 @@ void fixNumber(Number* num) {
 
 // TODO min length = 3 (0.0)
 // TODO use strlen and strstr
-void getNumber(Number* number) {
+Number* setNumberFromChar(char* numArray) {
 
-    number->number = get_word("Enter a number (separate whole and decimal parts using \".\" symbol)\n > ", number->number);
+    Number* number = (Number*) malloc(sizeof(Number));
 
     int count = 0;
     int error = 0;
@@ -132,7 +150,7 @@ void getNumber(Number* number) {
 
     number->negative = 0;
 
-    if (number->number[0] == '-') {
+    if (numArray[0] == '-') {
         number->negative = 1;
         start++;
     } 
@@ -140,20 +158,20 @@ void getNumber(Number* number) {
     // TODO move to separate function
     for (int i = start; i < 1000; i++) {
 
-        if(!isdigit(number->number[i])) {
-            if (number->number[i] == '.') {
-                strncpy(number->char_whole_part, number->number+number->negative, count);
+        if(!isdigit(numArray[i])) {
+            if (numArray[i] == '.') {
+                strncpy(number->char_whole_part, numArray+number->negative, count);
                 number->digits_whole = count;
                 decimal_pos = count;
                 count = 0;
                 is_decimal_part = 1;
-            } else if (number->number[i] == 0) {
+            } else if (numArray[i] == 0) {
                 if (is_decimal_part) {
-                    strncpy(number->char_decimal_part, number->number+decimal_pos+number->negative+1, count);
+                    strncpy(number->char_decimal_part, numArray+decimal_pos+number->negative+1, count);
                     number->digits_decimal = count;
                     break;
                 } else {
-                    strncpy(number->char_whole_part, number->number+number->negative, count);
+                    strncpy(number->char_whole_part, numArray+number->negative, count);
                     number->digits_whole = count;
                     decimal_pos = count;
                     number->digits_decimal = 0;
@@ -181,7 +199,23 @@ void getNumber(Number* number) {
     }
 
     fixNumber(number);
+    return number;
 }
+
+
+Number* setNumberFromDouble(long double number, int whole_digits, int decimal_digits) {
+
+    char charray[DIGITS];
+
+    sprintf(charray, "%*.*Lf", whole_digits, decimal_digits, number);
+
+    return setNumberFromChar(charray);
+
+}
+
+
+
+
 
 void initTable() {
     table = (Table*) malloc(sizeof(Table));
@@ -244,29 +278,6 @@ int isZero(Number* num) {
     } else {
         return 0;
     }
-}
-
-
-long double modulus(long double a, long double b) {
-    int result = (int)( a / b );
-    return a - (long double)( result ) * b;
-}
-
-
-
-void setNumberFromChar(char* array) {
-
-}
-
-
-Number* setNumberFromDouble(long double number, int whole_digits, int decimal_digits) {
-
-    char charray[DIGITS];
-
-    sprintf(charray, "%*.*Lf", whole_digits, decimal_digits, number);
-
-    return setNumberFromChar(charray);
-
 }
 
 
@@ -1051,10 +1062,10 @@ int main(int argc, char* argv[]) {
             // new number
             case 'n':
             case 'N':;
-                Number* number = (Number*) malloc(sizeof(Number));
-                number->number = malloc(sizeof(char) * 1000); 
-                getNumber(number);
-
+                char numArray[DIGITS];
+                getWord("Enter a number (separate whole and decimal parts using \".\" symbol)\n > ", numArray);
+                Number* number;
+                number = setNumberFromChar(numArray);
                 saveNumber(number);
                 break;
             // print existing table
@@ -1070,12 +1081,6 @@ int main(int argc, char* argv[]) {
             case 'c':
             case 'C':
                 compareNumbers();
-                break;
-            // used for debugging
-            case 'd':
-            case 'D':;
-                long double test = 1234.5678;
-                setNumberFromDouble(test, 4, 4);
                 break;
             default:
                 printf("wrong action\n");
