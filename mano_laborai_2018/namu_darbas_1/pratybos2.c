@@ -114,6 +114,9 @@ void fixNumber(Number* num) {
     num->digits_decimal -= zeros;
 }
 
+
+
+
 // TODO min length = 3 (0.0)
 // TODO use strlen and strstr
 void getNumber(Number* number) {
@@ -177,6 +180,7 @@ void getNumber(Number* number) {
         number->decimal_part[i] = (int)number->char_decimal_part[i] - '0';
     }
 
+    fixNumber(number);
 }
 
 void initTable() {
@@ -241,6 +245,32 @@ int isZero(Number* num) {
         return 0;
     }
 }
+
+
+long double modulus(long double a, long double b) {
+    int result = (int)( a / b );
+    return a - (long double)( result ) * b;
+}
+
+
+
+void setNumberFromChar(char* array) {
+
+}
+
+
+Number* setNumberFromDouble(long double number, int whole_digits, int decimal_digits) {
+
+    char charray[DIGITS];
+
+    sprintf(charray, "%*.*Lf", whole_digits, decimal_digits, number);
+
+    return setNumberFromChar(charray);
+
+}
+
+
+
 
 
 // this comparison function ignores the sign of the numbers,
@@ -646,8 +676,6 @@ Number* multiply(Number* num1, Number* num2) {
 
 Number* multiplyByInt(Number* num1, int integer) {
 
-    int count;
-
     // init to zero
     Number* num2 = (Number*) malloc(sizeof(Number));
     num2->digits_whole = 0;
@@ -1042,6 +1070,12 @@ int main(int argc, char* argv[]) {
             case 'c':
             case 'C':
                 compareNumbers();
+                break;
+            // used for debugging
+            case 'd':
+            case 'D':;
+                long double test = 1234.5678;
+                setNumberFromDouble(test, 4, 4);
                 break;
             default:
                 printf("wrong action\n");
