@@ -1,8 +1,10 @@
 CC=gcc
-CFLAGS=-Wall -Wextra -lm -g -std=gnu99
+CFLAGS=-Wall -Wextra -lm -g -std=gnu11
 
-pratybos12: 
-	gcc -o pratybos2 pratybos2.c -L${LD_LIBRARY_PATH} -l_riddle
+main: main.c numbers.o
+	$(CC) $(CFLAGS) -o main main.c numbers.o -L. -l_riddle
+
+numbers.o: numbers.h numbers.c
 
 clean:
-	rm pratybos2
+	rm -f main numbers.o
