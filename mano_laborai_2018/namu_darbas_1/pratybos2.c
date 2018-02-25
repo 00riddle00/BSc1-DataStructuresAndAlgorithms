@@ -75,9 +75,6 @@
 // and int arrays for actual number storage, as well
 // as other parameters describing the number.
 typedef struct {
-    char *number;
-    char char_whole_part[DIGITS];
-    char char_decimal_part[DIGITS];
     int whole_part[DIGITS];
     int decimal_part[DIGITS];
     int digits_whole;
@@ -123,6 +120,11 @@ void printEntry(Number* number);
 // print whole table
 void printTable();
 
+// convert Number struct to char array
+// ::params:: the Number to be converted
+// ::return:: resulting char array
+char* numToChar(Number* number);
+
 /* function to write a given number from user input */
 
 // to char array
@@ -163,6 +165,14 @@ void fixNumber(Number* num);
 // check if a Number struct has a value of zero (0.0)
 // ::params:: num - Number to be checked
 int isZero(Number* num);
+
+// compare two numbers
+// ::params:: num1 - first number
+// ::params:: num2 - second number
+/*[return values]       [meaning]      */
+/*       1            greater than (>) */
+/*       2            less than (<)    */
+/*       3            equal to (==)    */
 int compare(Number* num1, Number* num2);
 
 // add two numbers
@@ -232,7 +242,7 @@ int main() {
             // new number
             case 'n':
             case 'N':;
-                char numArray[DIGITS];
+                char numArray[DIGITS*2];
                 getNumberChar("Enter a number (separate whole and decimal parts using \".\" symbol)\n > ", numArray);
                 Number* number;
                 number = setNumberFromChar(numArray);
@@ -493,6 +503,7 @@ void saveNumber(Number* number) {
 
 
 
+
 void printEntry(Number* number) {
 
         if (number->negative) {
@@ -517,6 +528,27 @@ void printTable() {
     }
 }
 
+
+char* numToChar(Number* number) {
+
+        char* numArray = malloc(DIGITS * 2 * sizeof(char));
+        int index = 0;
+
+        if (number->negative) {
+            numArray[0] = '-';
+            index++;
+        }
+
+        for (int i = number->digits_whole - 1; i >= 0; i--, index++) {
+            numArray[index] = number->whole_part[i] + '0';
+        }
+        numArray[index++] = '.';
+
+        for (int i = 0; i < number->digits_decimal; i++, index++) {
+            numArray[index] = number->decimal_part[i] + '0';
+        }
+        return numArray;
+}
 
 
 void getNumberChar(char* message, char* output)
@@ -555,6 +587,9 @@ Number* setNumberFromChar(char* numArray) {
 
     Number* number = (Number*) malloc(sizeof(Number));
 
+    char whole_part[DIGITS];
+    char decimal_part[DIGITS];
+
     int count = 0;
     int error = 0;
     int decimal_pos = 0;
@@ -569,22 +604,22 @@ Number* setNumberFromChar(char* numArray) {
         start++;
     } 
 
-    for (int i = start; i < 1000; i++) {
+    for (int i = start; i < DIGITS * 2; i++) {
 
         if(!isdigit(numArray[i])) {
             if (numArray[i] == '.') {
-                strncpy(number->char_whole_part, numArray+number->negative, count);
+                strncpy(whole_part, numArray+number->negative, count);
                 number->digits_whole = count;
                 decimal_pos = count;
                 count = 0;
                 is_decimal_part = 1;
             } else if (numArray[i] == 0) {
                 if (is_decimal_part) {
-                    strncpy(number->char_decimal_part, numArray+decimal_pos+number->negative+1, count);
+                    strncpy(decimal_part, numArray+decimal_pos+number->negative+1, count);
                     number->digits_decimal = count;
                     break;
                 } else {
-                    strncpy(number->char_whole_part, numArray+number->negative, count);
+                    strncpy(whole_part, numArray+number->negative, count);
                     number->digits_whole = count;
                     decimal_pos = count;
                     number->digits_decimal = 0;
@@ -599,16 +634,17 @@ Number* setNumberFromChar(char* numArray) {
         }
     }
 
+    /// TODO handle this error
     if(error) {
         printf("Invalid number\n");
     }
 
     for (int i = number->digits_whole - 1; i >= 0; i--) {
-        number->whole_part[i] = (int)number->char_whole_part[number->digits_whole-1-i] - '0';
+        number->whole_part[i] = (int)whole1[number->digits_whole-1-i] - '0';
     }
 
     for (int i = 0; i < number->digits_decimal; i++) {
-        number->decimal_part[i] = (int)number->char_decimal_part[i] - '0';
+        number->decimal_part[i] = (int)decimal1[i] - '0';
     }
 
     fixNumber(number);
