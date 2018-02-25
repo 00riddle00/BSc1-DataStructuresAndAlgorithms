@@ -44,7 +44,9 @@
 // as well as the decimal part, ie whole_part[DIGITS] 
 // and decimal_part[DIGITS]
 #define DIGITS 500
-
+#define TEN "10.0"
+#define ONE "1.0"
+#define ZERO_ONE "0.1"
 
 // Main structure, Number data type (BigNum)
 // Contains char arrays for whole and decimal parts,
@@ -74,8 +76,26 @@ typedef struct {
 // Declare table as a global variable
 static Table* table;
 
+// TODO maybe use memcpy
+// deep copy
+void assign(Number* num1, Number* num2) {
 
-void getWord(char* message, char* output)
+    num1->digits_whole = num2->digits_whole;
+    num1->digits_decimal = num2->digits_decimal;
+    num1->negative = num2->negative;
+
+    for (int i = 0; i < num2->digits_decimal; i++) {
+        num1->decimal_part[i] = num2->decimal_part[i];
+    }
+    for (int i = 0; i < num2->digits_whole; i++) {
+        num1->whole_part[i] = num2->whole_part[i];
+    }
+}
+
+
+
+// TODO add validtion
+void getNumberChar(char* message, char* output)
 {
 
     while (1) {
@@ -132,6 +152,20 @@ void fixNumber(Number* num) {
     num->digits_decimal -= zeros;
 }
 
+
+Number* setNewNumber() {
+
+    Number* num = (Number*) malloc(sizeof(Number));
+
+    num->negative = 0;
+    num->digits_whole = 1;
+    num->digits_decimal = 1;
+    num->whole_part[0] = 0;
+    num->decimal_part[0] = 0;
+
+    return num;
+}
+ 
 
 
 
@@ -269,15 +303,17 @@ void printTable() {
 }
 
 int isZero(Number* num) {
-    if (num->digits_whole == 1 && num->digits_decimal == 1 && num->whole_part[0] == 0 && num->decimal_part[0] == 0) {
-        return 1;
-    } else if (num->digits_whole == 0 && num->digits_decimal == 2 && num->decimal_part[0] == 0 && num->decimal_part[1] == 0) {
-        return 1;
-    } else if (num->digits_whole == 0 && num->digits_decimal == 3 && num->decimal_part[0] == 0 && num->decimal_part[1] == 0 && num->decimal_part[2] == 0) {
-        return 1;
-    } else {
-        return 0;
-    }
+    return num->digits_whole == 1 && num->digits_decimal == 1 && num->whole_part[0] == 0 && num->decimal_part[0] == 0;
+
+/*    if (num->digits_whole == 1 && num->digits_decimal == 1 && num->whole_part[0] == 0 && num->decimal_part[0] == 0) {*/
+        /*return 1;*/
+    /*} else if (num->digits_whole == 0 && num->digits_decimal == 2 && num->decimal_part[0] == 0 && num->decimal_part[1] == 0) {*/
+        /*return 1;*/
+    /*} else if (num->digits_whole == 0 && num->digits_decimal == 3 && num->decimal_part[0] == 0 && num->decimal_part[1] == 0 && num->decimal_part[2] == 0) {*/
+        /*return 1;*/
+    /*} else {*/
+        /*return 0;*/
+/*    }*/
 }
 
 
@@ -330,7 +366,7 @@ Number* subtract(Number* num1, Number* num2) {
     Number* first;
     Number* second;
 
-    Number* res = (Number*) malloc(sizeof(Number));
+    Number* res = setNewNumber();
 
     // if first is greater or equal, 
     // subtract second number from the first
@@ -351,11 +387,6 @@ Number* subtract(Number* num1, Number* num2) {
     // else if numbers are equal, return zero 
     // (zeroth Number struct)
     } else if (rs == 3) {
-        res->negative = 0;
-        res->digits_whole = 1;
-        res->digits_decimal = 1;
-        res->whole_part[0] = 0;
-        res->decimal_part[0] = 0;
         return res;
     }
 
@@ -436,25 +467,7 @@ Number* subtract(Number* num1, Number* num2) {
         }
     }
 
-    int zeros = 0;
-    // TODO add this refactored piece of code to every place it is used
-    // remove zeroes in front of the actual resulting number (if there are any)
-    for (int i = res->digits_whole - 1; i >= 0; i--) {
-        if (res->whole_part[i] == 0) {
-            zeros++;
-        } else {
-            break;
-        }
-    }
-    res->digits_whole -= zeros;
-
-    // TODO add this nullifier everywhere
-    if (res->digits_whole == 0 && res->digits_decimal == 0) {
-        res->digits_whole = 1;
-        res->digits_decimal = 1;
-        res->whole_part[0] = 0;
-        res->decimal_part[0] = 0;
-    }
+    fixNumber(res);
     return res;
 }
 
@@ -551,6 +564,7 @@ Number* add(Number* num1, Number* num2, int negative) {
     // set sign
     res->negative = negative;
 
+    fixNumber(res);
     return res;
 }
 
@@ -679,6 +693,7 @@ Number* multiply(Number* num1, Number* num2) {
     }
     res->digits_whole -= decimal_numbers;
 
+    fixNumber(res);
     return res;
 
 }
@@ -688,11 +703,7 @@ Number* multiply(Number* num1, Number* num2) {
 Number* multiplyByInt(Number* num1, int integer) {
 
     // init to zero
-    Number* num2 = (Number*) malloc(sizeof(Number));
-    num2->digits_whole = 0;
-    num2->digits_decimal = 0;
-    num2->whole_part[0] = 0;
-    num2->decimal_part[0] = 0;
+    Number* num2 = setNewNumber();
 
     while(integer != 0) {
         num2->digits_whole++;
@@ -708,7 +719,6 @@ Number* multiplyByInt(Number* num1, int integer) {
 // FIXME division after the resulting number reaches 35 digits.
 Number* divide(Number* num1, Number* num2) {
 
-    Number* res = (Number*) malloc(sizeof(Number));
     int rs = compare(num1, num2);
     int quotient;
 
@@ -723,41 +733,21 @@ Number* divide(Number* num1, Number* num2) {
     // else if numbers are equal, return one 
     // (Number struct with the value of one)
     } else if (rs == 3) {
-        res->negative = 0;
-        res->digits_whole = 1;
-        res->digits_decimal = 1;
+        Number* res = setNewNumber();
         res->whole_part[0] = 1;
-        res->decimal_part[0] = 0;
         return res;
     }
 
-    // initialize result as zero
-    res->digits_whole = 1;
-    res->digits_decimal = 1;
-    res->whole_part[0] = 0;
-    res->decimal_part[0] = 0;
+    Number* res = setNewNumber();
 
     // initalize Number with the value of one
-    Number* one = (Number*) malloc(sizeof(Number));
-    one->digits_whole = 1;
-    one->digits_decimal = 1;
-    one->whole_part[0] = 1;
-    one->decimal_part[0] = 0;
+    Number* one = setNumberFromChar(ONE);
 
     // initalize Number with the value of ten
-    Number* ten = (Number*) malloc(sizeof(Number));
-    ten->digits_whole = 2;
-    ten->digits_decimal = 1;
-    ten->whole_part[0] = 0;
-    ten->whole_part[1] = 1;
-    ten->decimal_part[0] = 0;
+    Number* ten = setNumberFromChar(TEN);
 
     // initalize Number with the value of 0.1
-    Number* zero_one = (Number*) malloc(sizeof(Number));
-    zero_one->digits_whole = 1;
-    zero_one->digits_decimal = 1;
-    zero_one->whole_part[0] = 0;
-    zero_one->decimal_part[0] = 1;
+    Number* zero_one = setNumberFromChar(ZERO_ONE);
 
     Number* tmp;
     tmp = num1;
@@ -788,17 +778,8 @@ Number* divide(Number* num1, Number* num2) {
             // multiply the remainder by ten and continue the division loop.
             if (counter == 0) {
                 // tmp becomes remainder again
-                // TODO wrap in it assignment function
-                tmp->digits_whole = remainder->digits_whole;
-                tmp->digits_decimal = remainder->digits_decimal;
-                tmp->negative = remainder->negative;
+                assign(tmp, remainder);
 
-                for (int i = 0; i < remainder->digits_decimal; i++) {
-                    tmp->decimal_part[i] = remainder->decimal_part[i];
-                }
-                for (int i = 0; i < remainder->digits_whole; i++) {
-                    tmp->whole_part[i] = remainder->whole_part[i];
-                }
                 // the remainder is multiplied by ten
                 tmp = multiplyByInt(tmp, 10);
                 remainder = multiplyByInt(remainder, 10);
@@ -823,16 +804,7 @@ Number* divide(Number* num1, Number* num2) {
 
             // tmp becomes remainder again
             // TODO wrap in it assignment function
-            tmp->digits_whole = remainder->digits_whole;
-            tmp->digits_decimal = remainder->digits_decimal;
-            tmp->negative = remainder->negative;
-
-            for (int i = 0; i < remainder->digits_decimal; i++) {
-                tmp->decimal_part[i] = remainder->decimal_part[i];
-            }
-            for (int i = 0; i < remainder->digits_whole; i++) {
-                tmp->whole_part[i] = remainder->whole_part[i];
-            }
+            assign(tmp, remainder);
 
             // increase the remainder by the power of ten each time
             remainder = multiplyByInt(remainder, 10);
@@ -841,6 +813,7 @@ Number* divide(Number* num1, Number* num2) {
         }
     }
 
+    fixNumber(res);
     return res;
 }
 
@@ -1063,7 +1036,7 @@ int main(int argc, char* argv[]) {
             case 'n':
             case 'N':;
                 char numArray[DIGITS];
-                getWord("Enter a number (separate whole and decimal parts using \".\" symbol)\n > ", numArray);
+                getNumberChar("Enter a number (separate whole and decimal parts using \".\" symbol)\n > ", numArray);
                 Number* number;
                 number = setNumberFromChar(numArray);
                 saveNumber(number);
