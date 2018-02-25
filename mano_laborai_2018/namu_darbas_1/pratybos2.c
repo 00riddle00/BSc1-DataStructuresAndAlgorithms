@@ -27,13 +27,14 @@
  |
  +===========================================================================*/
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
+// Header file with useful debugging macros
 #include "dbg.h"
+// Custom library with various helper functions
 #include "lib_riddle.h"
 
 // This value is used in dynamic array containing
@@ -85,8 +86,9 @@ void fixNumber(Number* num) {
     }
 
     int zeros = 0;
-    // FIXME slidi vieta, nes gali paskutini nuli panaikinti!!!!!!
+    // FIXME dangerous part, because the last zero could be deleted as well
     // TODO add this refactored piece of code to every place it is used
+    
     // remove zeroes in front of the actual resulting number (if there are any)
     for (int i = num->digits_whole - 1; i > 0; i--) {
         if (num->whole_part[i] == 0) {
@@ -98,8 +100,9 @@ void fixNumber(Number* num) {
     num->digits_whole -= zeros;
 
     zeros = 0;
-    // FIXME slidi vieta, nes gali paskutini nuli panaikinti!!!!!!
+    // FIXME dangerous part, because the last zero could be deleted as well
     // TODO add this refactored piece of code to every place it is used
+    
     // remove zeroes in front of the actual resulting number (if there are any)
     for (int i = num->digits_decimal - 1; i > 0; i--) {
         if (num->decimal_part[i] == 0) {
@@ -111,7 +114,7 @@ void fixNumber(Number* num) {
     num->digits_decimal -= zeros;
 }
 
-// TODO min length = 3
+// TODO min length = 3 (0.0)
 // TODO use strlen and strstr
 void getNumber(Number* number) {
 
@@ -411,21 +414,17 @@ Number* subtract(Number* num1, Number* num2) {
         res->whole_part[0] = 0;
         res->decimal_part[0] = 0;
     }
-
-
-
     return res;
 }
 
 
 
 
-// TODO make arguments to be ponters to a Number struct
 Number* add(Number* num1, Number* num2, int negative) {
     Number* bigger = num1;
     Number* smaller = num2;
 
-    // TODO change to swap 
+    // TODO change to swap function
     if (bigger->digits_decimal < smaller->digits_decimal) {
         Number temp = *bigger;
         *bigger = *smaller;
@@ -518,10 +517,15 @@ Number* add(Number* num1, Number* num2, int negative) {
 Number* multiply(Number* num1, Number* num2) {
 
     Number* res = (Number*) malloc(sizeof(Number));
+    // firstly, set the result as a whole part of the resulting number
+    // set digits of the result to a maximum possible number after  multiplication
     res->digits_whole = num1->digits_whole + num1->digits_decimal + num2->digits_whole + num2->digits_decimal;
 
+    // two dimensional array used for storing partial products
+    // first dimension size - how many numerals does the factor have (the second number)
+    // second dimension size - the maximum possible number of digits after multiplication
     int a[num2->digits_whole+num2->digits_decimal][res->digits_whole];
-    /*memset(a, 0, sizeof a);*/
+    // initialize two dimensional array with zeroes.
     memset(a, 0, sizeof(a[0][0]) * (num2->digits_whole+num2->digits_decimal) * res->digits_whole);
 
     // populate first factor with both decimal and whole parts of the first
@@ -542,6 +546,7 @@ Number* multiply(Number* num1, Number* num2) {
 
     // TODO if no decimal part, do not copy
     // TODO define clear constraints, ex. max 250 digits or so
+    
     // populate second factor with both decimal and whole parts of the second
     // number (convert decimal part to whole part) - ie move decimal dot(.) to 
     // the end of the number, or multiply it by 10^n, where n is the number of 
@@ -557,13 +562,32 @@ Number* multiply(Number* num1, Number* num2) {
         n2->digits_whole++;
     }
 
-
+    // Set how many decimal numbers the result will contain at most
     int decimal_numbers = num1->digits_decimal + num2->digits_decimal;
 
     int part = 0;
     int rc;
+
+    // pos (position) sets how many zeroes there will be before the actual
+    // partial product (since each partial product is multiplied by ten
+    // in a sense from the point of view of the previous partial product,
+    // ie
+    //    211
+    //    *
+    //     52
+    //  _____
+    //    422
+    //  1055  <- differs by the power of ten.
+    //
+    //  The resulting partial products are then stored in two dimentional
+    //  array, with zeros both in front and the back of the number:
+    //  
+    //  00422
+    //  10550
     int pos = 0;
 
+    // long multiplication of numbers, storing each partial product
+    // in a two dimensional array
     for (int i = 0; i < n2->digits_whole; i++) {
         pos = i;
         for (int j = 0; j < n1->digits_whole; j++) {
@@ -578,8 +602,8 @@ Number* multiply(Number* num1, Number* num2) {
 
     int result = 0;
     part = 0;
-    int initial_result = 0;
 
+    // add all partial products together
     for (int j = 0; j < res->digits_whole; j++) {
         for (int i = 0; i < n2->digits_whole; i++) {
             result += a[i][j];
@@ -590,7 +614,6 @@ Number* multiply(Number* num1, Number* num2) {
         res->whole_part[j] = result % 10;
         result = 0;
     }
-
 
     
     // remove zeroes in the front of the resulting number
@@ -640,7 +663,10 @@ Number* multiplyByInt(Number* num1, int integer) {
     return multiply(num1, num2);
 }
 
-
+// FIXME division works until +-35 digits are put in the result.
+// FIXME After that, the program freezes.
+// FIXME hence the temporary guard if condition is added to stop 
+// FIXME division after the resulting number reaches 35 digits.
 Number* divide(Number* num1, Number* num2) {
 
     Number* res = (Number*) malloc(sizeof(Number));
@@ -666,17 +692,20 @@ Number* divide(Number* num1, Number* num2) {
         return res;
     }
 
+    // initialize result as zero
     res->digits_whole = 1;
     res->digits_decimal = 1;
     res->whole_part[0] = 0;
     res->decimal_part[0] = 0;
 
+    // initalize Number with the value of one
     Number* one = (Number*) malloc(sizeof(Number));
     one->digits_whole = 1;
     one->digits_decimal = 1;
     one->whole_part[0] = 1;
     one->decimal_part[0] = 0;
 
+    // initalize Number with the value of ten
     Number* ten = (Number*) malloc(sizeof(Number));
     ten->digits_whole = 2;
     ten->digits_decimal = 1;
@@ -684,7 +713,7 @@ Number* divide(Number* num1, Number* num2) {
     ten->whole_part[1] = 1;
     ten->decimal_part[0] = 0;
 
-    // init to zero
+    // initalize Number with the value of 0.1
     Number* zero_one = (Number*) malloc(sizeof(Number));
     zero_one->digits_whole = 1;
     zero_one->digits_decimal = 1;
@@ -692,27 +721,34 @@ Number* divide(Number* num1, Number* num2) {
     zero_one->decimal_part[0] = 1;
 
     Number* tmp;
-    fixNumber(num1);
     tmp = num1;
 
+    // set the remainder as the dividend at first
     Number* remainder = num1;
 
-
-    // FIXME case quotient == 1 !!!
+    // sets how many times the divisor is subtracted from remainder
+    // ie sets the whole number = remainder / divisor
     int counter = 0;
 
+    // run the long division loop
     while (1) {
         tmp = subtract(tmp, num2);
+        // if remainder is not yet divided into equal parts or does
+        // not yet become negative, continue the division
         if ((tmp->digits_whole > 1 || tmp->whole_part[0] != 0) && !tmp->negative) {
             res = add(res, one, 0);
             counter++;
+        // stop if the remainder becomes equal to zero (ie becomes divided
+        // into equal parts
         } else if (isZero(tmp)) {
             res = add(res, one, 0);
             counter++;
             return res;
         } else {
+            // if the divisor (second number) is greater than the remainder,
+            // multiply the remainder by ten and continue the division loop.
             if (counter == 0) {
-                // TMP becomes remainder again
+                // tmp becomes remainder again
                 // TODO wrap in it assignment function
                 tmp->digits_whole = remainder->digits_whole;
                 tmp->digits_decimal = remainder->digits_decimal;
@@ -724,21 +760,29 @@ Number* divide(Number* num1, Number* num2) {
                 for (int i = 0; i < remainder->digits_whole; i++) {
                     tmp->whole_part[i] = remainder->whole_part[i];
                 }
+                // the remainder is multiplied by ten
                 tmp = multiplyByInt(tmp, 10);
                 remainder = multiplyByInt(remainder, 10);
+                // enter a zero to the result, which means that the remainder
+                // was smaller than the divisor
                 res->decimal_part[res->digits_decimal] = 0;
                 res->digits_decimal++;
+                // divide "one" by ten (or multiply by 0.1) to set the correct
+                // decimal place of the result
                 one = multiply(one, zero_one);
                 continue;
             }
+            // FIXME temporary guard, else the program stops running 
+            // FIXME (gets stuck)
             if (res->digits_decimal > 35) {
                 return res;
             }
+            // get the new remainder (remainder -= divisor * (remainder / divisor))
             remainder = subtract(remainder, multiplyByInt(num2, counter));
             one = multiply(one, zero_one);
             counter = 0;
 
-            // TMP becomes remainder
+            // tmp becomes remainder again
             // TODO wrap in it assignment function
             tmp->digits_whole = remainder->digits_whole;
             tmp->digits_decimal = remainder->digits_decimal;
@@ -751,6 +795,7 @@ Number* divide(Number* num1, Number* num2) {
                 tmp->whole_part[i] = remainder->whole_part[i];
             }
 
+            // increase the remainder by the power of ten each time
             remainder = multiplyByInt(remainder, 10);
             tmp = multiplyByInt(tmp, 10);
 
