@@ -164,7 +164,6 @@ void compareNumbers() {
     printf("[5] Greater than or equal to (>=)\n");
     printf("[6] Less than or equal to (<=)\n");
 
-    // TODO move to sum argparse function
     action = get_num_interval("(Enter a number) > ", "Such option does not exist", 1, 6);
 
     printTable();
@@ -259,7 +258,6 @@ void performMath() {
     printf("[4] Division\n");
     printf("[5] Modulo\n");
 
-    // TODO move to sum argparse function
     action = get_num_interval("(Enter a number) > ", "Such option does not exist", 1, 5);
 
     printTable();
@@ -279,69 +277,73 @@ void performMath() {
     // result
     Number* res;
 
-    // TODO use switch statement instead
-    // case addition
-    if (action == 1) {
-        // both numbers positive
-        if (!x && !y) {
-            res = add(num1, num2, 0);
-        // both numbers negative
-        } else if (x && y) {
-            res = add(num1, num2, 1);
-        // first number is positive, second - negative
-        } else if (!x && y) {
-            res = subtract(num1, num2);
-        // first number is negative, second - positive
-        } else if (x && !y) {
-            res = subtract(num1, num2);
-        }
-    }
-    // case subtraction
-    if (action == 2) {
-        // both numbers positive
-        if (!x && !y) {
-            res = subtract(num1, num2);
-        // both numbers negative
-        } else if (x && y) {
-            res = subtract(num1, num2);
-        // first number is positive, second - negative
-        } else if (!x && y) {
-            res = add(num1, num2, 0);
-        // first number is negative, second - positive
-        } else if (x && !y) {
-            res = add(num1, num2, 1);
-        }
-    }
+    switch(action) {
+        // case addition
+        case 1:
+            // both numbers positive
+            if (!x && !y) {
+                res = add(num1, num2, 0);
+            // both numbers negative
+            } else if (x && y) {
+                res = add(num1, num2, 1);
+            // first number is positive, second - negative
+            } else if (!x && y) {
+                res = subtract(num1, num2);
+            // first number is negative, second - positive
+            } else if (x && !y) {
+                res = subtract(num1, num2);
+            }
+            break;
+        // case subtraction
+        case 2:
+            // both numbers positive
+            if (!x && !y) {
+                res = subtract(num1, num2);
+            // both numbers negative
+            } else if (x && y) {
+                res = subtract(num1, num2);
+            // first number is positive, second - negative
+            } else if (!x && y) {
+                res = add(num1, num2, 0);
+            // first number is negative, second - positive
+            } else if (x && !y) {
+                res = add(num1, num2, 1);
+            }
+            break;
+        case 3:
+            res = multiply(num1, num2);
 
-    if (action == 3) {
-        res = multiply(num1, num2);
+            // both numbers positive
+            if (!x && !y) {
+                res->negative = 0;
+            // both numbers negative
+            } else if (x && y) {
+                res->negative = 0;
+            // one number is positive, another - negative
+            } else {
+                res->negative = 1;
+            }
+            break;
+        case 4:
+            res = divide(num1, num2);
 
-        // both numbers positive
-        if (!x && !y) {
-            res->negative = 0;
-        // both numbers negative
-        } else if (x && y) {
-            res->negative = 0;
-        // one number is positive, another - negative
-        } else {
-            res->negative = 1;
-        }
-    }
-
-
-    if (action == 4) {
-        res = divide(num1, num2);
-
-        // both numbers positive
-        if (!x && !y) {
-            res->negative = 0;
-        // both numbers negative
-        } else if (x && y) {
-            res->negative = 0;
-        // one number is positive, another - negative
-        } else {
-            res->negative = 1;
-        }
+            // both numbers positive
+            if (!x && !y) {
+                res->negative = 0;
+            // both numbers negative
+            } else if (x && y) {
+                res->negative = 0;
+            // one number is positive, another - negative
+            } else {
+                res->negative = 1;
+            }
+            break;
+        case 5:
+            /*res = modulo(num1, num2);*/
+            break;
+        default:
+            printf("Such action does not exist\n");
+            break;
     }
 
     printf("The result is:\n");
@@ -406,7 +408,6 @@ void printTable() {
 
 
 
-// TODO add validtion
 void getNumberChar(char* message, char* output)
 {
 
@@ -439,8 +440,6 @@ Number* setNewNumber() {
 
 
 
-// TODO min length = 3 (0.0)
-// TODO use strlen and strstr
 Number* setNumberFromChar(char* numArray) {
 
     Number* number = (Number*) malloc(sizeof(Number));
