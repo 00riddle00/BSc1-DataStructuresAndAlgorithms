@@ -27,10 +27,13 @@ void compareNumbers();
 void performMath();
 
 
+
 int main() {
 
     // initialize table structure holding numbers
     initTable();
+
+    atexit(freeTable);
 
     char choice;
 

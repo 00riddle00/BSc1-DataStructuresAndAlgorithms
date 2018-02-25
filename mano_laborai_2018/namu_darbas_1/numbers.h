@@ -101,6 +101,9 @@ void printEntry(Number* number);
 // print whole table
 void printTable();
 
+// free table
+void freeTable();
+
 // convert Number struct to char array
 // ::params:: the Number to be converted
 // ::return:: resulting char array
@@ -187,7 +190,7 @@ Number* multiplyByInt(Number* num1, int integer);
 // ::return::  a resulting Number
 Number* divide(Number* num1, Number* num2);
 
-
 // Declare table as a global variable
-static Table* table;
+extern Table* table;
+
 #endif

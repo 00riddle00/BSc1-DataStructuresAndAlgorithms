@@ -13,6 +13,9 @@
 #include "lib_riddle.h"
 #include "numbers.h"
 
+// Define table as a global variable
+Table* table;
+
 void initTable() {
     table = (Table*) malloc(sizeof(Table));
     table->capacity = CHUNK_SIZE;
@@ -622,6 +625,8 @@ Number* multiply(Number* num1, Number* num2) {
     }
     res->digits_whole -= decimal_numbers;
 
+    free(n1);
+    free(n2);
     fixNumber(res);
     return res;
 
@@ -701,6 +706,9 @@ Number* divide(Number* num1, Number* num2) {
         } else if (isZero(tmp)) {
             res = add(res, one, 0);
             counter++;
+            free(one);
+            free(ten);
+            free(zero_one);
             return res;
         } else {
             // if the divisor (second number) is greater than the remainder,
@@ -724,6 +732,9 @@ Number* divide(Number* num1, Number* num2) {
             // FIXME temporary guard, else the program stops running 
             // FIXME (gets stuck)
             if (res->digits_decimal > 35) {
+                free(one);
+                free(ten);
+                free(zero_one);
                 return res;
             }
             // get the new remainder (remainder -= divisor * (remainder / divisor))
@@ -741,8 +752,18 @@ Number* divide(Number* num1, Number* num2) {
         }
     }
 
+    free(one);
+    free(ten);
+    free(zero_one);
     fixNumber(res);
     return res;
 }
 
+void freeTable() {
+    for (int i = 0; i < table->capacity; i++) {
+        free(table->numbers[i]);
+    }
+    free(table->numbers);
+    free(table);
+}
 

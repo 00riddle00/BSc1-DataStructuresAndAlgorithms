@@ -6,54 +6,53 @@
 !_TAG_PROGRAM_VERSION	5.8	//
 CC	Makefile	/^CC=gcc$/;"	m
 CFLAGS	Makefile	/^CFLAGS=-Wall -Wextra -lm -g -std=gnu11$/;"	m
-CHUNK_SIZE	pratybos2.c	63;"	d	file:
-DIGITS	pratybos2.c	67;"	d	file:
-Number	pratybos2.c	/^} Number;$/;"	t	typeref:struct:__anon1	file:
-ONE	pratybos2.c	69;"	d	file:
-TEN	pratybos2.c	68;"	d	file:
-Table	pratybos2.c	/^} Table;$/;"	t	typeref:struct:__anon2	file:
-ZERO_ONE	pratybos2.c	70;"	d	file:
+CHUNK_SIZE	numbers.h	57;"	d
+DIGITS	numbers.h	61;"	d
+Number	numbers.h	/^} Number;$/;"	t	typeref:struct:__anon1
+ONE	numbers.h	63;"	d
+TEN	numbers.h	62;"	d
+Table	numbers.h	/^} Table;$/;"	t	typeref:struct:__anon2
+ZERO_ONE	numbers.h	64;"	d
 _LIB_RIDDLE_	lib_riddle.h	2;"	d
+__NUMBERS_H	numbers.h	2;"	d
 __dbg_h_	dbg.h	2;"	d
-add	pratybos2.c	/^Number* add(Number* num1, Number* num2, int negative) {$/;"	f
-assign	pratybos2.c	/^void assign(Number* num1, Number* num2) {$/;"	f
-capacity	pratybos2.c	/^    int capacity;$/;"	m	struct:__anon2	file:
-char_decimal_part	pratybos2.c	/^    char char_decimal_part[DIGITS];$/;"	m	struct:__anon1	file:
-char_whole_part	pratybos2.c	/^    char char_whole_part[DIGITS];$/;"	m	struct:__anon1	file:
+add	numbers.c	/^Number* add(Number* num1, Number* num2, int negative) {$/;"	f
+assign	numbers.c	/^void assign(Number* num1, Number* num2) {$/;"	f
+capacity	numbers.h	/^    int capacity;$/;"	m	struct:__anon2
 check	dbg.h	23;"	d
 check_debug	dbg.h	29;"	d
 check_mem	dbg.h	27;"	d
 clean_errno	dbg.h	15;"	d
-compare	pratybos2.c	/^int compare(Number* num1, Number* num2) {$/;"	f
-compareNumbers	pratybos2.c	/^void compareNumbers() {$/;"	f
+compare	numbers.c	/^int compare(Number* num1, Number* num2) {$/;"	f
+compareNumbers	main.c	/^void compareNumbers() {$/;"	f
 debug	dbg.h	10;"	d
 debug	dbg.h	12;"	d
-decimal_part	pratybos2.c	/^    int decimal_part[DIGITS];$/;"	m	struct:__anon1	file:
-digits_decimal	pratybos2.c	/^    int digits_decimal;$/;"	m	struct:__anon1	file:
-digits_whole	pratybos2.c	/^    int digits_whole;$/;"	m	struct:__anon1	file:
-divide	pratybos2.c	/^Number* divide(Number* num1, Number* num2) {$/;"	f
-fixNumber	pratybos2.c	/^void fixNumber(Number* num) {$/;"	f
-getNumberChar	pratybos2.c	/^void getNumberChar(char* message, char* output)$/;"	f
-initTable	pratybos2.c	/^void initTable() {$/;"	f
-isZero	pratybos2.c	/^int isZero(Number* num) {$/;"	f
+decimal_part	numbers.h	/^    int decimal_part[DIGITS];$/;"	m	struct:__anon1
+digits_decimal	numbers.h	/^    int digits_decimal;$/;"	m	struct:__anon1
+digits_whole	numbers.h	/^    int digits_whole;$/;"	m	struct:__anon1
+divide	numbers.c	/^Number* divide(Number* num1, Number* num2) {$/;"	f
+fixNumber	numbers.c	/^void fixNumber(Number* num) {$/;"	f
+getNumberChar	numbers.c	/^void getNumberChar(char* message, char* output)$/;"	f
+initTable	numbers.c	/^void initTable() {$/;"	f
+isZero	numbers.c	/^int isZero(Number* num) {$/;"	f
 log_err	dbg.h	17;"	d
 log_info	dbg.h	21;"	d
 log_warn	dbg.h	19;"	d
-main	pratybos2.c	/^int main() {$/;"	f
-multiply	pratybos2.c	/^Number* multiply(Number* num1, Number* num2) {$/;"	f
-multiplyByInt	pratybos2.c	/^Number* multiplyByInt(Number* num1, int integer) {$/;"	f
-negative	pratybos2.c	/^    int negative;$/;"	m	struct:__anon1	file:
-number	pratybos2.c	/^    char *number;$/;"	m	struct:__anon1	file:
-numbers	pratybos2.c	/^    Number** numbers;$/;"	m	struct:__anon2	file:
-performMath	pratybos2.c	/^void performMath() {$/;"	f
-printEntry	pratybos2.c	/^void printEntry(Number* number) {$/;"	f
-printTable	pratybos2.c	/^void printTable() {$/;"	f
-saveNumber	pratybos2.c	/^void saveNumber(Number* number) {$/;"	f
+main	main.c	/^int main() {$/;"	f
+multiply	numbers.c	/^Number* multiply(Number* num1, Number* num2) {$/;"	f
+multiplyByInt	numbers.c	/^Number* multiplyByInt(Number* num1, int integer) {$/;"	f
+negative	numbers.h	/^    int negative;$/;"	m	struct:__anon1
+numToChar	numbers.c	/^char* numToChar(Number* number) {$/;"	f
+numbers	numbers.h	/^    Number** numbers;$/;"	m	struct:__anon2
+performMath	main.c	/^void performMath() {$/;"	f
+printEntry	numbers.c	/^void printEntry(Number* number) {$/;"	f
+printTable	numbers.c	/^void printTable() {$/;"	f
+saveNumber	numbers.c	/^void saveNumber(Number* number) {$/;"	f
 sentinel	dbg.h	25;"	d
-setNewNumber	pratybos2.c	/^Number* setNewNumber() {$/;"	f
-setNumberFromChar	pratybos2.c	/^Number* setNumberFromChar(char* numArray) {$/;"	f
-setNumberFromDouble	pratybos2.c	/^Number* setNumberFromDouble(long double number, int whole_digits, int decimal_digits) {$/;"	f
-size	pratybos2.c	/^    int size;$/;"	m	struct:__anon2	file:
-subtract	pratybos2.c	/^Number* subtract(Number* num1, Number* num2) {$/;"	f
-table	pratybos2.c	/^static Table* table;$/;"	v	file:
-whole_part	pratybos2.c	/^    int whole_part[DIGITS];$/;"	m	struct:__anon1	file:
+setNewNumber	numbers.c	/^Number* setNewNumber() {$/;"	f
+setNumberFromChar	numbers.c	/^Number* setNumberFromChar(char* numArray) {$/;"	f
+setNumberFromDouble	numbers.c	/^Number* setNumberFromDouble(long double number, int whole_digits, int decimal_digits) {$/;"	f
+size	numbers.h	/^    int size;$/;"	m	struct:__anon2
+subtract	numbers.c	/^Number* subtract(Number* num1, Number* num2) {$/;"	f
+table	numbers.h	/^static Table* table;$/;"	v
+whole_part	numbers.h	/^    int whole_part[DIGITS];$/;"	m	struct:__anon1
