@@ -10,8 +10,6 @@
  |
  |     Language:  GNU C (using gcc on Lenovo Y50-70, OS: Arch Linux x86_64)
  |     Version:   0.0
- |   To Compile:  gcc -Wall -g -lm -std=c11 pratybos2.c -o pratybos2
- |
  +-----------------------------------------------------------------------------
  |
  |  Description:  
@@ -24,9 +22,6 @@
  |	    Output:   Prompt messages, validation errors and final results
  |                are displayed one per line to the standard output.
  |                
- |                
- |              
- |
  | Version
  | updates:     Currently this is the intial version
  |
@@ -41,28 +36,43 @@
 #include "dbg.h"
 #include "lib_riddle.h"
 
-// TODO increase chunk size
-#define CHUNK_SIZE 2
+// This value is used in dynamic array containing
+// Number structures
+#define CHUNK_SIZE 5
+// How many digits to store a whole part of the number
+// as well as the decimal part, ie whole_part[DIGITS] 
+// and decimal_part[DIGITS]
+#define DIGITS 500
 
+
+// Main structure, Number data type (BigNum)
+// Contains char arrays for whole and decimal parts,
+// in case the number was given by a user via command line,
+// and int arrays for actual number storage, as well
+// as other parameters describing the number.
 typedef struct {
     char *number;
-    // TODO define this 500
-    char char_whole_part[500];
-    char char_decimal_part[500];
-    int whole_part[500];
-    int decimal_part[500];
+    char char_whole_part[DIGITS];
+    char char_decimal_part[DIGITS];
+    int whole_part[DIGITS];
+    int decimal_part[DIGITS];
     int digits_whole;
     int digits_decimal;
     int negative;
 } Number;
 
+// Table structure contains dynamic array of 
+// numbers. Used as a quosi-database for Number 
+// data type.
 typedef struct {
     Number** numbers;
     int size;
     int capacity;
 } Table;
 
+// Declare table as a global variable
 static Table* table;
+
 
 void fixNumber(Number* num) {
     if (num->digits_whole == 0) {
@@ -254,7 +264,7 @@ int compare(Number* num1, Number* num2) {
         }
 
         // compare decimal parts
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < DIGITS; i++) {
             if (num1->decimal_part[i] > num2->decimal_part[i]) {
                 return 1;
             } else if (num1->decimal_part[i] < num2->decimal_part[i]) {
@@ -268,9 +278,6 @@ int compare(Number* num1, Number* num2) {
 
 
 Number* subtract(Number* num1, Number* num2) {
-
-    printEntry(num1);
-    printEntry(num2);
 
     int negative;
     // compare the two numbers
@@ -517,18 +524,6 @@ Number* multiply(Number* num1, Number* num2) {
     /*memset(a, 0, sizeof a);*/
     memset(a, 0, sizeof(a[0][0]) * (num2->digits_whole+num2->digits_decimal) * res->digits_whole);
 
-
-
-    /*for (int i = 0; i < 4; i++) {*/
-        /*printf("%d", a[0][i]);*/
-    /*}*/
-    /*printf("\n");*/
-
-    /*for (int i = 0; i < 4; i++) {*/
-        /*printf("%d", a[1][i]);*/
-    /*}*/
-    /*printf("\n");*/
-
     // populate first factor with both decimal and whole parts of the first
     // number (convert decimal part to whole part) - ie move decimal dot(.) to 
     // the end of the number, or multiply it by 10^n, where n is the number of 
@@ -581,32 +576,6 @@ Number* multiply(Number* num1, Number* num2) {
         part = 0;
     }
 
-/*    for (int i = 0; i < 10; i++) {*/
-        /*[>printf("i = %d\n", a[0][i]);<]*/
-        /*printf("%d", a[0][i]);*/
-    /*}*/
-    /*printf("\n");*/
-
-    /*for (int i = 0; i < 10; i++) {*/
-        /*printf("%d", a[1][i]);*/
-    /*}*/
-    /*printf("\n");*/
-
-    /*for (int i = 0; i < 10; i++) {*/
-        /*printf("%d", a[2][i]);*/
-    /*}*/
-    /*printf("\n");*/
-
-    /*for (int i = 0; i < 10; i++) {*/
-        /*printf("%d", a[3][i]);*/
-    /*}*/
-    /*printf("\n");*/
-
-    /*for (int i = 0; i < 10; i++) {*/
-        /*printf("%d", a[4][i]);*/
-    /*}*/
-    /*printf("\n");*/
-
     int result = 0;
     part = 0;
     int initial_result = 0;
@@ -633,28 +602,6 @@ Number* multiply(Number* num1, Number* num2) {
         }
     }
 
-
-/*    for (int i = 0; i < 8; i++) {*/
-        /*printf("%d", a[0][i]);*/
-    /*}*/
-    /*printf("\n");*/
-
-    /*for (int i = 0; i < 8; i++) {*/
-        /*printf("%d", a[1][i]);*/
-    /*}*/
-    /*printf("\n");*/
-
-    /*for (int i = 0; i < 8; i++) {*/
-        /*printf("%d", a[2][i]);*/
-    /*}*/
-    /*printf("\n");*/
-
-    /*for (int i = 0; i < 8; i++) {*/
-        /*printf("%d", a[3][i]);*/
-    /*}*/
-    /*printf("\n");*/
-
-
     // move decimal dot to the required place
     // ie convert whole number to a decimal number again
     res->digits_decimal = decimal_numbers;
@@ -667,13 +614,6 @@ Number* multiply(Number* num1, Number* num2) {
         res->whole_part[i] = res->whole_part[decimal_numbers+i];
     }
     res->digits_whole -= decimal_numbers;
-
-
-
-    for (int i = 0; i < res->digits_whole; i++) {
-        printf("%d  ", res->whole_part[i]);
-    }
-
 
     return res;
 
@@ -702,7 +642,6 @@ Number* multiplyByInt(Number* num1, int integer) {
 
 
 Number* divide(Number* num1, Number* num2) {
-    printf("Division is conducted\n");
 
     Number* res = (Number*) malloc(sizeof(Number));
     int rs = compare(num1, num2);
@@ -711,7 +650,6 @@ Number* divide(Number* num1, Number* num2) {
     // if first is greater or equal, the quotient will 
     // be greater than 1
     if (rs == 1) {
-        debug("quotient one");
         quotient = 1;
     // if first is less than second, 
     // the quotient will be less than 1
@@ -720,7 +658,6 @@ Number* divide(Number* num1, Number* num2) {
     // else if numbers are equal, return one 
     // (Number struct with the value of one)
     } else if (rs == 3) {
-        debug("what??");
         res->negative = 0;
         res->digits_whole = 1;
         res->digits_decimal = 1;
@@ -766,19 +703,15 @@ Number* divide(Number* num1, Number* num2) {
 
     while (1) {
         tmp = subtract(tmp, num2);
-        debug("tmp is:");
-        printEntry(tmp);
         if ((tmp->digits_whole > 1 || tmp->whole_part[0] != 0) && !tmp->negative) {
             res = add(res, one, 0);
             counter++;
         } else if (isZero(tmp)) {
-            debug("IS ZERO!");
             res = add(res, one, 0);
             counter++;
             return res;
         } else {
             if (counter == 0) {
-                debug("COUNTER IS 0");
                 // TMP becomes remainder again
                 // TODO wrap in it assignment function
                 tmp->digits_whole = remainder->digits_whole;
@@ -798,11 +731,7 @@ Number* divide(Number* num1, Number* num2) {
                 one = multiply(one, zero_one);
                 continue;
             }
-            if (res->digits_decimal > 40) {
-                debug("here");
-                printEntry(remainder);
-                printEntry(tmp);
-                printEntry(one);
+            if (res->digits_decimal > 35) {
                 return res;
             }
             remainder = subtract(remainder, multiplyByInt(num2, counter));
@@ -825,460 +754,11 @@ Number* divide(Number* num1, Number* num2) {
             remainder = multiplyByInt(remainder, 10);
             tmp = multiplyByInt(tmp, 10);
 
-            debug("RES");
-            printEntry(res);
-            printEntry(remainder);
-            /*break;*/
         }
     }
-
-    exit(1);
-
-    // addition -----------------------------------------------------------
-
-    // TODO wrap in it assignment function
-    tmp->digits_whole = remainder->digits_whole;
-    tmp->digits_decimal = remainder->digits_decimal;
-    tmp->negative = remainder->negative;
-
-    for (int i = 0; i < remainder->digits_decimal; i++) {
-        tmp->decimal_part[i] = remainder->decimal_part[i];
-    }
-    for (int i = 0; i < remainder->digits_whole; i++) {
-        tmp->whole_part[i] = remainder->whole_part[i];
-    }
-
-    // init to zero
-    Number* count = (Number*) malloc(sizeof(Number));
-    count->digits_whole = 1;
-    count->digits_decimal = 1;
-    count->whole_part[0] = 0;
-    count->decimal_part[0] = 0;
-
-
-    while(1) {
-
-        tmp = multiply(tmp, ten);
-
-        debug("TMP now is remainder:");
-        printEntry(tmp);
-
-        one = multiply(one, zero_one);
-        debug("ONE");
-        printEntry(one);
-
-        /*exit(1);*/
-
-        while (1) {
-            tmp = subtract(tmp, num2);
-            debug("tmp is:");
-            printEntry(tmp);
-            debug("digits whole: %d", tmp->digits_whole);
-            if ((tmp->digits_whole > 1 || tmp->whole_part[0] != 0) && !tmp->negative) {
-                res = add(res, one, 0);
-                count->whole_part[0]++;
-            } else if (isZero(tmp)) {
-                debug("IS ZERO!");
-                res = add(res, one, 0);
-                count->whole_part[0]++;
-                return res;
-            } else {
-                break;
-            }
-        }
-        remainder = multiply(count, num2);
-
-        debug("RES");
-        printEntry(res);
-    }
-
-    // \addition -----------------------------------------------------------
-
-
-
-
-    // fix for one case
-/*    remainder->digits_whole = 1;*/
-    /*remainder->whole_part[0] = 5;*/
-    /*remainder->negative = 0;*/
-
-
-    debug("REMINDER TRUE NOW IS");
-    printEntry(remainder);
-    // remainder == 5
-    // remainder / num2 kol gausim kazka
-    //
-    debug("two entries");
-    printEntry(remainder);
-    printEntry(tmp);
-
-    // init to zero
-    Number* tmp2 = (Number*) malloc(sizeof(Number));
-    tmp2->digits_whole = 1;
-    tmp2->digits_decimal = 1;
-    tmp2->whole_part[0] = 0;
-    tmp2->decimal_part[0] = 0;
-
-    counter = 0;
-    int game_over = 0;
-
-SET:
-    debug("SET");
-
-    // TODO wrap in it assignment function
-    tmp->digits_whole = remainder->digits_whole;
-    tmp->digits_decimal = remainder->digits_decimal;
-    tmp->negative = remainder->negative;
-
-    for (int i = 0; i < remainder->digits_decimal; i++) {
-        tmp->decimal_part[i] = remainder->decimal_part[i];
-    }
-    for (int i = 0; i < remainder->digits_whole; i++) {
-        tmp->whole_part[i] = remainder->whole_part[i];
-    }
-    debug("TMP now is remainder:");
-    printEntry(tmp);
-
-    while (1) {
-        if (res->digits_whole == 500) {
-            game_over = 1;
-        }
-        tmp = subtract(tmp, num2);
-        debug("tmp is:");
-        printEntry(tmp);
-        /*debug("digits whole: %d", tmp->digits_whole);*/
-        if ((tmp->digits_whole > 1 || tmp->whole_part[0] != 0) && !tmp->negative) {
-            tmp2 = add(tmp2, one, 0);
-        } else if (isZero(tmp)) {
-            debug("IS ZERO!");
-            tmp2 = add(tmp2, one, 0);
-            break;
-        } else {
-            break;
-        }
-    }
-    debug("tmp2");
-    printEntry(tmp2);
-
-    debug("tmp");
-    fixNumber(tmp);
-    printEntry(tmp);
-
-
-    // it means that the number was not divided into equal parts
-    if (!game_over && (tmp2->whole_part[0] == 0 || tmp2->digits_decimal > 1 || tmp2->decimal_part[0] != 0)) {
-        remainder = multiply(remainder, ten);
-        debug("REMINDER");
-        printEntry(remainder);
-
-        tmp2->digits_whole = 1;
-        tmp2->digits_decimal = 1;
-        tmp2->whole_part[0] = 0;
-        tmp2->decimal_part[0] = 0;
-
-        counter++;
-        goto SET;
-    } else if (!isZero(tmp)) {
-        remainder = multiply(remainder, ten);
-        debug("REMINDER");
-        printEntry(remainder);
-
-        tmp2->digits_whole = 1;
-        tmp2->digits_decimal = 1;
-        tmp2->whole_part[0] = 0;
-        tmp2->decimal_part[0] = 0;
-
-        counter++;
-        goto SET;
- 
-
-
-    } else {
-        debug("COUNTER %d", counter);
-        debug("VICTORY!");
-        debug("Counter %d", counter);
-
-        debug("TMP2 is");
-        printEntry(tmp2);
-
-        // init to zero
-        Number* zero_one = (Number*) malloc(sizeof(Number));
-        zero_one->digits_whole = 1;
-        zero_one->digits_decimal = 1;
-        zero_one->whole_part[0] = 0;
-        zero_one->decimal_part[0] = 1;
-
-
-        for (int i = 0; i < counter; i++) {
-            debug("MULTIPLY");
-            tmp2 = multiply(tmp2, zero_one);
-        }
-
-        res->digits_decimal = tmp2->digits_decimal;
-        for (int i = 0; i < tmp2->digits_decimal; i++) {
-            res->decimal_part[i] = tmp2->decimal_part[i];
-        }
-    }
-
-    debug("RES is");
-    printEntry(res);
-
-
-
-    
 
     return res;
 }
-
-
-
-
-
-
-
-
-
-/*Number* divide(Number* num1, Number* num2) {*/
-    /*printf("Division is conducted\n");*/
-
-    /*Number* res = (Number*) malloc(sizeof(Number));*/
-    /*int rs = compare(num1, num2);*/
-    /*int quotient;*/
-
-    /*// if first is greater or equal, the quotient will */
-    /*// be greater than 1*/
-    /*if (rs == 1) {*/
-        /*debug("quotient one");*/
-        /*quotient = 1;*/
-    /*// if first is less than second, */
-    /*// the quotient will be less than 1*/
-    /*} else if (rs == 2) {*/
-        /*quotient = 0;*/
-    /*// else if numbers are equal, return one */
-    /*// (Number struct with the value of one)*/
-    /*} else if (rs == 3) {*/
-        /*debug("what??");*/
-        /*res->negative = 0;*/
-        /*res->digits_whole = 1;*/
-        /*res->digits_decimal = 1;*/
-        /*res->whole_part[0] = 1;*/
-        /*res->decimal_part[0] = 0;*/
-        /*return res;*/
-    /*}*/
-
-    /*res->digits_whole = 1;*/
-    /*res->digits_decimal = 1;*/
-    /*res->whole_part[0] = 0;*/
-    /*res->decimal_part[0] = 0;*/
-
-    /*Number* one = (Number*) malloc(sizeof(Number));*/
-    /*one->digits_whole = 1;*/
-    /*one->digits_decimal = 1;*/
-    /*one->whole_part[0] = 1;*/
-    /*one->decimal_part[0] = 0;*/
-
-
-    /*Number* tmp;*/
-
-    /*int counter = 0;*/
-
-    /*tmp = num1;*/
-
-    /*// FIXME case quotient == 1 !!!*/
-
-    /*while (quotient == 1) {*/
-        /*tmp = subtract(tmp, num2);*/
-        /*debug("tmp is:");*/
-        /*printEntry(tmp);*/
-        /*debug("digits whole: %d", tmp->digits_whole);*/
-        /*if ((tmp->digits_whole > 1 || tmp->whole_part[0] != 0) && !tmp->negative) {*/
-            /*res = add(res, one, 0);*/
-        /*} else if (isZero(tmp)) {*/
-            /*debug("IS ZERO!");*/
-            /*res = add(res, one, 0);*/
-            /*return res;*/
-        /*} else {*/
-            /*break;*/
-        /*}*/
-    /*}*/
-    /*debug("RES");*/
-    /*printEntry(res);*/
-
-    /*Number* remainder;*/
-
-    /*remainder = multiply(res, num2);*/
-    /*debug("REMINDER");*/
-    /*printEntry(remainder);*/
-
-    /*// FIXME why is this here?*/
-    /*[>num1->digits_decimal = 1;<]*/
-    /*[>num1->decimal_part[0] = 0;<]*/
-
-    /*debug("TWO ENTRIES");*/
-    /*printEntry(num1);*/
-    /*printEntry(remainder);*/
-
-    /*fixNumber(num1);*/
-    /*fixNumber(remainder);*/
-
-    /*debug("TWO ENTRIES2");*/
-    /*printEntry(num1);*/
-    /*printEntry(remainder);*/
-
-    /*rs = compare(num1, remainder);*/
-    /*debug("rs = %d", rs);*/
-    /*[>exit(1);<]*/
-    /*debug("SUBTRACT----------------------------------------------------------------");*/
-    /*remainder = subtract(num1, remainder);*/
-    /*debug("REMINDER TRUE NOW IS");*/
-    /*printEntry(remainder);*/
-
-    /*// fix for one case*/
-/*[>    remainder->digits_whole = 1;<]*/
-    /*[>remainder->whole_part[0] = 5;<]*/
-    /*[>remainder->negative = 0;<]*/
-
-
-    /*debug("REMINDER TRUE NOW IS");*/
-    /*printEntry(remainder);*/
-    /*// remainder == 5*/
-    /*// remainder / num2 kol gausim kazka*/
-    /*//*/
-    /*// init to zero*/
-    /*Number* ten = (Number*) malloc(sizeof(Number));*/
-    /*ten->digits_whole = 2;*/
-    /*ten->digits_decimal = 1;*/
-    /*ten->whole_part[0] = 0;*/
-    /*ten->whole_part[1] = 1;*/
-    /*ten->decimal_part[0] = 0;*/
-
-    /*debug("two entries");*/
-    /*printEntry(remainder);*/
-    /*printEntry(tmp);*/
-
-    /*// init to zero*/
-    /*Number* tmp2 = (Number*) malloc(sizeof(Number));*/
-    /*tmp2->digits_whole = 1;*/
-    /*tmp2->digits_decimal = 1;*/
-    /*tmp2->whole_part[0] = 0;*/
-    /*tmp2->decimal_part[0] = 0;*/
-
-    /*counter = 0;*/
-    /*int game_over = 0;*/
-
-/*SET:*/
-    /*debug("SET");*/
-
-    /*// TODO wrap in it assignment function*/
-    /*tmp->digits_whole = remainder->digits_whole;*/
-    /*tmp->digits_decimal = remainder->digits_decimal;*/
-    /*tmp->negative = remainder->negative;*/
-
-    /*for (int i = 0; i < remainder->digits_decimal; i++) {*/
-        /*tmp->decimal_part[i] = remainder->decimal_part[i];*/
-    /*}*/
-    /*for (int i = 0; i < remainder->digits_whole; i++) {*/
-        /*tmp->whole_part[i] = remainder->whole_part[i];*/
-    /*}*/
-    /*debug("TMP now is remainder:");*/
-    /*printEntry(tmp);*/
-
-    /*while (1) {*/
-        /*if (res->digits_whole == 500) {*/
-            /*game_over = 1;*/
-        /*}*/
-        /*tmp = subtract(tmp, num2);*/
-        /*debug("tmp is:");*/
-        /*printEntry(tmp);*/
-        /*[>debug("digits whole: %d", tmp->digits_whole);<]*/
-        /*if ((tmp->digits_whole > 1 || tmp->whole_part[0] != 0) && !tmp->negative) {*/
-            /*tmp2 = add(tmp2, one, 0);*/
-        /*} else if (isZero(tmp)) {*/
-            /*debug("IS ZERO!");*/
-            /*tmp2 = add(tmp2, one, 0);*/
-            /*break;*/
-        /*} else {*/
-            /*break;*/
-        /*}*/
-    /*}*/
-    /*debug("tmp2");*/
-    /*printEntry(tmp2);*/
-
-    /*debug("tmp");*/
-    /*fixNumber(tmp);*/
-    /*printEntry(tmp);*/
-
-
-    /*// it means that the number was not divided into equal parts*/
-    /*if (!game_over && (tmp2->whole_part[0] == 0 || tmp2->digits_decimal > 1 || tmp2->decimal_part[0] != 0)) {*/
-        /*remainder = multiply(remainder, ten);*/
-        /*debug("REMINDER");*/
-        /*printEntry(remainder);*/
-
-        /*tmp2->digits_whole = 1;*/
-        /*tmp2->digits_decimal = 1;*/
-        /*tmp2->whole_part[0] = 0;*/
-        /*tmp2->decimal_part[0] = 0;*/
-
-        /*counter++;*/
-        /*goto SET;*/
-    /*} else if (!isZero(tmp)) {*/
-        /*remainder = multiply(remainder, ten);*/
-        /*debug("REMINDER");*/
-        /*printEntry(remainder);*/
-
-        /*tmp2->digits_whole = 1;*/
-        /*tmp2->digits_decimal = 1;*/
-        /*tmp2->whole_part[0] = 0;*/
-        /*tmp2->decimal_part[0] = 0;*/
-
-        /*counter++;*/
-        /*goto SET;*/
- 
-
-
-    /*} else {*/
-        /*debug("COUNTER %d", counter);*/
-        /*debug("VICTORY!");*/
-        /*debug("Counter %d", counter);*/
-
-        /*debug("TMP2 is");*/
-        /*printEntry(tmp2);*/
-
-        /*// init to zero*/
-        /*Number* zero_one = (Number*) malloc(sizeof(Number));*/
-        /*zero_one->digits_whole = 1;*/
-        /*zero_one->digits_decimal = 1;*/
-        /*zero_one->whole_part[0] = 0;*/
-        /*zero_one->decimal_part[0] = 1;*/
-
-
-        /*for (int i = 0; i < counter; i++) {*/
-            /*debug("MULTIPLY");*/
-            /*tmp2 = multiply(tmp2, zero_one);*/
-        /*}*/
-
-        /*res->digits_decimal = tmp2->digits_decimal;*/
-        /*for (int i = 0; i < tmp2->digits_decimal; i++) {*/
-            /*res->decimal_part[i] = tmp2->decimal_part[i];*/
-        /*}*/
-    /*}*/
-
-    /*debug("RES is");*/
-    /*printEntry(res);*/
-
-
-
-    
-
-    /*return res;*/
-/*}*/
-
-
-
-
-
-
 
 
 void compareNumbers() {
