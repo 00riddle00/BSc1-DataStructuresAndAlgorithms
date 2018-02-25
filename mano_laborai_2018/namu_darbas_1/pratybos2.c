@@ -73,22 +73,334 @@ typedef struct {
     int capacity;
 } Table;
 
+// actions
+void compareNumbers();
+void performMath();
+
+// table operations
+void initTable();
+void saveNumber(Number* number);
+void printEntry(Number* number);
+void printTable();
+
+// function to write a given number from user input
+// to char array
+void getNumberChar(char* message, char* output);
+
+// functions with Number
+Number* setNewNumber();
+Number* setNumberFromChar(char* numArray);
+Number* setNumberFromDouble(long double number, int whole_digits, int decimal_digits);
+
+void assign(Number* num1, Number* num2);
+void fixNumber(Number* num);
+int isZero(Number* num);
+int compare(Number* num1, Number* num2);
+
+Number* add(Number* num1, Number* num2, int negative);
+Number* subtract(Number* num1, Number* num2);
+Number* multiply(Number* num1, Number* num2);
+Number* multiplyByInt(Number* num1, int integer);
+Number* divide(Number* num1, Number* num2);
+
+
 // Declare table as a global variable
 static Table* table;
 
-// TODO maybe use memcpy
-// deep copy
-void assign(Number* num1, Number* num2) {
 
-    num1->digits_whole = num2->digits_whole;
-    num1->digits_decimal = num2->digits_decimal;
-    num1->negative = num2->negative;
+int main(int argc, char* argv[]) {
 
-    for (int i = 0; i < num2->digits_decimal; i++) {
-        num1->decimal_part[i] = num2->decimal_part[i];
+    // initialize table structure holding numbers
+    initTable();
+
+    char choice;
+    printf("Description\n");
+
+    // ask for user input and process it
+    while(1) {
+        printf("Enter action> ");
+        scanf(" %c", &choice);
+
+        switch (choice) {
+            // new number
+            case 'n':
+            case 'N':;
+                char numArray[DIGITS];
+                getNumberChar("Enter a number (separate whole and decimal parts using \".\" symbol)\n > ", numArray);
+                Number* number;
+                number = setNumberFromChar(numArray);
+                saveNumber(number);
+                break;
+            // print existing table
+            case 'p':
+            case 'P':
+                printTable();
+                break;
+            // perform action
+            case 'm':
+            case 'M':
+                performMath();
+                break;
+            case 'c':
+            case 'C':
+                compareNumbers();
+                break;
+            default:
+                printf("wrong action\n");
+                break;
+        }
     }
-    for (int i = 0; i < num2->digits_whole; i++) {
-        num1->whole_part[i] = num2->whole_part[i];
+    return 0;
+}
+
+
+void compareNumbers() {
+    int action, arg1, arg2;
+    printf("Which comparison would you like to perform?\n");
+    printf("[1] Equal to (==)\n");
+    printf("[2] Not equal to (==)\n");
+    printf("[3] Greater than (>)\n");
+    printf("[4] Less than (<)\n");
+    printf("[5] Greater than or equal to (>=)\n");
+    printf("[6] Less than or equal to (<=)\n");
+
+    // TODO move to sum argparse function
+    action = get_num_interval("(Enter a number) > ", "Such option does not exist", 1, 6);
+
+    printTable();
+
+    printf("Select first argument (ID from the table (zero indexed))\n");
+    arg1 = get_num_interval("(Enter a number) > ", "Such ID does not exist", 0, table->size - 1);
+
+    printf("Select second argument (ID from the table (zero indexed))\n");
+    arg2 = get_num_interval("(Enter a number) > ", "Such ID does not exist", 0, table->size - 1);
+
+    Number* num1 = table->numbers[arg1];
+    Number* num2 = table->numbers[arg2];
+
+    int x = num1->negative;
+    int y = num2->negative;
+
+    int cmp;
+
+    // both numbers positive
+    if (!x && !y) {
+        cmp = compare(num1, num2);
+    // both numbers negative
+    } else if (x && y) {
+        cmp = compare(num2, num1);
+    // first number is positive, second - negative
+    } else if (x && !y) {
+        // greater than
+        cmp = 1;
+    // first number is negative, second - positive
+    } else if (!x && y) {
+        // less than
+        cmp = 2;
+    }
+
+    switch (action) {
+        case 1:
+            if (cmp == 3) {
+                printf("True");
+            } else {
+                printf("False");
+            }
+            break;
+        case 2:
+            if (cmp == 3) {
+                printf("False");
+            } else {
+                printf("True");
+            }
+            break;
+        case 3:
+            if (cmp == 1) {
+                printf("True");
+            } else {
+                printf("False");
+            }
+            break;
+        case 4:
+            if (cmp == 2) {
+                printf("True");
+            } else {
+                printf("False");
+            }
+            break;
+        case 5:
+            if (cmp == 2) {
+                printf("False");
+            } else {
+                printf("True");
+            }
+            break;
+        case 6:
+            if (cmp == 1) {
+                printf("False");
+            } else {
+                printf("True");
+            }
+            break;
+        default:
+            printf("Wrong action\n");
+            break;
+    }
+    printf("\n");
+ 
+}
+
+void performMath() {
+    int action, arg1, arg2;
+    printf("Which action would you like to perform?\n");
+    printf("[1] Addition\n");
+    printf("[2] Subtraction\n");
+    printf("[3] Multiplication\n");
+    printf("[4] Division\n");
+    printf("[5] Modulo\n");
+
+    // TODO move to sum argparse function
+    action = get_num_interval("(Enter a number) > ", "Such option does not exist", 1, 5);
+
+    printTable();
+
+    printf("Select first argument (ID from the table (zero indexed))\n");
+    arg1 = get_num_interval("(Enter a number) > ", "Such ID does not exist", 0, table->size - 1);
+
+    printf("Select second argument (ID from the table (zero indexed))\n");
+    arg2 = get_num_interval("(Enter a number) > ", "Such ID does not exist", 0, table->size - 1);
+
+    Number* num1 = table->numbers[arg1];
+    Number* num2 = table->numbers[arg2];
+
+    int x = num1->negative;
+    int y = num2->negative;
+
+    // result
+    Number* res;
+
+    // TODO use switch statement instead
+    // case addition
+    if (action == 1) {
+        // both numbers positive
+        if (!x && !y) {
+            res = add(num1, num2, 0);
+        // both numbers negative
+        } else if (x && y) {
+            res = add(num1, num2, 1);
+        // first number is positive, second - negative
+        } else if (!x && y) {
+            res = subtract(num1, num2);
+        // first number is negative, second - positive
+        } else if (x && !y) {
+            res = subtract(num1, num2);
+        }
+    }
+    // case subtraction
+    if (action == 2) {
+        // both numbers positive
+        if (!x && !y) {
+            res = subtract(num1, num2);
+        // both numbers negative
+        } else if (x && y) {
+            res = subtract(num1, num2);
+        // first number is positive, second - negative
+        } else if (!x && y) {
+            res = add(num1, num2, 0);
+        // first number is negative, second - positive
+        } else if (x && !y) {
+            res = add(num1, num2, 1);
+        }
+    }
+
+    if (action == 3) {
+        res = multiply(num1, num2);
+
+        // both numbers positive
+        if (!x && !y) {
+            res->negative = 0;
+        // both numbers negative
+        } else if (x && y) {
+            res->negative = 0;
+        // one number is positive, another - negative
+        } else {
+            res->negative = 1;
+        }
+    }
+
+
+    if (action == 4) {
+        res = divide(num1, num2);
+
+        // both numbers positive
+        if (!x && !y) {
+            res->negative = 0;
+        // both numbers negative
+        } else if (x && y) {
+            res->negative = 0;
+        // one number is positive, another - negative
+        } else {
+            res->negative = 1;
+        }
+    }
+
+    printf("The result is:\n");
+    printEntry(res);
+    
+    if (choice("Would you like to save it?")) {
+        saveNumber(res);
+    }
+}
+
+
+void initTable() {
+    table = (Table*) malloc(sizeof(Table));
+    table->capacity = CHUNK_SIZE;
+    table->size = 0;
+    table->numbers = malloc(CHUNK_SIZE * sizeof(Number*));
+    
+    for (int i = 0; i < table->capacity; i++) {
+        table->numbers[i] = calloc(1, sizeof(Number));
+    }
+}
+
+void saveNumber(Number* number) {
+    if (table->size == table->capacity) {
+        table->capacity += CHUNK_SIZE;
+        table->numbers = realloc(table->numbers, table->capacity * sizeof(Number*));
+
+        for (int i = table->size; i < table->capacity; i++) {
+            table->numbers[i] = calloc(1, sizeof(Number));
+        }
+    }
+    table->numbers[table->size] = number;
+    table->size++;
+}
+
+
+
+
+void printEntry(Number* number) {
+
+        if (number->negative) {
+            printf("-");
+        }
+
+        for (int i = number->digits_whole - 1; i >= 0; i--) {
+            printf("%d", number->whole_part[i]);
+        }
+        printf(".");
+
+        for (int i = 0; i < number->digits_decimal; i++) {
+            printf("%d", number->decimal_part[i]);
+        }
+        printf("\n");
+}
+
+void printTable() {
+    for (int i = 0; i < table->size; i++) {
+        printf("[%d] ", i);
+        printEntry(table->numbers[i]);
     }
 }
 
@@ -108,48 +420,6 @@ void getNumberChar(char* message, char* output)
             printf("Error: not a string, or too many arguments\n");
         }
     }
-}
-
-
-
-
-void fixNumber(Number* num) {
-    if (num->digits_whole == 0) {
-        num->digits_whole = 1;
-        num->whole_part[0] = 0;
-    }
-    if (num->digits_decimal == 0) {
-        num->digits_decimal = 1;
-        num->decimal_part[0] = 0;
-    }
-
-    int zeros = 0;
-    // FIXME dangerous part, because the last zero could be deleted as well
-    // TODO add this refactored piece of code to every place it is used
-    
-    // remove zeroes in front of the actual resulting number (if there are any)
-    for (int i = num->digits_whole - 1; i > 0; i--) {
-        if (num->whole_part[i] == 0) {
-            zeros++;
-        } else {
-            break;
-        }
-    }
-    num->digits_whole -= zeros;
-
-    zeros = 0;
-    // FIXME dangerous part, because the last zero could be deleted as well
-    // TODO add this refactored piece of code to every place it is used
-    
-    // remove zeroes in front of the actual resulting number (if there are any)
-    for (int i = num->digits_decimal - 1; i > 0; i--) {
-        if (num->decimal_part[i] == 0) {
-            zeros++;
-        } else {
-            break;
-        }
-    }
-    num->digits_decimal -= zeros;
 }
 
 
@@ -251,72 +521,70 @@ Number* setNumberFromDouble(long double number, int whole_digits, int decimal_di
 
 
 
-void initTable() {
-    table = (Table*) malloc(sizeof(Table));
-    table->capacity = CHUNK_SIZE;
-    table->size = 0;
-    table->numbers = malloc(CHUNK_SIZE * sizeof(Number*));
+
+// TODO maybe use memcpy
+// deep copy
+void assign(Number* num1, Number* num2) {
+
+    num1->digits_whole = num2->digits_whole;
+    num1->digits_decimal = num2->digits_decimal;
+    num1->negative = num2->negative;
+
+    for (int i = 0; i < num2->digits_decimal; i++) {
+        num1->decimal_part[i] = num2->decimal_part[i];
+    }
+    for (int i = 0; i < num2->digits_whole; i++) {
+        num1->whole_part[i] = num2->whole_part[i];
+    }
+}
+
+
+
+
+void fixNumber(Number* num) {
+    if (num->digits_whole == 0) {
+        num->digits_whole = 1;
+        num->whole_part[0] = 0;
+    }
+    if (num->digits_decimal == 0) {
+        num->digits_decimal = 1;
+        num->decimal_part[0] = 0;
+    }
+
+    int zeros = 0;
+    // FIXME dangerous part, because the last zero could be deleted as well
+    // TODO add this refactored piece of code to every place it is used
     
-    for (int i = 0; i < table->capacity; i++) {
-        table->numbers[i] = calloc(1, sizeof(Number));
-    }
-}
-
-void saveNumber(Number* number) {
-    if (table->size == table->capacity) {
-        table->capacity += CHUNK_SIZE;
-        table->numbers = realloc(table->numbers, table->capacity * sizeof(Number*));
-
-        for (int i = table->size; i < table->capacity; i++) {
-            table->numbers[i] = calloc(1, sizeof(Number));
+    // remove zeroes in front of the actual resulting number (if there are any)
+    for (int i = num->digits_whole - 1; i > 0; i--) {
+        if (num->whole_part[i] == 0) {
+            zeros++;
+        } else {
+            break;
         }
     }
-    table->numbers[table->size] = number;
-    table->size++;
-}
+    num->digits_whole -= zeros;
 
-
-
-
-void printEntry(Number* number) {
-
-        if (number->negative) {
-            printf("-");
+    zeros = 0;
+    // FIXME dangerous part, because the last zero could be deleted as well
+    // TODO add this refactored piece of code to every place it is used
+    
+    // remove zeroes in front of the actual resulting number (if there are any)
+    for (int i = num->digits_decimal - 1; i > 0; i--) {
+        if (num->decimal_part[i] == 0) {
+            zeros++;
+        } else {
+            break;
         }
-
-        for (int i = number->digits_whole - 1; i >= 0; i--) {
-            printf("%d", number->whole_part[i]);
-        }
-        printf(".");
-
-        for (int i = 0; i < number->digits_decimal; i++) {
-            printf("%d", number->decimal_part[i]);
-        }
-        printf("\n");
-}
-
-void printTable() {
-    for (int i = 0; i < table->size; i++) {
-        printf("[%d] ", i);
-        printEntry(table->numbers[i]);
     }
+    num->digits_decimal -= zeros;
 }
+
+
 
 int isZero(Number* num) {
     return num->digits_whole == 1 && num->digits_decimal == 1 && num->whole_part[0] == 0 && num->decimal_part[0] == 0;
-
-/*    if (num->digits_whole == 1 && num->digits_decimal == 1 && num->whole_part[0] == 0 && num->decimal_part[0] == 0) {*/
-        /*return 1;*/
-    /*} else if (num->digits_whole == 0 && num->digits_decimal == 2 && num->decimal_part[0] == 0 && num->decimal_part[1] == 0) {*/
-        /*return 1;*/
-    /*} else if (num->digits_whole == 0 && num->digits_decimal == 3 && num->decimal_part[0] == 0 && num->decimal_part[1] == 0 && num->decimal_part[2] == 0) {*/
-        /*return 1;*/
-    /*} else {*/
-        /*return 0;*/
-/*    }*/
 }
-
-
 
 
 
@@ -355,6 +623,103 @@ int compare(Number* num1, Number* num2) {
         return 3; // the numbers are equal
     }
 }
+
+Number* add(Number* num1, Number* num2, int negative) {
+    Number* bigger = num1;
+    Number* smaller = num2;
+
+    // TODO change to swap function
+    if (bigger->digits_decimal < smaller->digits_decimal) {
+        Number temp = *bigger;
+        *bigger = *smaller;
+        *smaller = temp;
+    }
+
+    // create result Number and populate it with decimal digits 
+    // of the bigger number
+    Number* res = (Number*) malloc(sizeof(Number));
+    for (int i = 0; i < bigger->digits_decimal; i++) {
+        res->decimal_part[i] = bigger->decimal_part[i];
+    }
+    res->digits_decimal = bigger->digits_decimal;
+
+    // part - the part to be transfered to the next sum. 
+    //  Ex. 9+5 = 14, 1 then becomes the "part" to be transfered next.
+    int part;
+
+
+    // add decimal parts
+    for (int i = smaller->digits_decimal - 1; i > 0; i--) {
+        int result = res->decimal_part[i] + smaller->decimal_part[i];
+        part = 0;
+        if (result > 10) {
+            part = 1;
+            result %= 10;
+        } else if (result == 10) {
+            result = 0;
+            part = 1;
+        }
+        res->decimal_part[i] = result;
+        res->decimal_part[i-1] += part;
+    }
+    res->decimal_part[0] += smaller->decimal_part[0];
+
+    part = 0;
+
+    // part then moves on to be added to the whole part of the number
+    if (res->decimal_part[0] >= 10) {
+        part = 1;
+        res->decimal_part[0] %= 10;
+    } 
+
+
+    // select number with bigger amount of whole part digits
+    if (bigger->digits_whole < smaller->digits_whole) {
+        Number temp = *bigger;
+        *bigger = *smaller;
+        *smaller = temp;
+    }
+
+    // copy whole_part to the result struct
+    res->digits_whole = bigger->digits_whole + 1;
+
+    for (int i = 0; i < bigger->digits_whole; i++) {
+        res->whole_part[i] = bigger->whole_part[i];
+    }
+
+    // add whole parts
+    for (int i = 0; i < smaller->digits_whole; i++) {
+        int result = res->whole_part[i] + smaller->whole_part[i];
+        if (i == 0) {
+            result += part;
+        }
+        part = 0;
+        if (result >= 10) {
+            part = 1;
+            result %= 10;
+        }
+        res->whole_part[i] = result;
+        res->whole_part[i+1] += part;
+    }
+
+    // remove zeroes in the front of the resulting number
+    for (int i = res->digits_whole-1; i >= 0; i--) {
+        if (res->whole_part[i] == 0) {
+            res->digits_whole--;
+        } else {
+            break;
+        }
+    }
+
+    // set sign
+    res->negative = negative;
+
+    fixNumber(res);
+    return res;
+}
+
+
+
 
 
 Number* subtract(Number* num1, Number* num2) {
@@ -472,101 +837,6 @@ Number* subtract(Number* num1, Number* num2) {
 }
 
 
-
-
-Number* add(Number* num1, Number* num2, int negative) {
-    Number* bigger = num1;
-    Number* smaller = num2;
-
-    // TODO change to swap function
-    if (bigger->digits_decimal < smaller->digits_decimal) {
-        Number temp = *bigger;
-        *bigger = *smaller;
-        *smaller = temp;
-    }
-
-    // create result Number and populate it with decimal digits 
-    // of the bigger number
-    Number* res = (Number*) malloc(sizeof(Number));
-    for (int i = 0; i < bigger->digits_decimal; i++) {
-        res->decimal_part[i] = bigger->decimal_part[i];
-    }
-    res->digits_decimal = bigger->digits_decimal;
-
-    // part - the part to be transfered to the next sum. 
-    //  Ex. 9+5 = 14, 1 then becomes the "part" to be transfered next.
-    int part;
-
-
-    // add decimal parts
-    for (int i = smaller->digits_decimal - 1; i > 0; i--) {
-        int result = res->decimal_part[i] + smaller->decimal_part[i];
-        part = 0;
-        if (result > 10) {
-            part = 1;
-            result %= 10;
-        } else if (result == 10) {
-            result = 0;
-            part = 1;
-        }
-        res->decimal_part[i] = result;
-        res->decimal_part[i-1] += part;
-    }
-    res->decimal_part[0] += smaller->decimal_part[0];
-
-    part = 0;
-
-    // part then moves on to be added to the whole part of the number
-    if (res->decimal_part[0] >= 10) {
-        part = 1;
-        res->decimal_part[0] %= 10;
-    } 
-
-
-    // select number with bigger amount of whole part digits
-    if (bigger->digits_whole < smaller->digits_whole) {
-        Number temp = *bigger;
-        *bigger = *smaller;
-        *smaller = temp;
-    }
-
-    // copy whole_part to the result struct
-    res->digits_whole = bigger->digits_whole + 1;
-
-    for (int i = 0; i < bigger->digits_whole; i++) {
-        res->whole_part[i] = bigger->whole_part[i];
-    }
-
-    // add whole parts
-    for (int i = 0; i < smaller->digits_whole; i++) {
-        int result = res->whole_part[i] + smaller->whole_part[i];
-        if (i == 0) {
-            result += part;
-        }
-        part = 0;
-        if (result >= 10) {
-            part = 1;
-            result %= 10;
-        }
-        res->whole_part[i] = result;
-        res->whole_part[i+1] += part;
-    }
-
-    // remove zeroes in the front of the resulting number
-    for (int i = res->digits_whole-1; i >= 0; i--) {
-        if (res->whole_part[i] == 0) {
-            res->digits_whole--;
-        } else {
-            break;
-        }
-    }
-
-    // set sign
-    res->negative = negative;
-
-    fixNumber(res);
-    return res;
-}
 
 
 Number* multiply(Number* num1, Number* num2) {
@@ -817,249 +1087,4 @@ Number* divide(Number* num1, Number* num2) {
     return res;
 }
 
-
-void compareNumbers() {
-    int action, arg1, arg2;
-    printf("Which comparison would you like to perform?\n");
-    printf("[1] Equal to (==)\n");
-    printf("[2] Not equal to (==)\n");
-    printf("[3] Greater than (>)\n");
-    printf("[4] Less than (<)\n");
-    printf("[5] Greater than or equal to (>=)\n");
-    printf("[6] Less than or equal to (<=)\n");
-
-    // TODO move to sum argparse function
-    action = get_num_interval("(Enter a number) > ", "Such option does not exist", 1, 6);
-
-    printTable();
-
-    printf("Select first argument (ID from the table (zero indexed))\n");
-    arg1 = get_num_interval("(Enter a number) > ", "Such ID does not exist", 0, table->size - 1);
-
-    printf("Select second argument (ID from the table (zero indexed))\n");
-    arg2 = get_num_interval("(Enter a number) > ", "Such ID does not exist", 0, table->size - 1);
-
-    Number* num1 = table->numbers[arg1];
-    Number* num2 = table->numbers[arg2];
-
-    int x = num1->negative;
-    int y = num2->negative;
-
-    int cmp;
-
-    // both numbers positive
-    if (!x && !y) {
-        cmp = compare(num1, num2);
-    // both numbers negative
-    } else if (x && y) {
-        cmp = compare(num2, num1);
-    // first number is positive, second - negative
-    } else if (x && !y) {
-        // greater than
-        cmp = 1;
-    // first number is negative, second - positive
-    } else if (!x && y) {
-        // less than
-        cmp = 2;
-    }
-
-    switch (action) {
-        case 1:
-            if (cmp == 3) {
-                printf("True");
-            } else {
-                printf("False");
-            }
-            break;
-        case 2:
-            if (cmp == 3) {
-                printf("False");
-            } else {
-                printf("True");
-            }
-            break;
-        case 3:
-            if (cmp == 1) {
-                printf("True");
-            } else {
-                printf("False");
-            }
-            break;
-        case 4:
-            if (cmp == 2) {
-                printf("True");
-            } else {
-                printf("False");
-            }
-            break;
-        case 5:
-            if (cmp == 2) {
-                printf("False");
-            } else {
-                printf("True");
-            }
-            break;
-        case 6:
-            if (cmp == 1) {
-                printf("False");
-            } else {
-                printf("True");
-            }
-            break;
-        default:
-            printf("Wrong action\n");
-            break;
-    }
-    printf("\n");
- 
-}
-
-void performMath() {
-    int action, arg1, arg2;
-    printf("Which action would you like to perform?\n");
-    printf("[1] Addition\n");
-    printf("[2] Subtraction\n");
-    printf("[3] Multiplication\n");
-    printf("[4] Division\n");
-    printf("[5] Modulo\n");
-
-    // TODO move to sum argparse function
-    action = get_num_interval("(Enter a number) > ", "Such option does not exist", 1, 5);
-
-    printTable();
-
-    printf("Select first argument (ID from the table (zero indexed))\n");
-    arg1 = get_num_interval("(Enter a number) > ", "Such ID does not exist", 0, table->size - 1);
-
-    printf("Select second argument (ID from the table (zero indexed))\n");
-    arg2 = get_num_interval("(Enter a number) > ", "Such ID does not exist", 0, table->size - 1);
-
-    Number* num1 = table->numbers[arg1];
-    Number* num2 = table->numbers[arg2];
-
-    int x = num1->negative;
-    int y = num2->negative;
-
-    // result
-    Number* res;
-
-    // TODO use switch statement instead
-    // case addition
-    if (action == 1) {
-        // both numbers positive
-        if (!x && !y) {
-            res = add(num1, num2, 0);
-        // both numbers negative
-        } else if (x && y) {
-            res = add(num1, num2, 1);
-        // first number is positive, second - negative
-        } else if (!x && y) {
-            res = subtract(num1, num2);
-        // first number is negative, second - positive
-        } else if (x && !y) {
-            res = subtract(num1, num2);
-        }
-    }
-    // case subtraction
-    if (action == 2) {
-        // both numbers positive
-        if (!x && !y) {
-            res = subtract(num1, num2);
-        // both numbers negative
-        } else if (x && y) {
-            res = subtract(num1, num2);
-        // first number is positive, second - negative
-        } else if (!x && y) {
-            res = add(num1, num2, 0);
-        // first number is negative, second - positive
-        } else if (x && !y) {
-            res = add(num1, num2, 1);
-        }
-    }
-
-    if (action == 3) {
-        res = multiply(num1, num2);
-
-        // both numbers positive
-        if (!x && !y) {
-            res->negative = 0;
-        // both numbers negative
-        } else if (x && y) {
-            res->negative = 0;
-        // one number is positive, another - negative
-        } else {
-            res->negative = 1;
-        }
-    }
-
-
-    if (action == 4) {
-        res = divide(num1, num2);
-
-        // both numbers positive
-        if (!x && !y) {
-            res->negative = 0;
-        // both numbers negative
-        } else if (x && y) {
-            res->negative = 0;
-        // one number is positive, another - negative
-        } else {
-            res->negative = 1;
-        }
-    }
-
-    printf("The result is:\n");
-    printEntry(res);
-    
-    if (choice("Would you like to save it?")) {
-        saveNumber(res);
-    }
-}
-
-
-
-int main(int argc, char* argv[]) {
-
-    // initialize table structure holding numbers
-    initTable();
-
-    char choice;
-    printf("Description\n");
-
-    // ask for user input and process it
-    while(1) {
-        printf("Enter action> ");
-        scanf(" %c", &choice);
-
-        switch (choice) {
-            // new number
-            case 'n':
-            case 'N':;
-                char numArray[DIGITS];
-                getNumberChar("Enter a number (separate whole and decimal parts using \".\" symbol)\n > ", numArray);
-                Number* number;
-                number = setNumberFromChar(numArray);
-                saveNumber(number);
-                break;
-            // print existing table
-            case 'p':
-            case 'P':
-                printTable();
-                break;
-            // perform action
-            case 'm':
-            case 'M':
-                performMath();
-                break;
-            case 'c':
-            case 'C':
-                compareNumbers();
-                break;
-            default:
-                printf("wrong action\n");
-                break;
-        }
-    }
-    return 0;
-}
 
