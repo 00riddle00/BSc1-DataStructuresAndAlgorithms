@@ -94,34 +94,106 @@ typedef struct {
     int capacity;
 } Table;
 
-// actions
+/* action functions */
+
+// prompt the user to enter two numbers (from the table),
+// and conduct comparison operation, printing the answer 
+// to standard output
 void compareNumbers();
+
+// prompt the user to enter two numbers (from the table) 
+// and perform Math operations, printing the result to
+// the standard output. Prompt the user whether to save
+// the result to the table
 void performMath();
 
-// table operations
+/* table operation functions */
+
+// initialize table
+// set table size, capacity, allocate memory
+// of the CHUNK_SIZE
 void initTable();
+
+// save number to the table
 void saveNumber(Number* number);
+
+// print number
 void printEntry(Number* number);
+
+// print whole table
 void printTable();
 
-// function to write a given number from user input
+/* function to write a given number from user input */
+
 // to char array
+// ::params:: message - the prompt message
+// ::params:: output - the resulting char array
 void getNumberChar(char* message, char* output);
 
-// functions with Number
+/* functions working with Number structure (might be Number class methods in C++) */
+
+// set a new number
+// ::return:: a Number initialized to zero
 Number* setNewNumber();
+
+// set a number from char arry
+// ::params:: numArray - given char array
+// ::return::  a Number parsed from the char array
 Number* setNumberFromChar(char* numArray);
+
+// set a number from long double
+// ::params:: number - number in long double format
+// ::params:: whole_digits - how many whole digits a number has
+// ::params:: decimal_digits - how many decimal digits a number has
+// ::return::  a resulting Number
 Number* setNumberFromDouble(long double number, int whole_digits, int decimal_digits);
 
+// assign one number (might be existing already with a certain value)
+// to another
+// ::params:: num1 - Number struct to which assignment is made
+// ::params:: num2 - Number to be assigned
 void assign(Number* num1, Number* num2);
+
+// fix zeroes in the number, ie if the number has no whole or 
+// decimal part, set it to zero. Else, remove zeroes at the front
+// of the whole part and at the back of the decimal part
+// ::params:: num - Number to be fixed
 void fixNumber(Number* num);
+
+// check if a Number struct has a value of zero (0.0)
+// ::params:: num - Number to be checked
 int isZero(Number* num);
 int compare(Number* num1, Number* num2);
 
+// add two numbers
+// ::params:: num1 - first number
+// ::params:: num2 - second number
+// ::params:: negative - whether result should be negative
+// ::return::  a resulting Number
 Number* add(Number* num1, Number* num2, int negative);
+
+// subtract two numbers
+// ::params:: num1 - first number
+// ::params:: num2 - second number
+// ::return::  a resulting Number
 Number* subtract(Number* num1, Number* num2);
+
+// multiply two numbers
+// ::params:: num1 - first number
+// ::params:: num2 - second number
+// ::return::  a resulting Number
 Number* multiply(Number* num1, Number* num2);
+
+// multiply a Number struct by int
+// ::params:: num1 - Number struct
+// ::params:: integer - integer to be multiplied by
+// ::return::  a resulting Number
 Number* multiplyByInt(Number* num1, int integer);
+
+// divide two numbers
+// ::params:: num1 - first number
+// ::params:: num2 - second number
+// ::return::  a resulting Number
 Number* divide(Number* num1, Number* num2);
 
 
@@ -129,7 +201,7 @@ Number* divide(Number* num1, Number* num2);
 static Table* table;
 
 
-int main(int argc, char* argv[]) {
+int main() {
 
     // initialize table structure holding numbers
     initTable();
@@ -587,9 +659,7 @@ void fixNumber(Number* num) {
     }
 
     int zeros = 0;
-    // FIXME dangerous part, because the last zero could be deleted as well
-    
-    // remove zeroes in front of the actual resulting number (if there are any)
+
     for (int i = num->digits_whole - 1; i > 0; i--) {
         if (num->whole_part[i] == 0) {
             zeros++;
@@ -600,9 +670,7 @@ void fixNumber(Number* num) {
     num->digits_whole -= zeros;
 
     zeros = 0;
-    // FIXME dangerous part, because the last zero could be deleted as well
-    
-    // remove zeroes in front of the actual resulting number (if there are any)
+
     for (int i = num->digits_decimal - 1; i > 0; i--) {
         if (num->decimal_part[i] == 0) {
             zeros++;
@@ -1080,8 +1148,8 @@ Number* divide(Number* num1, Number* num2) {
                 assign(tmp, remainder);
 
                 // the remainder is multiplied by ten
-                tmp = multiplyByInt(tmp, 10);
-                remainder = multiplyByInt(remainder, 10);
+                tmp = multiply(tmp, ten);
+                remainder = multiply(remainder, ten);
                 // enter a zero to the result, which means that the remainder
                 // was smaller than the divisor
                 res->decimal_part[res->digits_decimal] = 0;
@@ -1105,8 +1173,8 @@ Number* divide(Number* num1, Number* num2) {
             assign(tmp, remainder);
 
             // increase the remainder by the power of ten each time
-            remainder = multiplyByInt(remainder, 10);
-            tmp = multiplyByInt(tmp, 10);
+            remainder = multiply(remainder, ten);
+            tmp = multiply(tmp, ten);
 
         }
     }
