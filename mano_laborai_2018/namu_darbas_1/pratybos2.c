@@ -12,15 +12,36 @@
  |     Version:   0.0
  +-----------------------------------------------------------------------------
  |
- |  Description:  
- |                
- |                
- |                
+ |  Description: C/C++ languages do not have numerical data types which let
+ |               save many digits and work with them comfortably. Standard
+ |               integer and real number types are not enough to work with
+ |               very large or very small numbers. Hence the aim of this 
+ |               module is to create an effective ADT which would allow
+ |               working with large real numbers with great precision.
+ |               The main structure is struct Number, which saves the
+ |               real number divided into whole and decimal parts.
+ |               A char array containing the number can be converted into
+ |               a Number structure, and vice a versa.
+ |               Standard arithmetical operations are defined also.
+ |               Sum and subtraction are performed in a vertical column
+ |               manner, mulitplication and division are performed in a 
+ |               long (multiplication/division) way.
+ |               Assignment operation is defined also (deep copy). 
+ |               Standard comparison operators are also defined.
+ |               Both comparison and arithmetic is performed using
+ |               functions, since there is no possibility to overload
+ |               operators in C.
  |
  |	    Input:    Command line input by user
  |
  |	    Output:   Prompt messages, validation errors and final results
  |                are displayed one per line to the standard output.
+ |
+ |    Known bugs: [1] Division seems to not work in certain cases.
+ |                [2] Division returns the result of max 35 digits. If division
+ |                is continued after that, the program seems to stop working. 
+ |                Temporary if condition guard is placed now, not letting the 
+ |                resulting quotient to be more than 35 digits.
  |                
  | Version
  | updates:     Currently this is the intial version
@@ -114,11 +135,25 @@ int main(int argc, char* argv[]) {
     initTable();
 
     char choice;
-    printf("Description\n");
+
+    char* separator = ("------------------------------------------------------");
+
+    char* about = "This is a program to test the ADT used for working with very large/very small numbers. The user can"
+        "set numbers, perform arithmethic and comparison operations with them. The numbers are saved in a table, which"
+        "can also be viewed at any time. The program does not save the data after its completion";
+
+    char* info = "Usage: in the main shell, input the Action[1].[1] Action - n = set new number, p = print table,"
+        "m = perform math, c = compare numbers, i = print information. When prompted, enter the ID[2] of the number "
+        "from the table. [2] ID - a non-negative integer, chosen from the entries in the table.";
+
+    printf("%s\n", separator);
+    printf("%s\n", about);
+    printf("%s\n", separator);
+    printf("%s\n\n", info);
 
     // ask for user input and process it
     while(1) {
-        printf("Enter action> ");
+        printf("[Enter \"i\" for info] Enter action> ");
         scanf(" %c", &choice);
 
         switch (choice) {
@@ -144,6 +179,10 @@ int main(int argc, char* argv[]) {
             case 'c':
             case 'C':
                 compareNumbers();
+                break;
+            case 'i':
+            case 'I':
+                printf("\n%s\n\n", info);
                 break;
             default:
                 printf("wrong action\n");
@@ -458,7 +497,6 @@ Number* setNumberFromChar(char* numArray) {
         start++;
     } 
 
-    // TODO move to separate function
     for (int i = start; i < 1000; i++) {
 
         if(!isdigit(numArray[i])) {
@@ -521,8 +559,6 @@ Number* setNumberFromDouble(long double number, int whole_digits, int decimal_di
 
 
 
-// TODO maybe use memcpy
-// deep copy
 void assign(Number* num1, Number* num2) {
 
     num1->digits_whole = num2->digits_whole;
@@ -552,7 +588,6 @@ void fixNumber(Number* num) {
 
     int zeros = 0;
     // FIXME dangerous part, because the last zero could be deleted as well
-    // TODO add this refactored piece of code to every place it is used
     
     // remove zeroes in front of the actual resulting number (if there are any)
     for (int i = num->digits_whole - 1; i > 0; i--) {
@@ -566,7 +601,6 @@ void fixNumber(Number* num) {
 
     zeros = 0;
     // FIXME dangerous part, because the last zero could be deleted as well
-    // TODO add this refactored piece of code to every place it is used
     
     // remove zeroes in front of the actual resulting number (if there are any)
     for (int i = num->digits_decimal - 1; i > 0; i--) {
@@ -627,7 +661,6 @@ Number* add(Number* num1, Number* num2, int negative) {
     Number* bigger = num1;
     Number* smaller = num2;
 
-    // TODO change to swap function
     if (bigger->digits_decimal < smaller->digits_decimal) {
         Number temp = *bigger;
         *bigger = *smaller;
@@ -868,9 +901,6 @@ Number* multiply(Number* num1, Number* num2) {
     }
 
 
-    // TODO if no decimal part, do not copy
-    // TODO define clear constraints, ex. max 250 digits or so
-    
     // populate second factor with both decimal and whole parts of the second
     // number (convert decimal part to whole part) - ie move decimal dot(.) to 
     // the end of the number, or multiply it by 10^n, where n is the number of 
@@ -1072,7 +1102,6 @@ Number* divide(Number* num1, Number* num2) {
             counter = 0;
 
             // tmp becomes remainder again
-            // TODO wrap in it assignment function
             assign(tmp, remainder);
 
             // increase the remainder by the power of ten each time
