@@ -10,7 +10,7 @@
 // Header file with useful debugging macros
 #include "dbg.h"
 // Custom library with various helper functions
-#include "lib_riddle.h"
+#include "lib_riddle_cpp.h"
 #include "numbers.h"
 
 /* action functions */
@@ -37,13 +37,13 @@ int main() {
 
     char choice;
 
-    char* separator = ("------------------------------------------------------");
+    char* separator = (char*) "------------------------------------------------------";
 
-    char* about = "This is a program to test the ADT used for working with very large/very small numbers. The user can"
+    char* about = (char*) "This is a program to test the ADT used for working with very large/very small numbers. The user can"
         "set numbers, perform arithmethic and comparison operations with them. The numbers are saved in a table, which"
         "can also be viewed at any time. The program does not save the data after its completion";
 
-    char* info = "Usage: in the main shell, input the Action[1].[1] Action - n = set new number, p = print table,"
+    char* info = (char*) "Usage: in the main shell, input the Action[1].[1] Action - n = set new number, p = print table,"
         "m = perform math, c = compare numbers, i = print information. When prompted, enter the ID[2] of the number "
         "from the table. [2] ID - a non-negative integer, chosen from the entries in the table.";
 
@@ -62,7 +62,7 @@ int main() {
             case 'n':
             case 'N':;
                 char numArray[DIGITS*2];
-                getNumberChar("Enter a number (separate whole and decimal parts using \".\" symbol)\n > ", numArray);
+                getNumberChar((char*)"Enter a number (separate whole and decimal parts using \".\" symbol)\n > ", numArray);
                 Number* number;
                 number = setNumberFromChar(numArray);
                 saveNumber(number);
@@ -104,15 +104,15 @@ void compareNumbers() {
     printf("[5] Greater than or equal to (>=)\n");
     printf("[6] Less than or equal to (<=)\n");
 
-    action = get_num_interval("(Enter a number) > ", "Such option does not exist", 1, 6);
+    action = get_num_interval((char*)"(Enter a number) > ", (char*)"Such option does not exist", 1, 6);
 
     printTable();
 
     printf("Select first argument (ID from the table (zero indexed))\n");
-    arg1 = get_num_interval("(Enter a number) > ", "Such ID does not exist", 0, table->size - 1);
+    arg1 = get_num_interval((char*)"(Enter a number) > ", (char*)"Such ID does not exist", 0, table->size - 1);
 
     printf("Select second argument (ID from the table (zero indexed))\n");
-    arg2 = get_num_interval("(Enter a number) > ", "Such ID does not exist", 0, table->size - 1);
+    arg2 = get_num_interval((char*)"(Enter a number) > ", (char*)"Such ID does not exist", 0, table->size - 1);
 
     Number* num1 = table->numbers[arg1];
     Number* num2 = table->numbers[arg2];
@@ -198,15 +198,15 @@ void performMath() {
     printf("[4] Division\n");
     printf("[5] Modulo\n");
 
-    action = get_num_interval("(Enter a number) > ", "Such option does not exist", 1, 5);
+    action = get_num_interval((char*)"(Enter a number) > ", (char*)"Such option does not exist", 1, 5);
 
     printTable();
 
     printf("Select first argument (ID from the table (zero indexed))\n");
-    arg1 = get_num_interval("(Enter a number) > ", "Such ID does not exist", 0, table->size - 1);
+    arg1 = get_num_interval((char*)"(Enter a number) > ", (char*)"Such ID does not exist", 0, table->size - 1);
 
     printf("Select second argument (ID from the table (zero indexed))\n");
-    arg2 = get_num_interval("(Enter a number) > ", "Such ID does not exist", 0, table->size - 1);
+    arg2 = get_num_interval((char*)"(Enter a number) > ", (char*)"Such ID does not exist", 0, table->size - 1);
 
     Number* num1 = table->numbers[arg1];
     Number* num2 = table->numbers[arg2];

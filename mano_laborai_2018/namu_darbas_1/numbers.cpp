@@ -10,7 +10,7 @@
 // Header file with useful debugging macros
 #include "dbg.h"
 // Custom library with various helper functions
-#include "lib_riddle.h"
+#include "lib_riddle_cpp.h"
 #include "numbers.h"
 
 // Define table as a global variable
@@ -20,20 +20,20 @@ void initTable() {
     table = (Table*) malloc(sizeof(Table));
     table->capacity = CHUNK_SIZE;
     table->size = 0;
-    table->numbers = malloc(CHUNK_SIZE * sizeof(Number*));
+    table->numbers = (Number**) malloc(CHUNK_SIZE * sizeof(Number*));
     
     for (int i = 0; i < table->capacity; i++) {
-        table->numbers[i] = calloc(1, sizeof(Number));
+        table->numbers[i] = (Number*) calloc(1, sizeof(Number));
     }
 }
 
 void saveNumber(Number* number) {
     if (table->size == table->capacity) {
         table->capacity += CHUNK_SIZE;
-        table->numbers = realloc(table->numbers, table->capacity * sizeof(Number*));
+        table->numbers = (Number**) realloc(table->numbers, table->capacity * sizeof(Number*));
 
         for (int i = table->size; i < table->capacity; i++) {
-            table->numbers[i] = calloc(1, sizeof(Number));
+            table->numbers[i] = (Number*) calloc(1, sizeof(Number));
         }
     }
     table->numbers[table->size] = number;
@@ -67,7 +67,7 @@ void printTable() {
 
 char* numToChar(Number* number) {
 
-        char* numArray = malloc(DIGITS * 2 * sizeof(char));
+        char* numArray = (char*) malloc(DIGITS * 2 * sizeof(char));
         int index = 0;
 
         if (number->negative) {
@@ -675,13 +675,13 @@ Number* divide(Number* num1, Number* num2) {
     Number* res = setNewNumber();
 
     // initalize Number with the value of one
-    Number* one = setNumberFromChar(ONE);
+    Number* one = setNumberFromChar((char*) ONE);
 
     // initalize Number with the value of ten
-    Number* ten = setNumberFromChar(TEN);
+    Number* ten = setNumberFromChar((char*) TEN);
 
     // initalize Number with the value of 0.1
-    Number* zero_one = setNumberFromChar(ZERO_ONE);
+    Number* zero_one = setNumberFromChar((char*) ZERO_ONE);
 
     Number* tmp;
     tmp = num1;

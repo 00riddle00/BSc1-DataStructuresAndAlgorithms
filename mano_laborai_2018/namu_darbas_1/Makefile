@@ -1,10 +1,10 @@
-CC=gcc
-CFLAGS=-Wall -Wextra -lm -g -std=gnu11
+CC=g++
+CFLAGS=-Wall -Wextra -g 
 
-main: main.c numbers.o
-	$(CC) $(CFLAGS) -o main main.c numbers.o -L. -l_riddle
+main: main.cpp numbers.o
+	$(CC) $(CFLAGS) -o main main.cpp numbers.o -L. -l_riddle_cpp
 
-numbers.o: numbers.h numbers.c
+numbers.o: numbers.h numbers.cpp
 
 clean:
 	rm -f main numbers.o

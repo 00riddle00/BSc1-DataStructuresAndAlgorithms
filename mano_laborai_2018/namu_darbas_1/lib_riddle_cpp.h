@@ -29,4 +29,6 @@ void getmemory(int** data, char* ptrName, int memory_size);
 void freememory(int** data, char* ptrName);
 void die(char* message);
 
+extern "C"
+
 #endif
