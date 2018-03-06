@@ -1,9 +1,9 @@
-#ifndef _LIB_RIDDLE_
-#define _LIB_RIDDLE_
+#ifndef HELPERS_H
+#define HELPERS_H
+
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
 // input processing functions
 char* get_word(char* message, char* output);
@@ -28,7 +28,5 @@ int is_sorted(int* data, int size);
 void getmemory(int** data, char* ptrName, int memory_size);
 void freememory(int** data, char* ptrName);
 void die(char* message);
-
-extern "C"
 
 #endif

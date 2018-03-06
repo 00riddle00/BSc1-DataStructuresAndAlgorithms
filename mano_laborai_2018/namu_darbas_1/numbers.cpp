@@ -9,8 +9,6 @@
 
 // Header file with useful debugging macros
 #include "dbg.h"
-// Custom library with various helper functions
-#include "lib_riddle_cpp.h"
 #include "numbers.h"
 
 // Define table as a global variable
@@ -654,16 +652,15 @@ Number* multiplyByInt(Number* num1, int integer) {
 Number* divide(Number* num1, Number* num2) {
 
     int rs = compare(num1, num2);
-    int quotient;
 
     // if first is greater or equal, the quotient will 
     // be greater than 1
     if (rs == 1) {
-        quotient = 1;
+        //quotient = 1;
     // if first is less than second, 
     // the quotient will be less than 1
     } else if (rs == 2) {
-        quotient = 0;
+        //quotient = 0;
     // else if numbers are equal, return one 
     // (Number struct with the value of one)
     } else if (rs == 3) {

@@ -10,7 +10,7 @@
 // Header file with useful debugging macros
 #include "dbg.h"
 // Custom library with various helper functions
-#include "lib_riddle_cpp.h"
+#include "helpers.h"
 #include "numbers.h"
 
 /* action functions */
