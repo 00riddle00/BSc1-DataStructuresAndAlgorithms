@@ -1,0 +1,86 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+CC	Makefile	/^CC=g++$/;"	m
+CFLAGS	Makefile	/^CFLAGS=-Wall -Wextra -g -std=c++11$/;"	m
+CHUNK_SIZE	numbers.h	57;"	d
+DIGITS	numbers.h	61;"	d
+HELPERS_H	helpers.h	2;"	d
+JournalPointerCount	helpers.cpp	/^    int JournalPointerCount;$/;"	m	struct:_MemoryStats	file:
+Number	numbers.h	/^} Number;$/;"	t	typeref:struct:__anon1
+ONE	numbers.h	63;"	d
+TEN	numbers.h	62;"	d
+Table	numbers.h	/^} Table;$/;"	t	typeref:struct:__anon2
+ZERO_ONE	numbers.h	64;"	d
+_MemoryStats	helpers.cpp	/^struct _MemoryStats {$/;"	s	file:
+_PointerStats	helpers.cpp	/^struct _PointerStats {$/;"	s	file:
+__NUMBERS_H	numbers.h	2;"	d
+__dbg_h_	dbg.h	2;"	d
+add	numbers.cpp	/^Number* add(Number* num1, Number* num2, int negative) {$/;"	f
+assign	numbers.cpp	/^void assign(Number* num1, Number* num2) {$/;"	f
+capacity	numbers.h	/^    int capacity;$/;"	m	struct:__anon2
+check	dbg.h	23;"	d
+check_debug	dbg.h	29;"	d
+check_mem	dbg.h	27;"	d
+choice	helpers.cpp	/^int choice(const char* message)$/;"	f
+clean_errno	dbg.h	15;"	d
+compare	numbers.cpp	/^int compare(Number* num1, Number* num2) {$/;"	f
+compareNumbers	demo.cpp	/^void compareNumbers() {$/;"	f
+compareNumbers	demo_ui.cpp	/^void compareNumbers() {$/;"	f
+debug	dbg.h	10;"	d
+debug	dbg.h	12;"	d
+decimal_part	numbers.h	/^    int decimal_part[DIGITS];$/;"	m	struct:__anon1
+die	helpers.cpp	/^void die(char* message)$/;"	f
+digits_decimal	numbers.h	/^    int digits_decimal;$/;"	m	struct:__anon1
+digits_whole	numbers.h	/^    int digits_whole;$/;"	m	struct:__anon1
+divide	numbers.cpp	/^Number* divide(Number* num1, Number* num2) {$/;"	f
+fill_array	helpers.cpp	/^void fill_array(int* data, int size, int max)$/;"	f
+fixNumber	numbers.cpp	/^void fixNumber(Number* num) {$/;"	f
+freeTable	numbers.cpp	/^void freeTable() {$/;"	f
+freememory	helpers.cpp	/^void freememory(int** data, char* ptrName)$/;"	f
+getNumberChar	numbers.cpp	/^void getNumberChar(char* message, char* output)$/;"	f
+get_num	helpers.cpp	/^int get_num(char* message)$/;"	f
+get_num_interval	helpers.cpp	/^int get_num_interval(char* message, char* err_msg, int min, int max)$/;"	f
+get_pos_num	helpers.cpp	/^int get_pos_num(char* message, int zero_allowed)$/;"	f
+get_text	helpers.cpp	/^char* get_text(char* message, char* output)$/;"	f
+get_tokens	helpers.cpp	/^char** get_tokens($/;"	f
+get_word	helpers.cpp	/^char* get_word(char* message, char* output)$/;"	f
+getmemory	helpers.cpp	/^void getmemory(int** data, char* ptrName, int memory_size)$/;"	f
+initTable	numbers.cpp	/^void initTable() {$/;"	f
+isZero	numbers.cpp	/^int isZero(Number* num) {$/;"	f
+is_sorted	helpers.cpp	/^int is_sorted(int* data, int size)$/;"	f
+log_err	dbg.h	17;"	d
+log_info	dbg.h	21;"	d
+log_warn	dbg.h	19;"	d
+main	demo.cpp	/^int main() {$/;"	f
+main	demo_ui.cpp	/^int main() {$/;"	f
+memJournal	helpers.cpp	/^    struct _PointerStats* memJournal;$/;"	m	struct:_MemoryStats	typeref:struct:_MemoryStats::_PointerStats	file:
+memUsed	helpers.cpp	/^    int memUsed;$/;"	m	struct:_MemoryStats	file:
+memUsedByJournal	helpers.cpp	/^    int memUsedByJournal;$/;"	m	struct:_MemoryStats	file:
+memoryStats	helpers.cpp	/^struct _MemoryStats memoryStats;$/;"	v	typeref:struct:_MemoryStats
+multiply	numbers.cpp	/^Number* multiply(Number* num1, Number* num2) {$/;"	f
+multiplyByInt	numbers.cpp	/^Number* multiplyByInt(Number* num1, int integer) {$/;"	f
+negative	numbers.h	/^    int negative;$/;"	m	struct:__anon1
+numToChar	numbers.cpp	/^char* numToChar(Number* number) {$/;"	f
+numbers	numbers.h	/^    Number** numbers;$/;"	m	struct:__anon2
+performMath	demo.cpp	/^void performMath() {$/;"	f
+performMath	demo_ui.cpp	/^void performMath() {$/;"	f
+pointerMemory	helpers.cpp	/^    int pointerMemory;$/;"	m	struct:_PointerStats	file:
+pointerName	helpers.cpp	/^    char* pointerName;$/;"	m	struct:_PointerStats	file:
+printEntry	numbers.cpp	/^void printEntry(Number* number) {$/;"	f
+printTable	numbers.cpp	/^void printTable() {$/;"	f
+print_array	helpers.cpp	/^void print_array(int* data, int size, char* message)$/;"	f
+saveNumber	numbers.cpp	/^void saveNumber(Number* number) {$/;"	f
+sentinel	dbg.h	25;"	d
+setNewNumber	numbers.cpp	/^Number* setNewNumber() {$/;"	f
+setNumberFromChar	numbers.cpp	/^Number* setNumberFromChar(char* numArray) {$/;"	f
+setNumberFromDouble	numbers.cpp	/^Number* setNumberFromDouble(long double number, int whole_digits, int decimal_digits) {$/;"	f
+size	numbers.h	/^    int size;$/;"	m	struct:__anon2
+subtract	numbers.cpp	/^Number* subtract(Number* num1, Number* num2) {$/;"	f
+swap	helpers.cpp	/^void swap(int* a, int* b)$/;"	f
+swap_three	helpers.cpp	/^void swap_three(int* a, int* b, int* c)$/;"	f
+table	numbers.cpp	/^Table* table;$/;"	v
+whole_part	numbers.h	/^    int whole_part[DIGITS];$/;"	m	struct:__anon1

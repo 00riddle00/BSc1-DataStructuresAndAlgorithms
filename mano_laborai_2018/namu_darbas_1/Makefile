@@ -5,6 +5,9 @@ CFLAGS=-Wall -Wextra -g -std=c++11
 demo: demo.cpp helpers.o numbers.o
 	$(CC) $(CFLAGS) -o demo demo.cpp helpers.o numbers.o 
 
+demo_ui: demo_ui.cpp helpers.o numbers.o
+	$(CC) $(CFLAGS) -o demo_ui demo_ui.cpp helpers.o numbers.o 
+
 helpers.o: helpers.h helpers.cpp
 	$(CC) $(CFLAGS) helpers.cpp -c
 
@@ -12,4 +15,4 @@ numbers.o: numbers.h numbers.cpp
 	$(CC) $(CFLAGS) numbers.cpp -c
 
 clean:
-	rm -f demo helpers.o numbers.o
+	rm -f demo ui helpers.o numbers.o

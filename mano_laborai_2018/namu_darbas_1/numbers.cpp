@@ -288,6 +288,176 @@ int compare(Number* num1, Number* num2) {
     }
 }
 
+int compareEqual(Number* num1, Number* num2) {
+    int cmp = compareNumbers(num1, num2);
+
+    if (cmp == 3) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+int compareNotEqual(Number* num1, Number* num2) {
+    int cmp = compareNumbers(num1, num2);
+
+    if (cmp == 3) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+int compareGreaterThan(Number* num1, Number* num2) {
+    int cmp = compareNumbers(num1, num2);
+
+    if (cmp == 1) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+int compareLessThan(Number* num1, Number* num2) {
+    int cmp = compareNumbers(num1, num2);
+
+    if (cmp == 2) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+int compareGreaterThanOrEqual(Number* num1, Number* num2) {
+    int cmp = compareNumbers(num1, num2);
+
+    if (cmp == 2) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+int compareLessThanOrEqual(Number* num1, Number* num2) {
+    int cmp = compareNumbers(num1, num2);
+
+    if (cmp == 1) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+
+
+
+int compareNumbers(Number* num1, Number* num2) {
+
+    int sign1 = num1->negative;
+    int sign2 = num2->negative;
+    int cmp;
+
+    // both numbers positive
+    if (!sign1 && !sign2) {
+        cmp = compare(num1, num2);
+    // both numbers negative
+    } else if (sign1 && sign2) {
+        cmp = compare(num2, num1);
+    // first number is positive, second - negative
+    } else if (sign1 && !sign2) {
+        // greater than
+        cmp = 1;
+    // first number is negative, second - positive
+    } else if (!sign1 && sign2) {
+        // less than
+        cmp = 2;
+    }
+    return cmp;
+}
+
+Number *addNumbers(Number* num1, Number* num2) {
+    Number* res;
+    int sign1 = num1->negative;
+    int sign2 = num2->negative;
+
+    // both numbers positive
+    if (!sign1 && !sign2) {
+        res = add(num1, num2, 0);
+    // both numbers negative
+    } else if (sign1 && sign2) {
+        res = add(num1, num2, 1);
+    // first number is positive, second - negative
+    } else if (!sign1 && sign2) {
+        res = subtract(num1, num2);
+    // first number is negative, second - positive
+    } else if (sign1 && !sign2) {
+        res = subtract(num1, num2);
+    }
+
+    return res;
+}
+
+Number* subtractNumbers(Number* num1, Number* num2) {
+    Number* res;
+    int sign1 = num1->negative;
+    int sign2 = num2->negative;
+
+    // both numbers positive
+    if (!sign1 && !sign2) {
+        res =  subtract(num1, num2);
+    // both numbers negative
+    } else if (sign1 && sign2) {
+        res =  subtract(num1, num2);
+    // first number is positive, second - negative
+    } else if (!sign1 && sign2) {
+        res = add(num1, num2, 0);
+    // first number is negative, second - positive
+    } else if (sign1 && !sign2) {
+        res = add(num1, num2, 1);
+    }
+
+    return res;
+}
+
+Number* multiplyNumbers(Number* num1, Number* num2) {
+    Number* res = multiply(num1, num2);
+    int sign1 = num1->negative;
+    int sign2 = num2->negative;
+
+    // both numbers positive
+    if (!sign1 && !sign2) {
+        res->negative = 0;
+    // both numbers negative
+    } else if (sign1 && sign2) {
+        res->negative = 0;
+    // one number is positive, another - negative
+    } else {
+        res->negative = 1;
+    }
+
+    return res;
+}
+
+Number* divideNumbers(Number* num1, Number* num2) {
+
+    Number* res = divide(num1, num2);
+    int sign1 = num1->negative;
+    int sign2 = num2->negative;
+
+    // both numbers positive
+    if (!sign1 && !sign2) {
+        res->negative = 0;
+    // both numbers negative
+    } else if (sign1 && sign2) {
+        res->negative = 0;
+    // one number is positive, another - negative
+    } else {
+        res->negative = 1;
+    }
+
+    return res;
+}
+
 Number* add(Number* num1, Number* num2, int negative) {
     Number* bigger = num1;
     Number* smaller = num2;

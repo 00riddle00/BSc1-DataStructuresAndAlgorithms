@@ -159,6 +159,21 @@ int isZero(Number* num);
 /*       3            equal to (==)    */
 int compare(Number* num1, Number* num2);
 
+int compareEqual(Number* num1, Number* num2);
+int compareNotEqual(Number* num1, Number* num2);
+int compareGreaterThan(Number* num1, Number* num2);
+int compareLessThan(Number* num1, Number* num2);
+int compareGreaterThanOrEqual(Number* num1, Number* num2);
+int compareLessThanOrEqual(Number* num1, Number* num2);
+
+int compareNumbers(Number* num1, Number* num2);
+
+// TODO add description
+Number *addNumbers(Number* num1, Number* num2);
+Number* subtractNumbers(Number* num1, Number* num2);
+Number* multiplyNumbers(Number* num1, Number* num2);
+Number* divideNumbers(Number* num1, Number* num2);
+
 // add two numbers
 // ::params:: num1 - first number
 // ::params:: num2 - second number
