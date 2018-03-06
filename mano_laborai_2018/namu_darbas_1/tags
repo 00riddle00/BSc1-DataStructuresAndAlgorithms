@@ -20,6 +20,7 @@ _PointerStats	helpers.cpp	/^struct _PointerStats {$/;"	s	file:
 __NUMBERS_H	numbers.h	2;"	d
 __dbg_h_	dbg.h	2;"	d
 add	numbers.cpp	/^Number* add(Number* num1, Number* num2, int negative) {$/;"	f
+addNumbers	numbers.cpp	/^Number *addNumbers(Number* num1, Number* num2) {$/;"	f
 assign	numbers.cpp	/^void assign(Number* num1, Number* num2) {$/;"	f
 capacity	numbers.h	/^    int capacity;$/;"	m	struct:__anon2
 check	dbg.h	23;"	d
@@ -28,8 +29,14 @@ check_mem	dbg.h	27;"	d
 choice	helpers.cpp	/^int choice(const char* message)$/;"	f
 clean_errno	dbg.h	15;"	d
 compare	numbers.cpp	/^int compare(Number* num1, Number* num2) {$/;"	f
-compareNumbers	demo.cpp	/^void compareNumbers() {$/;"	f
+compareEqual	numbers.cpp	/^int compareEqual(Number* num1, Number* num2) {$/;"	f
+compareGreaterThan	numbers.cpp	/^int compareGreaterThan(Number* num1, Number* num2) {$/;"	f
+compareGreaterThanOrEqual	numbers.cpp	/^int compareGreaterThanOrEqual(Number* num1, Number* num2) {$/;"	f
+compareLessThan	numbers.cpp	/^int compareLessThan(Number* num1, Number* num2) {$/;"	f
+compareLessThanOrEqual	numbers.cpp	/^int compareLessThanOrEqual(Number* num1, Number* num2) {$/;"	f
+compareNotEqual	numbers.cpp	/^int compareNotEqual(Number* num1, Number* num2) {$/;"	f
 compareNumbers	demo_ui.cpp	/^void compareNumbers() {$/;"	f
+compareNumbers	numbers.cpp	/^int compareNumbers(Number* num1, Number* num2) {$/;"	f
 debug	dbg.h	10;"	d
 debug	dbg.h	12;"	d
 decimal_part	numbers.h	/^    int decimal_part[DIGITS];$/;"	m	struct:__anon1
@@ -37,11 +44,13 @@ die	helpers.cpp	/^void die(char* message)$/;"	f
 digits_decimal	numbers.h	/^    int digits_decimal;$/;"	m	struct:__anon1
 digits_whole	numbers.h	/^    int digits_whole;$/;"	m	struct:__anon1
 divide	numbers.cpp	/^Number* divide(Number* num1, Number* num2) {$/;"	f
+divideNumbers	numbers.cpp	/^Number* divideNumbers(Number* num1, Number* num2) {$/;"	f
 fill_array	helpers.cpp	/^void fill_array(int* data, int size, int max)$/;"	f
 fixNumber	numbers.cpp	/^void fixNumber(Number* num) {$/;"	f
 freeTable	numbers.cpp	/^void freeTable() {$/;"	f
 freememory	helpers.cpp	/^void freememory(int** data, char* ptrName)$/;"	f
 getNumberChar	numbers.cpp	/^void getNumberChar(char* message, char* output)$/;"	f
+getNumberIndex	demo_ui.cpp	/^int getNumberIndex() {$/;"	f
 get_num	helpers.cpp	/^int get_num(char* message)$/;"	f
 get_num_interval	helpers.cpp	/^int get_num_interval(char* message, char* err_msg, int min, int max)$/;"	f
 get_pos_num	helpers.cpp	/^int get_pos_num(char* message, int zero_allowed)$/;"	f
@@ -63,10 +72,10 @@ memUsedByJournal	helpers.cpp	/^    int memUsedByJournal;$/;"	m	struct:_MemorySta
 memoryStats	helpers.cpp	/^struct _MemoryStats memoryStats;$/;"	v	typeref:struct:_MemoryStats
 multiply	numbers.cpp	/^Number* multiply(Number* num1, Number* num2) {$/;"	f
 multiplyByInt	numbers.cpp	/^Number* multiplyByInt(Number* num1, int integer) {$/;"	f
+multiplyNumbers	numbers.cpp	/^Number* multiplyNumbers(Number* num1, Number* num2) {$/;"	f
 negative	numbers.h	/^    int negative;$/;"	m	struct:__anon1
 numToChar	numbers.cpp	/^char* numToChar(Number* number) {$/;"	f
 numbers	numbers.h	/^    Number** numbers;$/;"	m	struct:__anon2
-performMath	demo.cpp	/^void performMath() {$/;"	f
 performMath	demo_ui.cpp	/^void performMath() {$/;"	f
 pointerMemory	helpers.cpp	/^    int pointerMemory;$/;"	m	struct:_PointerStats	file:
 pointerName	helpers.cpp	/^    char* pointerName;$/;"	m	struct:_PointerStats	file:
@@ -80,6 +89,7 @@ setNumberFromChar	numbers.cpp	/^Number* setNumberFromChar(char* numArray) {$/;"	
 setNumberFromDouble	numbers.cpp	/^Number* setNumberFromDouble(long double number, int whole_digits, int decimal_digits) {$/;"	f
 size	numbers.h	/^    int size;$/;"	m	struct:__anon2
 subtract	numbers.cpp	/^Number* subtract(Number* num1, Number* num2) {$/;"	f
+subtractNumbers	numbers.cpp	/^Number* subtractNumbers(Number* num1, Number* num2) {$/;"	f
 swap	helpers.cpp	/^void swap(int* a, int* b)$/;"	f
 swap_three	helpers.cpp	/^void swap_three(int* a, int* b, int* c)$/;"	f
 table	numbers.cpp	/^Table* table;$/;"	v

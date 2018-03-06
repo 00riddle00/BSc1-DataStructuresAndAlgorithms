@@ -170,7 +170,10 @@ Number* setNumberFromChar(char* numArray) {
 
     /// TODO handle this error
     if(error) {
-        printf("Invalid number\n");
+        printf("Invalid number. Number 0.0 is returned/written\n");
+        free(number);
+        Number* zero = setNumberFromChar((char*)"0.0");
+        return zero;
     }
 
     for (int i = number->digits_whole - 1; i >= 0; i--) {
@@ -364,11 +367,11 @@ int compareNumbers(Number* num1, Number* num2) {
     } else if (sign1 && sign2) {
         cmp = compare(num2, num1);
     // first number is positive, second - negative
-    } else if (sign1 && !sign2) {
+    } else if (!sign1 && sign2) {
         // greater than
         cmp = 1;
     // first number is negative, second - positive
-    } else if (!sign1 && sign2) {
+    } else if (sign1 && !sign2) {
         // less than
         cmp = 2;
     }
