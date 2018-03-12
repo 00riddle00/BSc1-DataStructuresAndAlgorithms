@@ -57,7 +57,7 @@ int main() {
 
     // ask for user input and process it
     while(1) {
-        printf("[Enter \"i\" for info] Enter action> ");
+        printf("[Enter \"i\" for info] Enter action > ");
         scanf(" %c", &choice);
 
         switch (choice) {

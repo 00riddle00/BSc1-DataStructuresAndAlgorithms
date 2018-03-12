@@ -462,18 +462,26 @@ Number* divideNumbers(Number* num1, Number* num2) {
 }
 
 Number* add(Number* num1, Number* num2, int negative) {
-    Number* bigger = num1;
-    Number* smaller = num2;
+
+    Number* bigger = setNewNumber();
+    Number* smaller = setNewNumber();
+    assign(bigger, num1);
+    assign(smaller, num2);
+
+    //Number* bigger = num1;
+    //Number* smaller = num2;
 
     if (bigger->digits_decimal < smaller->digits_decimal) {
         Number temp = *bigger;
         *bigger = *smaller;
         *smaller = temp;
+        //assign(bigger, num2);
+        //assign(smaller, num1);
     }
 
     // create result Number and populate it with decimal digits 
     // of the bigger number
-    Number* res = (Number*) malloc(sizeof(Number));
+    Number* res = (Number*) calloc(1, sizeof(Number));
     for (int i = 0; i < bigger->digits_decimal; i++) {
         res->decimal_part[i] = bigger->decimal_part[i];
     }
@@ -482,7 +490,6 @@ Number* add(Number* num1, Number* num2, int negative) {
     // part - the part to be transfered to the next sum. 
     //  Ex. 9+5 = 14, 1 then becomes the "part" to be transfered next.
     int part;
-
 
     // add decimal parts
     for (int i = smaller->digits_decimal - 1; i > 0; i--) {
@@ -515,7 +522,7 @@ Number* add(Number* num1, Number* num2, int negative) {
         *bigger = *smaller;
         *smaller = temp;
     }
-
+    
     // copy whole_part to the result struct
     res->digits_whole = bigger->digits_whole + 1;
 
@@ -677,7 +684,8 @@ Number* subtract(Number* num1, Number* num2) {
 
 Number* multiply(Number* num1, Number* num2) {
 
-    Number* res = (Number*) malloc(sizeof(Number));
+    // TODO use setNewNumber here
+    Number* res = (Number*) calloc(1, sizeof(Number));
     // firstly, set the result as a whole part of the resulting number
     // set digits of the result to a maximum possible number after  multiplication
     res->digits_whole = num1->digits_whole + num1->digits_decimal + num2->digits_whole + num2->digits_decimal;
@@ -693,23 +701,23 @@ Number* multiply(Number* num1, Number* num2) {
     // number (convert decimal part to whole part) - ie move decimal dot(.) to 
     // the end of the number, or multiply it by 10^n, where n is the number of 
     // decimal digits (digits after the dot).
-    Number* n1 = (Number*) malloc(sizeof(Number));
+    Number* n1 = (Number*) calloc(1, sizeof(Number));
 
     for (int i = num1->digits_decimal - 1, j = 0; i >= 0; i--, j++) {
         n1->whole_part[j] = num1->decimal_part[i];
         n1->digits_whole++;
     }
+
     for (int i = 0; i < num1->digits_whole; i++) {
         n1->whole_part[i+num1->digits_decimal] = num1->whole_part[i];
         n1->digits_whole++;
     }
 
-
     // populate second factor with both decimal and whole parts of the second
     // number (convert decimal part to whole part) - ie move decimal dot(.) to 
     // the end of the number, or multiply it by 10^n, where n is the number of 
     // decimal digits (digits after the dot).
-    Number* n2 = (Number*) malloc(sizeof(Number));
+    Number* n2 = (Number*) calloc(1, sizeof(Number));
 
     for (int i = num2->digits_decimal - 1, j = 0; i >= 0; i--, j++) {
         n2->whole_part[j] = num2->decimal_part[i];
@@ -774,14 +782,15 @@ Number* multiply(Number* num1, Number* num2) {
     }
 
     
-    // remove zeroes in the front of the resulting number
-    for (int i = res->digits_whole-1; i >= 0; i--) {
-        if (res->whole_part[i] == 0) {
-            res->digits_whole--;
-        } else {
-            break;
-        }
-    }
+    // TODO readd this?
+/*    // remove zeroes in the front of the resulting number*/
+    //for (int i = res->digits_whole-1; i >= 0; i--) {
+        //if (res->whole_part[i] == 0) {
+            //res->digits_whole--;
+        //} else {
+            //break;
+        //}
+    //}
 
     // move decimal dot to the required place
     // ie convert whole number to a decimal number again
@@ -823,23 +832,144 @@ Number* multiplyByInt(Number* num1, int integer) {
 // FIXME hence the temporary guard if condition is added to stop 
 // FIXME division after the resulting number reaches 35 digits.
 Number* divide(Number* num1, Number* num2) {
+    int quotient;
 
     int rs = compare(num1, num2);
 
-    // if first is greater or equal, the quotient will 
+    // if first is greater, the quotient will 
     // be greater than 1
     if (rs == 1) {
-        //quotient = 1;
-    // if first is less than second, 
+        quotient = 1;
+    // if first is smaller than second, 
     // the quotient will be less than 1
     } else if (rs == 2) {
-        //quotient = 0;
+        quotient = 0;
     // else if numbers are equal, return one 
-    // (Number struct with the value of one)
     } else if (rs == 3) {
-        Number* res = setNewNumber();
-        res->whole_part[0] = 1;
-        return res;
+        // initalize Number with the value of one
+        Number* one = setNumberFromChar((char*) ONE);
+        return one;
+    }
+
+    Number* res = setNewNumber();
+
+    // initalize Number with the value of one
+    Number* one = setNumberFromChar((char*) ONE);
+
+    // initalize Number with the value of ten
+    Number* ten = setNumberFromChar((char*) TEN);
+
+    // initalize Number with the value of 0.1
+    Number* zero_one = setNumberFromChar((char*) ZERO_ONE);
+
+    Number* tmp;
+    tmp = num1;
+
+    // set the remainder as the dividend at first
+    Number* remainder = num1;
+
+    if (!quotient) {
+        one = multiply(one, zero_one);
+        tmp = multiply(tmp, ten);
+        remainder = multiply(remainder, ten);
+    }
+
+    // sets how many times the divisor is subtracted from remainder
+    // ie sets the whole number = remainder / divisor
+    int counter = 0;
+
+    // run the long division loop
+    while (1) {
+        tmp = subtract(tmp, num2);
+        // if remainder is not yet divided into equal parts or does
+        // not yet become negative, continue the division
+        if ((tmp->digits_whole > 1 || tmp->whole_part[0] != 0) && !(tmp->negative)) {
+            printEntry(one);
+            res = add(res, one, 0);
+            counter++;
+            //exit(1);
+        // stop if the remainder becomes equal to zero (ie becomes divided
+        // into equal parts
+        } else if (isZero(tmp)) {
+            res = add(res, one, 0);
+            counter++;
+            free(one);
+            free(ten);
+            free(zero_one);
+            return res;
+        } else {
+            // if the divisor (second number) is greater than the remainder,
+            // multiply the remainder by ten and continue the division loop.
+            if (counter == 0) {
+                // tmp becomes remainder again
+                assign(tmp, remainder);
+
+                // the remainder is multiplied by ten
+                tmp = multiply(tmp, ten);
+                remainder = multiply(remainder, ten);
+
+                // enter a zero to the result, which means that the remainder
+                // was smaller than the divisor
+                
+                // TODO ar nereiktu pirma digits_decimal++ padaryti?
+                if (res->digits_decimal > 1) {
+                    res->decimal_part[(res->digits_decimal)++] = 0;
+                }
+                one = multiply(one, zero_one);
+
+                continue;
+            }
+            // FIXME temporary guard, else the program stops running 
+            // FIXME (gets stuck)
+            if (res->digits_decimal > 35) {
+                free(one);
+                free(ten);
+                free(zero_one);
+                return res;
+            }
+            // get the new remainder (remainder -= divisor * (remainder / divisor))
+            remainder = subtract(remainder, multiplyByInt(num2, counter));
+
+            one->decimal_part[one->digits_decimal-1] = 0;
+            one->decimal_part[(one->digits_decimal)++] = 1;
+            //one = multiply(one, zero_one);
+            //
+            counter = 0;
+
+            // tmp becomes remainder again
+            assign(tmp, remainder);
+
+            remainder = multiply(remainder, ten);
+            tmp = multiply(tmp, ten);
+            printEntry(tmp);
+
+        }
+    }
+
+    free(one);
+    free(ten);
+    free(zero_one);
+    fixNumber(res);
+    return res;
+}
+
+
+Number* modulus(Number* num1, Number* num2) {
+
+    int rs = compare(num1, num2);
+
+    // if first is greater, the modulus will 
+    // be mod(num1, num2);
+    if (rs == 1) {
+    // if first is smaller than second, 
+    // the modulus will be the first number
+    } else if (rs == 2) {
+        return num1;
+    // else if numbers are equal, return zero 
+    } else if (rs == 3) {
+        // initalize Number with the value of zero
+        Number* zero = setNewNumber();
+        return zero;
     }
 
     Number* res = setNewNumber();
@@ -928,6 +1058,11 @@ Number* divide(Number* num1, Number* num2) {
     fixNumber(res);
     return res;
 }
+
+
+
+
+
 
 void freeTable() {
     for (int i = 0; i < table->capacity; i++) {

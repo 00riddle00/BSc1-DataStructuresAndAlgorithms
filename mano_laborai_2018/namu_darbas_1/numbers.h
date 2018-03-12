@@ -205,6 +205,9 @@ Number* multiplyByInt(Number* num1, int integer);
 // ::return::  a resulting Number
 Number* divide(Number* num1, Number* num2);
 
+
+Number* modulus(Number* num1, Number* num2);
+
 // Declare table as a global variable
 extern Table* table;
 
