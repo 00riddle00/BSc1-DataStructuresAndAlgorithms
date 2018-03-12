@@ -817,13 +817,26 @@ Number* multiply(Number* num1, Number* num2) {
 Number* multiplyByInt(Number* num1, int integer) {
 
     // init to zero
-    Number* num2 = setNewNumber();
+    //Number* num2 = setNewNumber();
+    Number* num2 = (Number*) calloc(1, sizeof(Number));
 
     while(integer != 0) {
         num2->digits_whole++;
         num2->whole_part[num2->digits_whole-1] = integer % 10;
         integer /= 10;
     }
+
+    debug("entries");
+
+    debug("%d", num1->digits_whole);
+    debug("%d", num1->digits_decimal);
+
+    debug("%d", num2->digits_whole);
+    debug("%d", num2->digits_decimal);
+
+    printEntry(num1);
+    printEntry(num2);
+
     return multiply(num1, num2);
 }
 
@@ -862,8 +875,9 @@ Number* divide(Number* num1, Number* num2) {
     // initalize Number with the value of 0.1
     Number* zero_one = setNumberFromChar((char*) ZERO_ONE);
 
-    Number* tmp;
-    tmp = num1;
+    Number* tmp = (Number*) calloc(1, sizeof(Number));
+    assign(tmp, num1);
+    //tmp = num1;
 
     // set the remainder as the dividend at first
     Number* remainder = num1;
@@ -884,10 +898,13 @@ Number* divide(Number* num1, Number* num2) {
         // if remainder is not yet divided into equal parts or does
         // not yet become negative, continue the division
         if ((tmp->digits_whole > 1 || tmp->whole_part[0] != 0) && !(tmp->negative)) {
-            printEntry(one);
             res = add(res, one, 0);
+            debug("counter++");
+            printEntry(res);
             counter++;
-            //exit(1);
+            debug("TMP is");
+            printEntry(tmp);
+            continue;
         // stop if the remainder becomes equal to zero (ie becomes divided
         // into equal parts
         } else if (isZero(tmp)) {
@@ -898,6 +915,7 @@ Number* divide(Number* num1, Number* num2) {
             free(zero_one);
             return res;
         } else {
+            debug("Else goes here");
             // if the divisor (second number) is greater than the remainder,
             // multiply the remainder by ten and continue the division loop.
             if (counter == 0) {
@@ -921,27 +939,54 @@ Number* divide(Number* num1, Number* num2) {
             }
             // FIXME temporary guard, else the program stops running 
             // FIXME (gets stuck)
-            if (res->digits_decimal > 35) {
+            //if (res->digits_decimal > 35) {
+            if (res->digits_decimal > 200) {
                 free(one);
                 free(ten);
                 free(zero_one);
                 return res;
             }
             // get the new remainder (remainder -= divisor * (remainder / divisor))
-            remainder = subtract(remainder, multiplyByInt(num2, counter));
+            //
+            //
+            debug("counter: %d", counter);
+            debug("NUM2");
+            printEntry(num2);
 
-            one->decimal_part[one->digits_decimal-1] = 0;
-            one->decimal_part[(one->digits_decimal)++] = 1;
-            //one = multiply(one, zero_one);
+            debug("REM1");
+            printEntry(remainder);
+            
+            debug("MULTI");
+            printEntry(multiplyByInt(num2, counter));
+
+            debug("BEFORE SUBTRACTION-----------------------------------------");
+            remainder = subtract(remainder, multiplyByInt(num2, counter));
+            debug("AFTER SUBTRACTION-----------------------------------------");
+
+            debug("REM");
+            printEntry(remainder);
+
+            //one->decimal_part[one->digits_decimal-1] = 0;
+            //one->decimal_part[(one->digits_decimal)++] = 1;
+            one = multiply(one, zero_one);
+            debug("ONE");
+            printEntry(one);
             //
             counter = 0;
 
             // tmp becomes remainder again
             assign(tmp, remainder);
 
+            debug("TMP");
+            printEntry(tmp);
+
             remainder = multiply(remainder, ten);
             tmp = multiply(tmp, ten);
+
+            debug("TMP2");
             printEntry(tmp);
+
+            //exit(1);
 
         }
     }
