@@ -1,0 +1,74 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Algorithm	pratybos6.c	/^} Algorithm;$/;"	t	typeref:struct:__anon4	file:
+CC	Makefile	/^CC=gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS=-Wall -Wextra -g -std=gnu11$/;"	m
+GnomeSort	pratybos6.c	/^int* GnomeSort(int* target, int size) {$/;"	f
+Iteration	pratybos6.c	/^} Iteration;$/;"	t	typeref:struct:__anon3	file:
+JournalPointerCount	pratybos6.c	/^    int JournalPointerCount;$/;"	m	struct:__anon2	file:
+MAX_ALGO	pratybos6.c	113;"	d	file:
+MAX_ITER	pratybos6.c	112;"	d	file:
+MaxHeap	lib_sorting.h	/^struct MaxHeap {$/;"	s
+MemoryStats	pratybos6.c	/^} MemoryStats;$/;"	t	typeref:struct:__anon2	file:
+PointerStats	pratybos6.c	/^} PointerStats;$/;"	t	typeref:struct:__anon1	file:
+Results	pratybos6.c	/^} Results;$/;"	t	typeref:struct:__anon5	file:
+_LIB_RIDDLE_	lib_riddle.h	2;"	d
+_LIB_SORTING_	lib_sorting.h	2;"	d
+__dbg_h_	dbg.h	2;"	d
+algo_count	pratybos6.c	/^int algo_count;$/;"	v
+algorithms	pratybos6.c	/^    Algorithm* algorithms[MAX_ALGO];$/;"	m	struct:__anon5	file:
+arch	pratybos6.c	/^    char* arch;$/;"	m	struct:__anon5	file:
+array	lib_sorting.h	/^    int* array;$/;"	m	struct:MaxHeap
+array_count	pratybos6.c	/^int array_count;$/;"	v
+assign_count	pratybos6.c	/^    int assign_count;$/;"	m	struct:__anon3	file:
+avg_assign	pratybos6.c	/^    int avg_assign;$/;"	m	struct:__anon4	file:
+avg_clocks	pratybos6.c	/^    double avg_clocks;$/;"	m	struct:__anon4	file:
+avg_comp	pratybos6.c	/^    int avg_comp;$/;"	m	struct:__anon4	file:
+avg_time	pratybos6.c	/^    double avg_time;$/;"	m	struct:__anon4	file:
+calculate_average	pratybos6.c	/^void calculate_average(Algorithm* Algo)$/;"	f
+check	dbg.h	23;"	d
+check_debug	dbg.h	29;"	d
+check_mem	dbg.h	27;"	d
+clean_errno	dbg.h	15;"	d
+clocks_total	pratybos6.c	/^    double clocks_total;$/;"	m	struct:__anon3	file:
+combsort	pratybos6.c	/^int* combsort(int* a, int aSize) {$/;"	f
+comp_count	pratybos6.c	/^    int comp_count;$/;"	m	struct:__anon3	file:
+compiler	pratybos6.c	/^    char* compiler;$/;"	m	struct:__anon5	file:
+complexity	pratybos6.c	/^    char* complexity;$/;"	m	struct:__anon4	file:
+date	pratybos6.c	/^    char* date;$/;"	m	struct:__anon5	file:
+debug	dbg.h	10;"	d
+debug	dbg.h	12;"	d
+filldata	pratybos6.c	/^void filldata(int* data, int size, int min, int max, int repeat)$/;"	f
+is_sorted	pratybos6.c	/^    int is_sorted;$/;"	m	struct:__anon3	file:
+iter_count	pratybos6.c	/^    int iter_count;$/;"	m	struct:__anon4	file:
+iterations	pratybos6.c	/^    Iteration* iterations[MAX_ITER];$/;"	m	struct:__anon4	file:
+log_err	dbg.h	17;"	d
+log_info	dbg.h	21;"	d
+log_warn	dbg.h	19;"	d
+main	pratybos6.c	/^int main(int argc, char* argv[])$/;"	f
+memJournal	pratybos6.c	/^    PointerStats* memJournal;$/;"	m	struct:__anon2	file:
+memUsed	pratybos6.c	/^    int memUsed;$/;"	m	struct:__anon2	file:
+memUsedByJournal	pratybos6.c	/^    int memUsedByJournal;$/;"	m	struct:__anon2	file:
+memoryStats	pratybos6.c	/^MemoryStats memoryStats;$/;"	v
+mergesort_pointer	pratybos6.c	/^typedef void (*mergesort_pointer)(int* target, int* working_array, int size);$/;"	t	file:
+newgap	pratybos6.c	/^int newgap(int gap) {$/;"	f
+no	pratybos6.c	/^    int no;$/;"	m	struct:__anon3	file:
+pointerMemory	pratybos6.c	/^    int pointerMemory;$/;"	m	struct:__anon1	file:
+pointerName	pratybos6.c	/^    char* pointerName;$/;"	m	struct:__anon1	file:
+print_algo	pratybos6.c	/^void print_algo(Algorithm* Algo)$/;"	f
+quicksort_pointer	pratybos6.c	/^typedef int* (*quicksort_pointer)(int* target, int first, int last);$/;"	t	file:
+quicksort_pointer_2	pratybos6.c	/^typedef void (*quicksort_pointer_2)(int* target, int first, int last);$/;"	t	file:
+rank	pratybos6.c	/^    int rank;$/;"	m	struct:__anon4	file:
+rank_algorithms	pratybos6.c	/^Algorithm** rank_algorithms(Algorithm** target, int first, int last)$/;"	f
+sentinel	dbg.h	25;"	d
+size	lib_sorting.h	/^    int size;$/;"	m	struct:MaxHeap
+sort_pointer	pratybos6.c	/^typedef int* (*sort_pointer)(int* target, int size);$/;"	t	file:
+test_mergesort	pratybos6.c	/^void test_mergesort($/;"	f
+test_quicksort	pratybos6.c	/^void test_quicksort(int* data, int size, quicksort_pointer func, Algorithm* Algo, int no) {$/;"	f
+test_sort	pratybos6.c	/^void test_sort(int* data, int size, sort_pointer func, Algorithm* Algo, int no)$/;"	f
+time_spent	pratybos6.c	/^    double time_spent;$/;"	m	struct:__anon3	file:
+type	pratybos6.c	/^    char* type;$/;"	m	struct:__anon4	file:
