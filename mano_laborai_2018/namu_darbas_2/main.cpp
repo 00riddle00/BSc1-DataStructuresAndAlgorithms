@@ -112,6 +112,14 @@ int Search(BstNode* root, int data) {
     else return Search(root->right, data);
 }
 
+BstNode* Search2(BstNode* root, int data) {
+    if (root == NULL)  return NULL;
+    else if (root->data == data)  return root;
+    else if (data <= root->data) return Search2(root->left, data);
+    else return Search2(root->right, data);
+}
+
+
 void Preorder(BstNode *root) {
     if (root == NULL) return;
 
@@ -156,6 +164,19 @@ int FindMin(BstNode* root) {
     }
     return root->data;
 }
+
+
+BstNode* FindMin2(BstNode* root) {
+    if (root == NULL) {
+        printf("Error: Tree is empty\n");
+        return NULL;
+    }
+    while (root->left != NULL) {
+        root = root->left;
+    }
+    return root;
+}
+
 
 int FindMinRecursive(BstNode* root) {
     if (root == NULL) {
@@ -287,29 +308,30 @@ BstNode* Delete(BstNode* root, int data) {
 }
 
 
+
  /*//TODO make it work*/
 //Function to find Inorder Successor in a BST
-//struct Node* Getsuccessor(struct Node* root,int data) {
-    //// Search the Node - O(h)
-    //struct Node* current = Find(root,data);
-    //if(current == NULL) return NULL;
-    //if(current->right != NULL) {  //Case 1: Node has right subtree
-        //return FindMin(current->right); // O(h)
-    //}
-    //else {   //Case 2: No right subtree  - O(h)
-        //struct Node* successor = NULL;
-        //struct Node* ancestor = root;
-        //while(ancestor != current) {
-            //if(current->data < ancestor->data) {
-                //successor = ancestor; // so far this is the deepest node for which current node is in left
-                //ancestor = ancestor->left;
-            //}
-            //else
-                //ancestor = ancestor->right;
-        //}
-        //return successor;
-    //}
-//}
+BstNode* Getsuccessor(BstNode* root,int data) {
+    // Search the Node - O(h)
+    BstNode* current = Search2(root,data);
+    if(current == NULL) return NULL;
+    if(current->right != NULL) {  //Case 1: Node has right subtree
+        return FindMin2(current->right); // O(h)
+    }
+    else {   //Case 2: No right subtree  - O(h)
+        BstNode* successor = NULL;
+        BstNode* ancestor = root;
+        while(ancestor != current) {
+            if(current->data < ancestor->data) {
+                successor = ancestor; // so far this is the deepest node for which current node is in left
+                ancestor = ancestor->left;
+            }
+            else
+                ancestor = ancestor->right;
+        }
+        return successor;
+    }
+}
  
 /* -----------------------------//-BST implementation ---------------------------------*/
 
@@ -478,6 +500,16 @@ int main() {
     int res = IsBinarySearchTree2(root, INT_MIN, INT_MAX);
     printf("IsBinarySearchTree: %d\n\n", res);
 
+    //Find Inorder successor of some node. 
+    printf("Find Inorder successor of node with value of 6\n");
+    BstNode* successor = Getsuccessor(root,5);
+
+    if(successor == NULL) {
+        printf("No successor Found\n");
+    } else {
+        printf("Successor is %d\n", successor->data);
+    }
+
     printf("Printing preorder (before delete):\n");
     Preorder(root);
     printf("\n");
@@ -488,19 +520,6 @@ int main() {
     Preorder(root);
     printf("\n");
 
-
-	// Find Inorder successor of some node. 
-	//struct Node* successor = Getsuccessor(root,1);
-	//if(successor == NULL) cout<<"No successor Found\n";
-	//else
-    //cout<<"Successor is "<<successor->data<<"\n";
-	/* Drive code to test the implementation. */
-	// Printing elements in Queue after each Enqueue or Dequeue 
-	//Enqueue(2); Print(); 
-	//Enqueue(4); Print();
-	//Enqueue(6); Print();
-	//Dequeue();  Print();
-	//Enqueue(8); Print();
 
 
 

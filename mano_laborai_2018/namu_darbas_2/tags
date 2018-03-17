@@ -10,12 +10,17 @@ BstNode	main.cpp	/^} BstNode;$/;"	t	typeref:struct:BstNode	file:
 CC	Makefile	/^CC=g++$/;"	m
 CFLAGS	Makefile	/^CFLAGS=-Wall -Wextra -g -lm -std=c++11$/;"	m
 Delete	main.cpp	/^BstNode* Delete(BstNode* root, int data) {$/;"	f
+Dequeue	main.cpp	/^void Dequeue() {$/;"	f
+Enqueue	main.cpp	/^void Enqueue(BstNode* x) {$/;"	f
 FindHeight	main.cpp	/^int FindHeight(BstNode* root) {$/;"	f
 FindMax	main.cpp	/^int FindMax(BstNode* root) {$/;"	f
 FindMaxRecursive	main.cpp	/^int FindMaxRecursive(BstNode* root) {$/;"	f
 FindMin	main.cpp	/^int FindMin(BstNode* root) {$/;"	f
+FindMin2	main.cpp	/^BstNode* FindMin2(BstNode* root) {$/;"	f
 FindMinRecursive	main.cpp	/^int FindMinRecursive(BstNode* root) {$/;"	f
+Front	main.cpp	/^BstNode* Front() {$/;"	f
 GetNewNode	main.cpp	/^BstNode* GetNewNode(int data) {$/;"	f
+Getsuccessor	main.cpp	/^BstNode* Getsuccessor(BstNode* root,int data) {$/;"	f
 Inorder	main.cpp	/^void Inorder(BstNode *root) {$/;"	f
 InorderFill	main.cpp	/^void InorderFill(BstNode *root) {$/;"	f
 Insert	main.cpp	/^BstNode* Insert(BstNode* root, int data) {$/;"	f
@@ -23,12 +28,20 @@ IsBinarySearchTree1	main.cpp	/^int IsBinarySearchTree1(BstNode* root) {$/;"	f
 IsBinarySearchTree2	main.cpp	/^int IsBinarySearchTree2(BstNode* root, int minValue, int maxValue) {$/;"	f
 IsSubtreeGreater	main.cpp	/^int IsSubtreeGreater(BstNode *root, int value) {$/;"	f
 IsSubtreeLesser	main.cpp	/^int IsSubtreeLesser(BstNode *root, int value) {$/;"	f
+LevelOrder	main.cpp	/^void LevelOrder(BstNode *root) {$/;"	f
+Node	main.cpp	/^struct Node {$/;"	s	file:
 Postorder	main.cpp	/^void Postorder(BstNode *root) {$/;"	f
 Preorder	main.cpp	/^void Preorder(BstNode *root) {$/;"	f
+Print	main.cpp	/^void Print() {$/;"	f
 Search	main.cpp	/^int Search(BstNode* root, int data) {$/;"	f
+Search2	main.cpp	/^BstNode* Search2(BstNode* root, int data) {$/;"	f
 array	main.cpp	/^int array[10];$/;"	v
+data	main.cpp	/^    BstNode* data;$/;"	m	struct:Node	file:
 data	main.cpp	/^    int data;$/;"	m	struct:BstNode	file:
+front	main.cpp	/^struct Node* front = NULL;$/;"	v	typeref:struct:Node
 left	main.cpp	/^    struct BstNode *left;$/;"	m	struct:BstNode	typeref:struct:BstNode::BstNode	file:
 main	main.cpp	/^int main() {$/;"	f
+next	main.cpp	/^	struct Node* next;$/;"	m	struct:Node	typeref:struct:Node::Node	file:
+rear	main.cpp	/^struct Node* rear = NULL;$/;"	v	typeref:struct:Node
 right	main.cpp	/^    struct BstNode *right;$/;"	m	struct:BstNode	typeref:struct:BstNode::BstNode	file:
 size	main.cpp	/^int size = 0;$/;"	v
