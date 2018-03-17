@@ -53,66 +53,7 @@
 #include <limits.h>
 
 
-
-/* -----------------------------Linked list implementation of queue ---------------------------------*/
-
-struct Node {
-	int data;
-	struct Node* next;
-};
-// Two glboal variables to store address of front and rear nodes. 
-struct Node* front = NULL;
-struct Node* rear = NULL;
-
-// To Enqueue an integer
-void Enqueue(int x) {
-	struct Node* temp = 
-		(struct Node*)malloc(sizeof(struct Node));
-	temp->data =x; 
-	temp->next = NULL;
-	if(front == NULL && rear == NULL){
-		front = rear = temp;
-		return;
-	}
-	rear->next = temp;
-	rear = temp;
-}
-
-// To Dequeue an integer.
-void Dequeue() {
-	struct Node* temp = front;
-	if(front == NULL) {
-		printf("Queue is Empty\n");
-		return;
-	}
-	if(front == rear) {
-		front = rear = NULL;
-	}
-	else {
-		front = front->next;
-	}
-	free(temp);
-}
-
-int Front() {
-	if(front == NULL) {
-		printf("Queue is empty\n");
-        // FIXME here
-		return INT_MIN;
-	}
-	return front->data;
-}
-
-void Print() {
-	struct Node* temp = front;
-	while(temp != NULL) {
-		printf("%d ",temp->data);
-		temp = temp->next;
-	}
-	printf("\n");
-}
-
-/* // -----------------------//Linked list implementation of queue ---------------------------------*/
+/* -----------------------------BST implementation ---------------------------------*/
 
 // global variable used for balancing tree
 // TODO move it inside functions or as a struct member
@@ -263,28 +204,6 @@ int FindHeight(BstNode* root) {
 }
 
 
-// Function to print Nodes in a binary tree in Level order (BFS)
-void LevelOrder(BstNode *root) {
-    if(root == NULL) return;
-    //queue<Node*> Q;
-    //Q.push(root);  
-    Enqueue(root->data);
-    //while there is at least one discovered node
-	//while(!Q.empty()) {
-    while(Front() != INT_MIN) {
-		//Node* current = Q.front();
-        Node* current = Front();
-        //Q.pop(); // removing the element at front
-        Dequeue();
-        printf("%d ", current->data);
-        //if(current->left != NULL) Q.push(current->left);
-        if(current->left != NULL) Enqueue(current->left->data);
-        //if(current->right != NULL) Q.push(current->right);
-        if(current->right != NULL) Enqueue(current->right->data);
-    }
-}
-
-
 int IsSubtreeLesser(BstNode *root, int value) {
     if (root == NULL) return 1;
     if (root->data <= value
@@ -392,6 +311,92 @@ BstNode* Delete(BstNode* root, int data) {
     //}
 //}
  
+/* -----------------------------//-BST implementation ---------------------------------*/
+
+/* -----------------------------Linked list implementation of queue ---------------------------------*/
+
+struct Node {
+    BstNode* data;
+	struct Node* next;
+};
+// Two glboal variables to store address of front and rear nodes. 
+struct Node* front = NULL;
+struct Node* rear = NULL;
+
+// To Enqueue an BSTNode
+void Enqueue(BstNode* x) {
+	struct Node* temp = 
+		(struct Node*)malloc(sizeof(struct Node));
+	temp->data=x; 
+	temp->next = NULL;
+	if(front == NULL && rear == NULL){
+		front = rear = temp;
+		return;
+	}
+	rear->next = temp;
+	rear = temp;
+}
+
+// To Dequeue an integer.
+void Dequeue() {
+	struct Node* temp = front;
+	if(front == NULL) {
+		printf("Queue is Empty\n");
+		return;
+	}
+	if(front == rear) {
+		front = rear = NULL;
+	}
+	else {
+		front = front->next;
+	}
+	free(temp);
+}
+
+BstNode* Front() {
+	if(front == NULL) {
+		printf("Queue is empty\n");
+		return NULL;
+	}
+	return front->data;
+}
+
+void Print() {
+	struct Node* temp = front;
+	while(temp != NULL) {
+		printf("%d ",temp->data->data);
+		temp = temp->next;
+	}
+	printf("\n");
+}
+
+/* // -----------------------//Linked list implementation of queue ---------------------------------*/
+
+/* // -----------------------Tree implementation BFS---------------------------------*/
+
+// Function to print Nodes in a binary tree in Level order (BFS)
+void LevelOrder(BstNode *root) {
+    if(root == NULL) return;
+    //queue<Node*> Q;
+    //Q.push(root);  
+    Enqueue(root);
+    //while there is at least one discovered node
+	//while(!Q.empty()) {
+    while(Front() != NULL) {
+		//Node* current = Q.front();
+        BstNode* current = Front();
+        //Q.pop(); // removing the element at front
+        Dequeue();
+        printf("%d ", current->data);
+        //if(current->left != NULL) Q.push(current->left);
+        if(current->left != NULL) Enqueue(current->left);
+        //if(current->right != NULL) Q.push(current->right);
+        if(current->right != NULL) Enqueue(current->right);
+    }
+}
+
+/* // -----------------------//Tree implementation BFS---------------------------------*/
+
 
 
 int main() {
@@ -465,9 +470,9 @@ int main() {
 
     printf("Height of the tree is: %d\n", FindHeight(root));
 
-
-	//Print Nodes in Level Order. 
-	/*LevelOrder(root);*/
+    printf("Print nodes in Level Order:\n");
+    LevelOrder(root);
+    printf("\n");
 
     /*int res = IsBinarySearchTree1(root);*/
     int res = IsBinarySearchTree2(root, INT_MIN, INT_MAX);
@@ -491,11 +496,11 @@ int main() {
     //cout<<"Successor is "<<successor->data<<"\n";
 	/* Drive code to test the implementation. */
 	// Printing elements in Queue after each Enqueue or Dequeue 
-	Enqueue(2); Print(); 
-	Enqueue(4); Print();
-	Enqueue(6); Print();
-	Dequeue();  Print();
-	Enqueue(8); Print();
+	//Enqueue(2); Print(); 
+	//Enqueue(4); Print();
+	//Enqueue(6); Print();
+	//Dequeue();  Print();
+	//Enqueue(8); Print();
 
 
 
