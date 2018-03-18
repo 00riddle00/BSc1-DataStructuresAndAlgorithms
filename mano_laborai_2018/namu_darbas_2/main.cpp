@@ -41,10 +41,12 @@
 // - Preorder
 // - Inorder
 // - Postorder
-//
+
 // Binary Search Tree 
 // - Check if a given BINARY tree is a binary search tree or not
 // TODO check BST with inorder traversal
+//
+// TODO add DFS
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -105,18 +107,11 @@ BstNode* Balance(BstNode* root, int first, int last) {
     return root;
 }
 
-int Search(BstNode* root, int data) {
-    if (root == NULL)  return 0;
-    else if (root->data == data)  return 1;
-    else if (data <= root->data) return Search(root->left, data);
-    else return Search(root->right, data);
-}
-
-BstNode* Search2(BstNode* root, int data) {
+BstNode* Search(BstNode* root, int data) {
     if (root == NULL)  return NULL;
     else if (root->data == data)  return root;
-    else if (data <= root->data) return Search2(root->left, data);
-    else return Search2(root->right, data);
+    else if (data <= root->data) return Search(root->left, data);
+    else return Search(root->right, data);
 }
 
 
@@ -153,20 +148,7 @@ void Postorder(BstNode *root) {
     printf("%d ", root->data);
 }
 
-
-int FindMin(BstNode* root) {
-    if (root == NULL) {
-        printf("Error: Tree is empty\n");
-        return -1;
-    }
-    while (root->left != NULL) {
-        root = root->left;
-    }
-    return root->data;
-}
-
-
-BstNode* FindMin2(BstNode* root) {
+BstNode* FindMin(BstNode* root) {
     if (root == NULL) {
         printf("Error: Tree is empty\n");
         return NULL;
@@ -178,36 +160,40 @@ BstNode* FindMin2(BstNode* root) {
 }
 
 
-int FindMinRecursive(BstNode* root) {
+BstNode* FindMinRecursive(BstNode* root) {
     if (root == NULL) {
         printf("Error: Tree is empty\n");
-        return -1;
+        return NULL;
     } else if (root->left == NULL) {
-        return root->data;
+        return root;
     }
     return FindMinRecursive(root->left);
 }
 
-int FindMax(BstNode* root) {
+
+BstNode* FindMax(BstNode* root) {
     if (root == NULL) {
         printf("Error: Tree is empty\n");
-        return -1;
+        return NULL;
     }
     while (root->right != NULL) {
         root = root->right;
     }
-    return root->data;
+    return root;
 }
 
-int FindMaxRecursive(BstNode* root) {
+
+BstNode* FindMaxRecursive(BstNode* root) {
     if (root == NULL) {
         printf("Error: Tree is empty\n");
-        return -1;
+        return NULL;
     } else if (root->right == NULL) {
-        return root->data;
+        return root;
     }
     return FindMaxRecursive(root->right);
 }
+
+
 
 // A recursive function to find tree heights.
 // We get the height of the bigger subtree, and then 
@@ -313,10 +299,10 @@ BstNode* Delete(BstNode* root, int data) {
 //Function to find Inorder Successor in a BST
 BstNode* Getsuccessor(BstNode* root,int data) {
     // Search the Node - O(h)
-    BstNode* current = Search2(root,data);
+    BstNode* current = Search(root,data);
     if(current == NULL) return NULL;
     if(current->right != NULL) {  //Case 1: Node has right subtree
-        return FindMin2(current->right); // O(h)
+        return FindMin(current->right); // O(h)
     }
     else {   //Case 2: No right subtree  - O(h)
         BstNode* successor = NULL;
@@ -423,6 +409,8 @@ void LevelOrder(BstNode *root) {
 
 int main() {
     BstNode* root = NULL; // creating an empty tree
+    int number;
+    int res;
 
     root = Insert(root, 1);
     root = Insert(root, 2);
@@ -450,8 +438,17 @@ int main() {
 
     */
 
-    printf("Printing preorder (unbalanced):\n");
+    printf("Printing inorder (unbalanced): ");
+    Inorder(root);
+    printf("\n");
+
+    printf("Printing postorder (unbalanced): ");
+    Postorder(root);
+    printf("\n");
+
+    printf("Printing preorder (unbalanced): ");
     Preorder(root);
+    printf("\n");
 
     /* Balance BST  */
     // Fill array (global var) with BST elements listed inorder
@@ -473,35 +470,43 @@ int main() {
 
 
     printf("\n");
-    printf("Printing preorder (balanced):\n");
+    printf("Printing preorder (balanced): ");
     Preorder(root);
     printf("\n\n");
 
     // Number to be searched
-    int number;
     number = 6;
 
-    if ( Search(root,number) == 1) printf("Found the number %d\n", number);
-    else printf("Not Found\n");
+    if (Search(root,number) != NULL) {
+        printf("Found the number %d\n", number);
+    } else {
+        printf("Not Found the number %d\n", number);
+    }
+    printf("\n");
     
-    printf("Min elem is: %d\n", FindMin(root));
-    printf("Max elem is: %d\n", FindMax(root));
+    printf("Min elem is: %d\n", FindMin(root)->data);
+    printf("Max elem is: %d\n", FindMax(root)->data);
 
-    printf("Using recursion, Min elem is: %d\n", FindMinRecursive(root));
-    printf("Using recursion, Max elem is: %d\n", FindMaxRecursive(root));
+    printf("Using recursion, Min elem is: %d\n", FindMinRecursive(root)->data);
+    printf("Using recursion, Max elem is: %d\n", FindMaxRecursive(root)->data);
+    printf("\n");
 
-    printf("Height of the tree is: %d\n", FindHeight(root));
+    printf("Height of the tree is: %d\n\n", FindHeight(root));
 
-    printf("Print nodes in Level Order:\n");
+    printf("Print nodes in Level Order: ");
     LevelOrder(root);
     printf("\n");
 
-    /*int res = IsBinarySearchTree1(root);*/
-    int res = IsBinarySearchTree2(root, INT_MIN, INT_MAX);
+
+    res = IsBinarySearchTree1(root);
+    printf("IsBinarySearchTree: %d\n", res);
+
+    res = IsBinarySearchTree2(root, INT_MIN, INT_MAX);
     printf("IsBinarySearchTree: %d\n\n", res);
 
     //Find Inorder successor of some node. 
-    printf("Find Inorder successor of node with value of 6\n");
+    number = 5;
+    printf("Find Inorder successor of node with value of %d:\n", number);
     BstNode* successor = Getsuccessor(root,5);
 
     if(successor == NULL) {
@@ -509,6 +514,8 @@ int main() {
     } else {
         printf("Successor is %d\n", successor->data);
     }
+    printf("\n");
+
 
     printf("Printing preorder (before delete):\n");
     Preorder(root);
@@ -519,8 +526,4 @@ int main() {
     printf("Printing preorder (after delete):\n");
     Preorder(root);
     printf("\n");
-
-
-
-
 }
