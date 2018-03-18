@@ -53,9 +53,11 @@
 #include <time.h>
 #include <math.h>
 #include <limits.h>
+// Useful debugging macros
+#include "dbg.h"
 
 
-/* -----------------------------BST implementation ---------------------------------*/
+/*-----------------------------BST implementation ---------------------------------*/
 
 // global variable used for balancing tree
 // TODO move it inside functions or as a struct member
@@ -68,6 +70,8 @@ typedef struct BstNode {
     struct BstNode *right;
 } BstNode;
 
+BstNode* root; // root struct
+
 BstNode* GetNewNode(int data) {
     BstNode* newNode = (BstNode*) malloc(sizeof(BstNode));
     newNode->data = data;
@@ -76,17 +80,19 @@ BstNode* GetNewNode(int data) {
 }
 
 
-BstNode* Insert(BstNode* root, int data) {
+// tree Insert
+BstNode* tInsert(BstNode* root, int data) {
     if (root == NULL) { // empty tree
         root = GetNewNode(data);
     } else if (data <= root->data) {
-        root->left = Insert(root->left,data);
+        root->left = tInsert(root->left,data);
     }
     else {
-        root->right = Insert(root->right,data);
+        root->right = tInsert(root->right,data);
     }
     return root;
 }
+
 
 
 BstNode* Balance(BstNode* root, int first, int last) {
@@ -94,24 +100,31 @@ BstNode* Balance(BstNode* root, int first, int last) {
     if (last < first) {
         return root;
     } else if (last == first) {
-        root = Insert(root, array[first]); 
+        root = tInsert(root, array[first]); 
         return root;
     }
 
     int half = (last-first) / 2;
     int midIndex = first + half;
-    root = Insert(root, array[midIndex]); 
+    root = tInsert(root, array[midIndex]); 
     root = Balance(root, first, midIndex-1);
     root = Balance(root, midIndex+1, last);
 
     return root;
 }
 
-BstNode* Search(BstNode* root, int data) {
+BstNode* tSearch(BstNode* root, int data) {
     if (root == NULL)  return NULL;
     else if (root->data == data)  return root;
-    else if (data <= root->data) return Search(root->left, data);
-    else return Search(root->right, data);
+    else if (data <= root->data) return tSearch(root->left, data);
+    else return tSearch(root->right, data);
+}
+
+int Search(int data) {
+    if (tSearch(root, data) != NULL) {
+        return 1;
+    }
+    return 0;
 }
 
 
@@ -132,6 +145,8 @@ void InorderFill(BstNode *root) {
     InorderFill(root->right);
 }
 
+
+
 void Inorder(BstNode *root) {
     if (root == NULL) return;
 
@@ -139,6 +154,7 @@ void Inorder(BstNode *root) {
     printf("%d ", root->data);
     Inorder(root->right);
 }
+
 
 void Postorder(BstNode *root) {
     if (root == NULL) return;
@@ -148,7 +164,7 @@ void Postorder(BstNode *root) {
     printf("%d ", root->data);
 }
 
-BstNode* FindMin(BstNode* root) {
+BstNode* tFindMin(BstNode* root) {
     if (root == NULL) {
         printf("Error: Tree is empty\n");
         return NULL;
@@ -158,6 +174,8 @@ BstNode* FindMin(BstNode* root) {
     }
     return root;
 }
+
+
 
 
 BstNode* FindMinRecursive(BstNode* root) {
@@ -171,7 +189,7 @@ BstNode* FindMinRecursive(BstNode* root) {
 }
 
 
-BstNode* FindMax(BstNode* root) {
+BstNode* tFindMax(BstNode* root) {
     if (root == NULL) {
         printf("Error: Tree is empty\n");
         return NULL;
@@ -192,6 +210,8 @@ BstNode* FindMaxRecursive(BstNode* root) {
     }
     return FindMaxRecursive(root->right);
 }
+
+
 
 
 
@@ -261,10 +281,10 @@ int IsBinarySearchTree2(BstNode* root, int minValue, int maxValue) {
 }
 
 
-BstNode* Delete(BstNode* root, int data) {
+BstNode* tDelete(BstNode* root, int data) {
     if (root == NULL) return root;
-    else if(data < root->data) root->left = Delete(root->left, data);
-    else if(data > root->data) root->right = Delete(root->right, data);
+    else if(data < root->data) root->left = tDelete(root->left, data);
+    else if(data > root->data) root->right = tDelete(root->right, data);
     else { // Wohoo... I found you, Get ready to be deleted
 
         // Case 1: No child
@@ -285,9 +305,9 @@ BstNode* Delete(BstNode* root, int data) {
         }
         // Case 3: 2 children
         else {
-            BstNode* temp = (BstNode*)FindMin(root->right);
+            BstNode* temp = (BstNode*)tFindMin(root->right);
             root->data = temp->data;
-            root->right = Delete(root->right, temp->data);
+            root->right = tDelete(root->right, temp->data);
         }
     }
     return root;
@@ -299,10 +319,10 @@ BstNode* Delete(BstNode* root, int data) {
 //Function to find Inorder Successor in a BST
 BstNode* Getsuccessor(BstNode* root,int data) {
     // Search the Node - O(h)
-    BstNode* current = Search(root,data);
+    BstNode* current = tSearch(root,data);
     if(current == NULL) return NULL;
     if(current->right != NULL) {  //Case 1: Node has right subtree
-        return FindMin(current->right); // O(h)
+        return tFindMin(current->right); // O(h)
     }
     else {   //Case 2: No right subtree  - O(h)
         BstNode* successor = NULL;
@@ -319,9 +339,9 @@ BstNode* Getsuccessor(BstNode* root,int data) {
     }
 }
  
-/* -----------------------------//-BST implementation ---------------------------------*/
+/*----------------------------/BST implementation ---------------------------------*/
 
-/* -----------------------------Linked list implementation of queue ---------------------------------*/
+/*-----------------------------Linked list implementation of queue ---------------------------------*/
 
 struct Node {
     BstNode* data;
@@ -369,7 +389,7 @@ BstNode* Front() {
 	return front->data;
 }
 
-void Print() {
+void PrintQueue() {
 	struct Node* temp = front;
 	while(temp != NULL) {
 		printf("%d ",temp->data->data);
@@ -378,9 +398,9 @@ void Print() {
 	printf("\n");
 }
 
-/* // -----------------------//Linked list implementation of queue ---------------------------------*/
+/*-----------------------/Linked list implementation of queue ---------------------------------*/
 
-/* // -----------------------Tree implementation BFS---------------------------------*/
+/*-----------------------Tree implementation BFS---------------------------------*/
 
 // Function to print Nodes in a binary tree in Level order (BFS)
 void LevelOrder(BstNode *root) {
@@ -403,22 +423,69 @@ void LevelOrder(BstNode *root) {
     }
 }
 
-/* // -----------------------//Tree implementation BFS---------------------------------*/
+/*-----------------------/Tree implementation BFS---------------------------------*/
+
+/*-----------------------UI wrapper---------------------------------*/
+void Create() {
+    root = NULL; // creating an empty tree
+}
+
+void Insert(int data) {
+    root = tInsert(root, data);
+}
 
 
+void Delete(int data) {
+    while (Search(data) != NULL) {
+        root = tDelete(root, data);
+    }
+}
+
+/*DeletePos*/
+//DeleteFirst
+//DeleteLast
+
+//get(pos)
+//getFirst()
+//getLast()
+//get(val)
+
+//getSize()
+//getMaxSize()
+
+//edit(old, new)
+//next(current)
+//prev(current)
+
+
+void Print() {
+    Inorder(root);
+    printf("\n");
+}
+
+//clear()
+//destroy()
+
+int FindMin() {
+    return tFindMin(root)->data;
+}
+
+int FindMax() {
+    return tFindMax(root)->data;
+}
+
+/*-----------------------/UI wrapper---------------------------------*/
 
 int main() {
-    BstNode* root = NULL; // creating an empty tree
-    int number;
-    int res;
+    Create();
 
-    root = Insert(root, 1);
-    root = Insert(root, 2);
-    root = Insert(root, 3);
-    root = Insert(root, 4);
-    root = Insert(root, 5);
-    root = Insert(root, 6);
-    root = Insert(root, 7);
+    Insert(1);
+    Insert(2);
+    Insert(3);
+    Insert(4);
+    Insert(5);
+    Insert(6);
+    Insert(7);
 
     /* the resulting tree:
      *
@@ -438,23 +505,15 @@ int main() {
 
     */
 
-    printf("Printing inorder (unbalanced): ");
-    Inorder(root);
-    printf("\n");
 
-    printf("Printing postorder (unbalanced): ");
-    Postorder(root);
-    printf("\n");
+    // TODO move inside tree functionality
+    /* --------Balancing -------*/
 
-    printf("Printing preorder (unbalanced): ");
-    Preorder(root);
-    printf("\n");
-
-    /* Balance BST  */
+    // Balance BST
     // Fill array (global var) with BST elements listed inorder
     InorderFill(root);
 
-    // clear the BST before balancing
+    //// clear the BST before balancing
     root = NULL;
 
     root = Balance(root, 0, size-1);
@@ -468,62 +527,19 @@ int main() {
          1     3 5    7
     */
 
+    /* --------/Balancing-------*/
 
-    printf("\n");
-    printf("Printing preorder (balanced): ");
-    Preorder(root);
-    printf("\n\n");
+    printf("My container:\n");
+    Print();
 
-    // Number to be searched
-    number = 6;
+    int res = Search(6);
+    printf("Search result is %d\n", res);
 
-    if (Search(root,number) != NULL) {
-        printf("Found the number %d\n", number);
-    } else {
-        printf("Not Found the number %d\n", number);
-    }
-    printf("\n");
+    Delete(6);
+    printf("My container:\n");
+    Print();
+
+    printf("Min elem is: %d\n", FindMin());
+    printf("Max elem is: %d\n", FindMax());
     
-    printf("Min elem is: %d\n", FindMin(root)->data);
-    printf("Max elem is: %d\n", FindMax(root)->data);
-
-    printf("Using recursion, Min elem is: %d\n", FindMinRecursive(root)->data);
-    printf("Using recursion, Max elem is: %d\n", FindMaxRecursive(root)->data);
-    printf("\n");
-
-    printf("Height of the tree is: %d\n\n", FindHeight(root));
-
-    printf("Print nodes in Level Order: ");
-    LevelOrder(root);
-    printf("\n");
-
-
-    res = IsBinarySearchTree1(root);
-    printf("IsBinarySearchTree: %d\n", res);
-
-    res = IsBinarySearchTree2(root, INT_MIN, INT_MAX);
-    printf("IsBinarySearchTree: %d\n\n", res);
-
-    //Find Inorder successor of some node. 
-    number = 5;
-    printf("Find Inorder successor of node with value of %d:\n", number);
-    BstNode* successor = Getsuccessor(root,5);
-
-    if(successor == NULL) {
-        printf("No successor Found\n");
-    } else {
-        printf("Successor is %d\n", successor->data);
-    }
-    printf("\n");
-
-
-    printf("Printing preorder (before delete):\n");
-    Preorder(root);
-    printf("\n");
-
-    root = Delete(root, 7);
-
-    printf("Printing preorder (after delete):\n");
-    Preorder(root);
-    printf("\n");
 }

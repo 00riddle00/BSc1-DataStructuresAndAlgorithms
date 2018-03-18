@@ -13,17 +13,16 @@ Delete	main.cpp	/^BstNode* Delete(BstNode* root, int data) {$/;"	f
 Dequeue	main.cpp	/^void Dequeue() {$/;"	f
 Enqueue	main.cpp	/^void Enqueue(BstNode* x) {$/;"	f
 FindHeight	main.cpp	/^int FindHeight(BstNode* root) {$/;"	f
-FindMax	main.cpp	/^int FindMax(BstNode* root) {$/;"	f
-FindMaxRecursive	main.cpp	/^int FindMaxRecursive(BstNode* root) {$/;"	f
-FindMin	main.cpp	/^int FindMin(BstNode* root) {$/;"	f
-FindMin2	main.cpp	/^BstNode* FindMin2(BstNode* root) {$/;"	f
-FindMinRecursive	main.cpp	/^int FindMinRecursive(BstNode* root) {$/;"	f
+FindMax	main.cpp	/^BstNode* FindMax(BstNode* root) {$/;"	f
+FindMaxRecursive	main.cpp	/^BstNode* FindMaxRecursive(BstNode* root) {$/;"	f
+FindMin	main.cpp	/^BstNode* FindMin(BstNode* root) {$/;"	f
+FindMinRecursive	main.cpp	/^BstNode* FindMinRecursive(BstNode* root) {$/;"	f
 Front	main.cpp	/^BstNode* Front() {$/;"	f
 GetNewNode	main.cpp	/^BstNode* GetNewNode(int data) {$/;"	f
 Getsuccessor	main.cpp	/^BstNode* Getsuccessor(BstNode* root,int data) {$/;"	f
 Inorder	main.cpp	/^void Inorder(BstNode *root) {$/;"	f
 InorderFill	main.cpp	/^void InorderFill(BstNode *root) {$/;"	f
-Insert	main.cpp	/^BstNode* Insert(BstNode* root, int data) {$/;"	f
+Insert	main.cpp	/^void Insert(int data) {$/;"	f
 IsBinarySearchTree1	main.cpp	/^int IsBinarySearchTree1(BstNode* root) {$/;"	f
 IsBinarySearchTree2	main.cpp	/^int IsBinarySearchTree2(BstNode* root, int minValue, int maxValue) {$/;"	f
 IsSubtreeGreater	main.cpp	/^int IsSubtreeGreater(BstNode *root, int value) {$/;"	f
@@ -33,15 +32,29 @@ Node	main.cpp	/^struct Node {$/;"	s	file:
 Postorder	main.cpp	/^void Postorder(BstNode *root) {$/;"	f
 Preorder	main.cpp	/^void Preorder(BstNode *root) {$/;"	f
 Print	main.cpp	/^void Print() {$/;"	f
-Search	main.cpp	/^int Search(BstNode* root, int data) {$/;"	f
-Search2	main.cpp	/^BstNode* Search2(BstNode* root, int data) {$/;"	f
+PrintQueue	main.cpp	/^void PrintQueue() {$/;"	f
+Search	main.cpp	/^BstNode* Search(BstNode* root, int data) {$/;"	f
+__dbg_h_	dbg.h	2;"	d
 array	main.cpp	/^int array[10];$/;"	v
+check	dbg.h	23;"	d
+check_debug	dbg.h	29;"	d
+check_mem	dbg.h	27;"	d
+clean_errno	dbg.h	15;"	d
+createContainer	main.cpp	/^void createContainer() {$/;"	f
 data	main.cpp	/^    BstNode* data;$/;"	m	struct:Node	file:
 data	main.cpp	/^    int data;$/;"	m	struct:BstNode	file:
+debug	dbg.h	10;"	d
+debug	dbg.h	12;"	d
 front	main.cpp	/^struct Node* front = NULL;$/;"	v	typeref:struct:Node
 left	main.cpp	/^    struct BstNode *left;$/;"	m	struct:BstNode	typeref:struct:BstNode::BstNode	file:
+log_err	dbg.h	17;"	d
+log_info	dbg.h	21;"	d
+log_warn	dbg.h	19;"	d
 main	main.cpp	/^int main() {$/;"	f
 next	main.cpp	/^	struct Node* next;$/;"	m	struct:Node	typeref:struct:Node::Node	file:
 rear	main.cpp	/^struct Node* rear = NULL;$/;"	v	typeref:struct:Node
 right	main.cpp	/^    struct BstNode *right;$/;"	m	struct:BstNode	typeref:struct:BstNode::BstNode	file:
+root	main.cpp	/^BstNode* root; \/\/ root struct$/;"	v
+sentinel	dbg.h	25;"	d
 size	main.cpp	/^int size = 0;$/;"	v
+tInsert	main.cpp	/^BstNode* tInsert(BstNode* root, int data) {$/;"	f
