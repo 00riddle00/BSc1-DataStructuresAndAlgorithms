@@ -188,7 +188,7 @@ void performMath() {
             res = divideNumbers(num1, num2);
             break;
         case 5:
-            /*res = modulo(num1, num2);*/
+            res = modulus(num1, num2);
             break;
         default:
             printf("Such action does not exist\n");

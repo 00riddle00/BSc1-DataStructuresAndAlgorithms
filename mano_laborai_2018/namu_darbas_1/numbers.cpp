@@ -44,8 +44,11 @@ void printEntry(Number* number) {
             printf("-");
         }
 
+        debug("NUM COUNT %d", number->digits_whole);
+
         for (int i = number->digits_whole - 1; i >= 0; i--) {
             printf("%d", number->whole_part[i]);
+            debug("WHOLE PART DISSECTED %d", number->whole_part[i]);
         }
         printf(".");
 
@@ -64,8 +67,13 @@ void printTable() {
 
 
 char* numToChar(Number* number) {
+        debug("ENTRY");
+        printEntry(number);
 
-        char* numArray = (char*) malloc(DIGITS * 2 * sizeof(char));
+        debug("DD %d", number->digits_decimal);
+        debug("DW %d", number->digits_whole);
+
+        char* numArray = (char*) calloc(1, DIGITS * 2 * sizeof(char));
         int index = 0;
 
         if (number->negative) {
@@ -509,12 +517,17 @@ Number* add(Number* num1, Number* num2, int negative) {
 
     part = 0;
 
+    debug("RES IS 1");
+    printEntry(res);
+
     // part then moves on to be added to the whole part of the number
     if (res->decimal_part[0] >= 10) {
         part = 1;
         res->decimal_part[0] %= 10;
     } 
 
+    debug("RES IS 2");
+    printEntry(res);
 
     // select number with bigger amount of whole part digits
     if (bigger->digits_whole < smaller->digits_whole) {
@@ -530,6 +543,12 @@ Number* add(Number* num1, Number* num2, int negative) {
         res->whole_part[i] = bigger->whole_part[i];
     }
 
+    debug("RES IS 3");
+    printEntry(res);
+    //fixNumber(res);
+    debug("RES IS 4");
+    printEntry(res);
+
     // add whole parts
     for (int i = 0; i < smaller->digits_whole; i++) {
         int result = res->whole_part[i] + smaller->whole_part[i];
@@ -543,7 +562,52 @@ Number* add(Number* num1, Number* num2, int negative) {
         }
         res->whole_part[i] = result;
         res->whole_part[i+1] += part;
+
     }
+
+        // TODO maybe use this implementation, 
+        // but move it inside addition for loop
+/*        if (i + 1 == smaller->digits_whole) {*/
+            //while(1) {
+                //if (res->whole_part[i+1] >= 10) {
+                    //part = 1;
+                    //res->whole_part[i+1] %= 10;
+                    //res->whole_part[i+2] += part;
+                    //if (i+2 == res->digits_whole) {
+                        //res->digits_whole++;
+                        //breakas = 1;
+                        //break;
+                    //}
+                    //i++;
+                    //continue;
+                //} else {
+                    //break;
+                //}
+            //}
+            //if (breakas) {
+                //break;
+            //}
+        //}
+    //fixNumber(res);
+
+    // After adding the whole parts, at the end 
+    // such situation might occur that one of the
+    // numbers of the sum is equal to 10. Since all
+    // the numbers should be 1-digit, this piece
+    // of code fixes this error
+    for (int i = 0; i < res->digits_whole; i++) {
+        if (res->whole_part[i] >= 10) {
+            res->whole_part[i] %= 10;
+            res->whole_part[i+1] += 1;
+            if (i + 1 == res->digits_whole) {
+                res->digits_whole++;
+            }
+        }
+    }
+
+
+    debug("RES IS 5");
+    printEntry(res);
 
     // remove zeroes in the front of the resulting number
     for (int i = res->digits_whole-1; i >= 0; i--) {
@@ -898,12 +962,22 @@ Number* divide(Number* num1, Number* num2) {
         // if remainder is not yet divided into equal parts or does
         // not yet become negative, continue the division
         if ((tmp->digits_whole > 1 || tmp->whole_part[0] != 0) && !(tmp->negative)) {
+            debug("counter: %d", counter);
+            if (counter == 99) {
+                debug("9999999");
+
+            }
+            debug("RES BEFORE");
+            printEntry(res);
             res = add(res, one, 0);
             debug("counter++");
             printEntry(res);
             counter++;
             debug("TMP is");
             printEntry(tmp);
+            if (counter == 101) {
+                //exit(1);
+            }
             continue;
         // stop if the remainder becomes equal to zero (ie becomes divided
         // into equal parts
@@ -939,11 +1013,12 @@ Number* divide(Number* num1, Number* num2) {
             }
             // FIXME temporary guard, else the program stops running 
             // FIXME (gets stuck)
-            //if (res->digits_decimal > 35) {
             if (res->digits_decimal > 200) {
                 free(one);
                 free(ten);
                 free(zero_one);
+                debug("DAAAAAAAAAA: %d", res->digits_whole);
+                fixNumber(res);
                 return res;
             }
             // get the new remainder (remainder -= divisor * (remainder / divisor))
@@ -1000,6 +1075,7 @@ Number* divide(Number* num1, Number* num2) {
 
 
 Number* modulus(Number* num1, Number* num2) {
+    int quotient;
 
     int rs = compare(num1, num2);
 
@@ -1017,6 +1093,7 @@ Number* modulus(Number* num1, Number* num2) {
         return zero;
     }
 
+
     Number* res = setNewNumber();
 
     // initalize Number with the value of one
@@ -1028,11 +1105,18 @@ Number* modulus(Number* num1, Number* num2) {
     // initalize Number with the value of 0.1
     Number* zero_one = setNumberFromChar((char*) ZERO_ONE);
 
-    Number* tmp;
-    tmp = num1;
+    Number* tmp = (Number*) calloc(1, sizeof(Number));
+    assign(tmp, num1);
+    //tmp = num1;
 
     // set the remainder as the dividend at first
     Number* remainder = num1;
+
+    if (!quotient) {
+        one = multiply(one, zero_one);
+        tmp = multiply(tmp, ten);
+        remainder = multiply(remainder, ten);
+    }
 
     // sets how many times the divisor is subtracted from remainder
     // ie sets the whole number = remainder / divisor
@@ -1043,9 +1127,24 @@ Number* modulus(Number* num1, Number* num2) {
         tmp = subtract(tmp, num2);
         // if remainder is not yet divided into equal parts or does
         // not yet become negative, continue the division
-        if ((tmp->digits_whole > 1 || tmp->whole_part[0] != 0) && !tmp->negative) {
+        if ((tmp->digits_whole > 1 || tmp->whole_part[0] != 0) && !(tmp->negative)) {
+            debug("counter: %d", counter);
+            if (counter == 99) {
+                debug("9999999");
+
+            }
+            debug("RES BEFORE");
+            printEntry(res);
             res = add(res, one, 0);
+            debug("counter++");
+            printEntry(res);
             counter++;
+            debug("TMP is");
+            printEntry(tmp);
+            if (counter == 101) {
+                //exit(1);
+            }
+            continue;
         // stop if the remainder becomes equal to zero (ie becomes divided
         // into equal parts
         } else if (isZero(tmp)) {
@@ -1054,8 +1153,12 @@ Number* modulus(Number* num1, Number* num2) {
             free(one);
             free(ten);
             free(zero_one);
-            return res;
+
+            Number* zero = setNewNumber();
+            return zero;
         } else {
+            debug("Else goes here");
+            return addNumbers(tmp, num2);
             // if the divisor (second number) is greater than the remainder,
             // multiply the remainder by ten and continue the division loop.
             if (counter == 0) {
@@ -1065,34 +1168,69 @@ Number* modulus(Number* num1, Number* num2) {
                 // the remainder is multiplied by ten
                 tmp = multiply(tmp, ten);
                 remainder = multiply(remainder, ten);
+
                 // enter a zero to the result, which means that the remainder
                 // was smaller than the divisor
-                res->decimal_part[res->digits_decimal] = 0;
-                res->digits_decimal++;
-                // divide "one" by ten (or multiply by 0.1) to set the correct
-                // decimal place of the result
+                
+                // TODO ar nereiktu pirma digits_decimal++ padaryti?
+                if (res->digits_decimal > 1) {
+                    res->decimal_part[(res->digits_decimal)++] = 0;
+                }
                 one = multiply(one, zero_one);
+
                 continue;
             }
             // FIXME temporary guard, else the program stops running 
             // FIXME (gets stuck)
-            if (res->digits_decimal > 35) {
+            if (res->digits_decimal > 200) {
                 free(one);
                 free(ten);
                 free(zero_one);
+                debug("DAAAAAAAAAA: %d", res->digits_whole);
+                fixNumber(res);
                 return res;
             }
             // get the new remainder (remainder -= divisor * (remainder / divisor))
+            //
+            //
+            debug("counter: %d", counter);
+            debug("NUM2");
+            printEntry(num2);
+
+            debug("REM1");
+            printEntry(remainder);
+            
+            debug("MULTI");
+            printEntry(multiplyByInt(num2, counter));
+
+            debug("BEFORE SUBTRACTION-----------------------------------------");
             remainder = subtract(remainder, multiplyByInt(num2, counter));
+            debug("AFTER SUBTRACTION-----------------------------------------");
+
+            debug("REM");
+            printEntry(remainder);
+
+            //one->decimal_part[one->digits_decimal-1] = 0;
+            //one->decimal_part[(one->digits_decimal)++] = 1;
             one = multiply(one, zero_one);
+            debug("ONE");
+            printEntry(one);
+            //
             counter = 0;
 
             // tmp becomes remainder again
             assign(tmp, remainder);
 
-            // increase the remainder by the power of ten each time
+            debug("TMP");
+            printEntry(tmp);
+
             remainder = multiply(remainder, ten);
             tmp = multiply(tmp, ten);
+
+            debug("TMP2");
+            printEntry(tmp);
+
+            //exit(1);
 
         }
     }
@@ -1103,10 +1241,6 @@ Number* modulus(Number* num1, Number* num2) {
     fixNumber(res);
     return res;
 }
-
-
-
-
 
 
 void freeTable() {

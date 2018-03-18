@@ -70,6 +70,7 @@ memJournal	helpers.cpp	/^    struct _PointerStats* memJournal;$/;"	m	struct:_Mem
 memUsed	helpers.cpp	/^    int memUsed;$/;"	m	struct:_MemoryStats	file:
 memUsedByJournal	helpers.cpp	/^    int memUsedByJournal;$/;"	m	struct:_MemoryStats	file:
 memoryStats	helpers.cpp	/^struct _MemoryStats memoryStats;$/;"	v	typeref:struct:_MemoryStats
+modulus	numbers.cpp	/^Number* modulus(Number* num1, Number* num2) {$/;"	f
 multiply	numbers.cpp	/^Number* multiply(Number* num1, Number* num2) {$/;"	f
 multiplyByInt	numbers.cpp	/^Number* multiplyByInt(Number* num1, int integer) {$/;"	f
 multiplyNumbers	numbers.cpp	/^Number* multiplyNumbers(Number* num1, Number* num2) {$/;"	f
