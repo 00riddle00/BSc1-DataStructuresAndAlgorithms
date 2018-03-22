@@ -1,11 +1,11 @@
 CC=g++
 CFLAGS=-Wall -Wextra -g -lm -std=c++11
 
-main: main.cpp
-	$(CC) $(CFLAGS) -o main main.cpp 
+demo: demo.cpp
+	$(CC) $(CFLAGS) -o demo demo.cpp 
 
 clean:
-	rm -f main
+	rm -f demo
 
-rebuild: clean main
+rebuild: clean demo
 
