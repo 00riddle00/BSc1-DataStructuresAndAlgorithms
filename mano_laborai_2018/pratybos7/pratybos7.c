@@ -24,7 +24,7 @@
  |                Selection sorts, Comb sort, Shell sort. Could be optimized
  |                Shell sort, or any other implementation.
  |
- |  Exercise 6:   Also implement quicksort without median, with median, and 
+ |  Exercise 7:   Also implement quicksort without median, with median, and 
  |                with random median, as well as merge sort, heap sort and
  |                tree sort (optional) algorithms, and test their speed, 
  |                comparisons and assignments.
