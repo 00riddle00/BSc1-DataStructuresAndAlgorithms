@@ -6,14 +6,14 @@
  |  Study group:  VU MIF INFO, 1st group
  |     Contacts:  tomasgiedraitis@gmail.com
  |        Class:  Algorithms and Data Structures
- |         Date:  March 25th, 2017
+ |         Date:  April 28th, 2017
  |
  |     Language:  GNU C (using gcc on Lenovo Y50-70, OS: Arch Linux x86_64)
  |     Version:   0.0
  |
  +-----------------------------------------------------------------------------
  |
- |  Description:  Simple hash table implementation with quadratic probing
+ |  Description:  Hash table ADT
  |                
  |	    Input:    Command line input by user
  |
@@ -38,15 +38,7 @@
 #include <math.h>
 
 #include "dbg.h"
-
-#include "lib_riddle.h"
-
-typedef struct {
-    int key;
-    char value;
-} Elem;
-
-const int P = 13;
+#include "hash_table.h"
 
 int hash(int key) {
     return key % P;
@@ -65,9 +57,12 @@ int insert(Elem table[], int new_key, char new_value) {
 
     int i = 1;
     while (table[H].key != INT_MAX) {
-        H = (H + pow(i++,2) % P;
+        // quadratic probing
+        H = (int)(H + pow(i,2) - pow(i-1,2)) % P;
+        i++;
     }
 
+    int found;
     table[H].key = new_key;
     table[H].value = new_value;
     return H;
@@ -75,7 +70,6 @@ int insert(Elem table[], int new_key, char new_value) {
 
 int find(Elem table[], int searched_key) {
     int H = hash(searched_key);
-    int found;
 
     while (table[H].key != searched_key && table[H].key != INT_MAX) {
         H = (H + 1) % P;
@@ -105,31 +99,3 @@ void print(Elem table[]) {
     printf("-------------\n");
 }
 
-
-int main() {
-
-    Elem table[P];
-    init(table);
-
-    insert(table, 1234, 'a');
-    insert(table, 5021, 'b');
-    insert(table, 7423, 'c');
-
-    int index = find(table, 1234);
-    if (index != -1) {
-        printf("Found %d: index in a table is %d\n", 1234, index);
-    } else {
-        printf("Element %d not found\n", 1234);
-    }
-
-    print(table);
-
-    insert(table, 2000, 'd');
-    insert(table, 9043, 'e');
-    insert(table, 6296, 'f');
-    insert(table, 6620, 'g');
-    insert(table, 2013, 'h');
-
-    print(table);
-
-}

@@ -1,0 +1,33 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+CC	Makefile	/^CC=gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS=-Wall -Wextra -g -std=gnu11 -lm$/;"	m
+Elem	hash_table.cpp	/^} Elem;$/;"	t	typeref:struct:__anon2	file:
+Elem	hash_table.h	/^} Elem;$/;"	t	typeref:struct:__anon1
+P	hash_table.cpp	/^const int P = 1009;$/;"	v
+P	hash_table.h	/^const int P = 1009;$/;"	v
+__dbg_h_	dbg.h	2;"	d
+check	dbg.h	23;"	d
+check_debug	dbg.h	29;"	d
+check_mem	dbg.h	27;"	d
+clean_errno	dbg.h	15;"	d
+debug	dbg.h	10;"	d
+debug	dbg.h	12;"	d
+find	hash_table.cpp	/^int find(Elem table[], int searched_key) {$/;"	f
+hash	hash_table.cpp	/^int hash(int key) {$/;"	f
+init	hash_table.cpp	/^void init(Elem table[]) {$/;"	f
+insert	hash_table.cpp	/^int insert(Elem table[], int new_key, char new_value) {$/;"	f
+key	hash_table.cpp	/^    int key;$/;"	m	struct:__anon2	file:
+key	hash_table.h	/^    int key;$/;"	m	struct:__anon1
+log_err	dbg.h	17;"	d
+log_info	dbg.h	21;"	d
+log_warn	dbg.h	19;"	d
+main	hash_table.cpp	/^int main() {$/;"	f
+print	hash_table.cpp	/^void print(Elem table[]) {$/;"	f
+sentinel	dbg.h	25;"	d
+value	hash_table.cpp	/^    char value;$/;"	m	struct:__anon2	file:
+value	hash_table.h	/^    char value;$/;"	m	struct:__anon1
