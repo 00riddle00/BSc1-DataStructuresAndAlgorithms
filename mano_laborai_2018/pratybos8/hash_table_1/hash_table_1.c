@@ -19,13 +19,6 @@
  |
  |	    Output:   Prompt messages, validation errors and final results
  |                are displayed one per line to the standard output.
- |                The output is each algorithm's each iteration, with
- |                comparison and assignment counts, and also processor
- |                clock times and average completion time, in seconds.
- |                Finally, the average data of each algorithm is presented.
- |                At the end, the algorithms are sorted from best to worst
- |                by their average time.
- |
  | Version
  | updates:     Currently this is the intial version
  |
