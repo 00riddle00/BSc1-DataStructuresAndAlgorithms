@@ -1,8 +1,0 @@
-main.o:main.cpp:(.text+0x1db): undefined reference to `get_num_interval(char*, char*, int, int)'
-main.o:main.cpp:(.text+0x21b): undefined reference to `get_num_interval(char*, char*, int, int)'
-main.o:main.cpp:(.text+0x256): undefined reference to `get_num_interval(char*, char*, int, int)'
-main.o:main.cpp:(.text+0x4b5): undefined reference to `get_num_interval(char*, char*, int, int)'
-main.o:main.cpp:(.text+0x4f5): undefined reference to `get_num_interval(char*, char*, int, int)'
-main.o:main.cpp:(.text+0x530): more undefined references to `get_num_interval(char*, char*, int, int)' follow
-main.o:main.cpp:(.text+0x7da): undefined reference to `choice(char const*)'
-collect2.exe: error: ld returned 1 exit status

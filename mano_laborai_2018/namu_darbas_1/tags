@@ -10,10 +10,13 @@ CHUNK_SIZE	numbers.h	57;"	d
 DIGITS	numbers.h	61;"	d
 HELPERS_H	helpers.h	2;"	d
 JournalPointerCount	helpers.cpp	/^    int JournalPointerCount;$/;"	m	struct:_MemoryStats	file:
+Log	numbers.cpp	/^Number* Log(Number* num) {$/;"	f
 Number	numbers.h	/^} Number;$/;"	t	typeref:struct:__anon1
 ONE	numbers.h	63;"	d
+Sine	numbers.cpp	/^Number* Sine(Number* num) {$/;"	f
 TEN	numbers.h	62;"	d
-Table	numbers.h	/^} Table;$/;"	t	typeref:struct:__anon2
+Table	numbers.h	/^} Table;$/;"	t	typeref:struct:__anon3
+TempNumber	numbers.h	/^} TempNumber;$/;"	t	typeref:struct:__anon2
 ZERO_ONE	numbers.h	64;"	d
 _MemoryStats	helpers.cpp	/^struct _MemoryStats {$/;"	s	file:
 _PointerStats	helpers.cpp	/^struct _PointerStats {$/;"	s	file:
@@ -22,7 +25,7 @@ __dbg_h_	dbg.h	2;"	d
 add	numbers.cpp	/^Number* add(Number* num1, Number* num2, int negative) {$/;"	f
 addNumbers	numbers.cpp	/^Number *addNumbers(Number* num1, Number* num2) {$/;"	f
 assign	numbers.cpp	/^void assign(Number* num1, Number* num2) {$/;"	f
-capacity	numbers.h	/^    int capacity;$/;"	m	struct:__anon2
+capacity	numbers.h	/^    int capacity;$/;"	m	struct:__anon3
 check	dbg.h	23;"	d
 check_debug	dbg.h	29;"	d
 check_mem	dbg.h	27;"	d
@@ -39,18 +42,29 @@ compareNumbers	demo_ui.cpp	/^void compareNumbers() {$/;"	f
 compareNumbers	numbers.cpp	/^int compareNumbers(Number* num1, Number* num2) {$/;"	f
 debug	dbg.h	10;"	d
 debug	dbg.h	12;"	d
+decimal_part	numbers.h	/^    int decimal_part[2*DIGITS];$/;"	m	struct:__anon2
 decimal_part	numbers.h	/^    int decimal_part[DIGITS];$/;"	m	struct:__anon1
+decrement	numbers.cpp	/^void decrement(Number* num) {$/;"	f
 die	helpers.cpp	/^void die(char* message)$/;"	f
 digits_decimal	numbers.h	/^    int digits_decimal;$/;"	m	struct:__anon1
+digits_decimal	numbers.h	/^    int digits_decimal;$/;"	m	struct:__anon2
 digits_whole	numbers.h	/^    int digits_whole;$/;"	m	struct:__anon1
+digits_whole	numbers.h	/^    int digits_whole;$/;"	m	struct:__anon2
 divide	numbers.cpp	/^Number* divide(Number* num1, Number* num2) {$/;"	f
+divideEquals	numbers.cpp	/^void divideEquals(Number* num1, Number* num2) {$/;"	f
 divideNumbers	numbers.cpp	/^Number* divideNumbers(Number* num1, Number* num2) {$/;"	f
+factorial	numbers.cpp	/^Number* factorial(Number* num) {$/;"	f
 fill_array	helpers.cpp	/^void fill_array(int* data, int size, int max)$/;"	f
 fixNumber	numbers.cpp	/^void fixNumber(Number* num) {$/;"	f
 freeTable	numbers.cpp	/^void freeTable() {$/;"	f
 freememory	helpers.cpp	/^void freememory(int** data, char* ptrName)$/;"	f
+getAbsoluteValue	numbers.cpp	/^Number* getAbsoluteValue(Number* num) {$/;"	f
+getDecimalLen	numbers.cpp	/^int getDecimalLen(Number* num) {$/;"	f
+getFloorNumber	numbers.cpp	/^Number* getFloorNumber(Number* num) {$/;"	f
+getIthDigit	numbers.cpp	/^int getIthDigit(Number* num, int index) {$/;"	f
 getNumberChar	numbers.cpp	/^void getNumberChar(char* message, char* output)$/;"	f
 getNumberIndex	demo_ui.cpp	/^int getNumberIndex() {$/;"	f
+getWholeLen	numbers.cpp	/^int getWholeLen(Number* num) {$/;"	f
 get_num	helpers.cpp	/^int get_num(char* message)$/;"	f
 get_num_interval	helpers.cpp	/^int get_num_interval(char* message, char* err_msg, int min, int max)$/;"	f
 get_pos_num	helpers.cpp	/^int get_pos_num(char* message, int zero_allowed)$/;"	f
@@ -58,7 +72,10 @@ get_text	helpers.cpp	/^char* get_text(char* message, char* output)$/;"	f
 get_tokens	helpers.cpp	/^char** get_tokens($/;"	f
 get_word	helpers.cpp	/^char* get_word(char* message, char* output)$/;"	f
 getmemory	helpers.cpp	/^void getmemory(int** data, char* ptrName, int memory_size)$/;"	f
+increment	numbers.cpp	/^void increment(Number* num) {$/;"	f
 initTable	numbers.cpp	/^void initTable() {$/;"	f
+isInteger	numbers.cpp	/^int isInteger(Number* num) {$/;"	f
+isPrime	numbers.cpp	/^int isPrime(Number* num) {$/;"	f
 isZero	numbers.cpp	/^int isZero(Number* num) {$/;"	f
 is_sorted	helpers.cpp	/^int is_sorted(int* data, int size)$/;"	f
 log_err	dbg.h	17;"	d
@@ -70,28 +87,41 @@ memJournal	helpers.cpp	/^    struct _PointerStats* memJournal;$/;"	m	struct:_Mem
 memUsed	helpers.cpp	/^    int memUsed;$/;"	m	struct:_MemoryStats	file:
 memUsedByJournal	helpers.cpp	/^    int memUsedByJournal;$/;"	m	struct:_MemoryStats	file:
 memoryStats	helpers.cpp	/^struct _MemoryStats memoryStats;$/;"	v	typeref:struct:_MemoryStats
+minusEquals	numbers.cpp	/^void minusEquals(Number* num1, Number* num2) {$/;"	f
 modulus	numbers.cpp	/^Number* modulus(Number* num1, Number* num2) {$/;"	f
+modulusEquals	numbers.cpp	/^void modulusEquals(Number* num1, Number* num2) {$/;"	f
 multiply	numbers.cpp	/^Number* multiply(Number* num1, Number* num2) {$/;"	f
 multiplyByInt	numbers.cpp	/^Number* multiplyByInt(Number* num1, int integer) {$/;"	f
+multiplyEquals	numbers.cpp	/^void multiplyEquals(Number* num1, Number* num2) {$/;"	f
 multiplyNumbers	numbers.cpp	/^Number* multiplyNumbers(Number* num1, Number* num2) {$/;"	f
 negative	numbers.h	/^    int negative;$/;"	m	struct:__anon1
+negative	numbers.h	/^    int negative;$/;"	m	struct:__anon2
+nextPrime	numbers.cpp	/^Number* nextPrime(Number* num) {$/;"	f
 numToChar	numbers.cpp	/^char* numToChar(Number* number) {$/;"	f
-numbers	numbers.h	/^    Number** numbers;$/;"	m	struct:__anon2
+numbers	numbers.h	/^    Number** numbers;$/;"	m	struct:__anon3
 performMath	demo_ui.cpp	/^void performMath() {$/;"	f
+plusEquals	numbers.cpp	/^void plusEquals(Number* num1, Number* num2) {$/;"	f
 pointerMemory	helpers.cpp	/^    int pointerMemory;$/;"	m	struct:_PointerStats	file:
 pointerName	helpers.cpp	/^    char* pointerName;$/;"	m	struct:_PointerStats	file:
+pow	numbers.cpp	/^int pow(int number, int power) {$/;"	f
 printEntry	numbers.cpp	/^void printEntry(Number* number) {$/;"	f
+printEntry2	numbers.cpp	/^void printEntry2(TempNumber* number) {$/;"	f
 printTable	numbers.cpp	/^void printTable() {$/;"	f
 print_array	helpers.cpp	/^void print_array(int* data, int size, char* message)$/;"	f
+raiseByPow	numbers.cpp	/^Number* raiseByPow(Number* num, int power) {$/;"	f
 saveNumber	numbers.cpp	/^void saveNumber(Number* number) {$/;"	f
 sentinel	dbg.h	25;"	d
+setMaxPrecision	numbers.cpp	/^void setMaxPrecision(Number* num, int precision) {$/;"	f
 setNewNumber	numbers.cpp	/^Number* setNewNumber() {$/;"	f
 setNumberFromChar	numbers.cpp	/^Number* setNumberFromChar(char* numArray) {$/;"	f
 setNumberFromDouble	numbers.cpp	/^Number* setNumberFromDouble(long double number, int whole_digits, int decimal_digits) {$/;"	f
-size	numbers.h	/^    int size;$/;"	m	struct:__anon2
+setPrecision	numbers.cpp	/^void setPrecision(Number* num, int precision) {$/;"	f
+size	numbers.h	/^    int size;$/;"	m	struct:__anon3
 subtract	numbers.cpp	/^Number* subtract(Number* num1, Number* num2) {$/;"	f
 subtractNumbers	numbers.cpp	/^Number* subtractNumbers(Number* num1, Number* num2) {$/;"	f
 swap	helpers.cpp	/^void swap(int* a, int* b)$/;"	f
 swap_three	helpers.cpp	/^void swap_three(int* a, int* b, int* c)$/;"	f
 table	numbers.cpp	/^Table* table;$/;"	v
+toInt	numbers.cpp	/^int toInt(Number* num) {$/;"	f
+whole_part	numbers.h	/^    int whole_part[2*DIGITS];$/;"	m	struct:__anon2
 whole_part	numbers.h	/^    int whole_part[DIGITS];$/;"	m	struct:__anon1

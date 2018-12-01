@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/DSA1.dir/demo.cpp.o CMakeFiles/DSA1.dir/helpers.cpp.o CMakeFiles/DSA1.dir/numbers.cpp.o  -o DSA1 

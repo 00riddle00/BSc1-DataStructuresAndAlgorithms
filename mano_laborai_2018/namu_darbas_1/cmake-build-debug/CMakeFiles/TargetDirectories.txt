@@ -1,0 +1,3 @@
+/home/riddle/tmp1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/riddle/tmp1/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/riddle/tmp1/cmake-build-debug/CMakeFiles/DSA1.dir

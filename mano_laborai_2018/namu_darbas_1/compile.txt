@@ -1,9 +1,0 @@
-numbers.cpp: In function 'Number* setNumberFromDouble(long double, int, int)':
-numbers.cpp:195:68: warning: unknown conversion type character 'L' in format [-Wformat=]
-     sprintf(charray, "%*.*Lf", whole_digits, decimal_digits, number);
-                                                                    ^
-numbers.cpp:195:68: warning: too many arguments for format [-Wformat-extra-args]
-numbers.cpp: In function 'Number* divide(Number*, Number*)':
-numbers.cpp:657:9: warning: variable 'quotient' set but not used [-Wunused-but-set-variable]
-     int quotient;
-         ^
